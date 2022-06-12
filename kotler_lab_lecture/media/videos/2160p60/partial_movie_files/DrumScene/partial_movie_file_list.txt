@@ -1,3 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/DrumScene/uncached_00033.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/DrumScene/uncached_00034.mp4'

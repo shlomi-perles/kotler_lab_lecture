@@ -1,7 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/3215718966_2617878991_3054395144.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/1370976784_749964213_1201200066.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/1370976784_929127602_980372579.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/1370976784_2339717357_3508540779.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/1370976784_2378810122_531715235.mp4'
-file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/2160p60/partial_movie_files/SpringScene/1370976784_2569718023_2809122489.mp4'
