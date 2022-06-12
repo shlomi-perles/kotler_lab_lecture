@@ -416,42 +416,66 @@ class SpringScene(Scene):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.omega = 3
-        self.spring_len = 12
+        self.spring_len = 6
 
-    def create_electric_field(self):
+    def get_electric_field(self):
+        size = np.sin(self.spring.t)
+        color = RED if size <= 0 else BLUE
+        pos_dict = {-1: dict(color="RED", )}
         y_additions = np.array([0.3, -0.5])
-        x_additions = np.array([0.2, -0.8])
-        field_x_range = np.array([self.wall.get_right()[0], self.mass.get_left()[0]])
+        x_additions = np.array([0.4, -0.7])
+        field_x_range = np.array([self.mass.get_right()[0], self.capacitor.get_left()[0]])
         field_y_range = np.array([self.mass.get_bottom()[1], self.mass.get_top()[1]])
-        self.positive_electric_field = ArrowVectorField(lambda pos: RIGHT, color=BLUE,
-                                                        x_range=(field_x_range + x_additions).tolist(),
-                                                        y_range=(field_y_range + y_additions).tolist())
-        self.negative_electric_field = ArrowVectorField(lambda pos: LEFT, color=RED,
-                                                        x_range=(field_x_range).tolist(),
-                                                        y_range=(field_y_range- np.flip(y_additions)).tolist())
+        return ArrowVectorField(lambda pos: LEFT * size, color=color,
+                                x_range=(field_x_range + x_additions).tolist(),
+                                y_range=(field_y_range + y_additions).tolist())
 
     def construct(self):
         self.create_spring_system()
         self.system.stretch_to_fit_height(self.system.height * 0.5)
-        self.create_electric_field()
-        # self.play(AnimationGroup(Create(self.wall), Create(self.spring), DrawBorderThenFill(self.mass), lag_ratio=1))
-        self.add(self.system)
-        self.play(Create(self.positive_electric_field))
-        self.play(ReplacementTransform(self.positive_electric_field, self.negative_electric_field))
-        # d0_line = Line(self.mass.get_top(), self.mass.get_top() + UP * 0.7, stroke_width=10).shift(UP * 0.2)
-        # d0_tex = MathTex("d_{0}").next_to(d0_line, UP)
-        # move_arrow = Arrow(d0_line.get_center(), d0_line.get_center() + RIGHT * 1, stroke_width=7).next_to(d0_line,
-        #                                                                                                    buff=0)
-        # move_arrow.scale(1e-1 * 2, about_edge=LEFT)
-        # move_arrow.set_stroke(width=7)
-        # self.play(self.spring.oscillate())
-        # self.play(Create(d0_line))
-        # self.play(Write(d0_tex))
-        # self.spring.omega = self.spring.omega * 2.2
-        # self.play(self.spring.oscillate(0.25))
-        # self.play(move_arrow.animate().scale_to_fit_width(
-        #     self.spring.amplitude * 1, about_edge=LEFT).set_stroke(width=7))
+        self.play_spring_intro()
+        self.run_electric_field()
         self.wait(3)
+
+    def play_spring_intro(self):
+        self.play(AnimationGroup(Create(self.wall), Create(self.spring), DrawBorderThenFill(self.mass), lag_ratio=1))
+
+        d0_line = Line(self.mass.get_top(), self.mass.get_top() + UP * 0.7, stroke_width=10).shift(UP * 0.2)
+        d0_tex = MathTex("d_{0}").next_to(d0_line, UP)
+        move_arrow = Arrow(d0_line.get_center(), d0_line.get_center() + RIGHT * 1, stroke_width=7).next_to(d0_line,
+                                                                                                           buff=0)
+        omega = MathTex("\Omega_{mech}").next_to(self.spring, UP, buff=0.7)
+        move_arrow.scale(1e-1 * 2, about_edge=LEFT)
+        move_arrow.set_stroke(width=7)
+        self.system += omega
+        self.system += d0_line
+        self.system += d0_tex
+        self.system += move_arrow
+        self.play(AnimationGroup(self.spring.oscillate(2), Write(omega), lag_ratio=0.5))
+        self.play(Create(d0_line))
+        self.play(Write(d0_tex))
+        self.spring.omega = self.spring.omega * 2.2
+        self.play(self.spring.oscillate(0.25))
+        self.play(move_arrow.animate().scale_to_fit_width(
+            self.spring.amplitude * 1, about_edge=LEFT).set_stroke(width=7))
+
+    def set_electric_field_animation(self):
+        self.electric_field.add_updater(lambda field: field.become(self.get_electric_field()))
+
+    def run_electric_field(self):
+        self.capacitor = Rectangle(width=self.mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9)
+        self.capacitor.move_to(
+            self.mass.get_right() + RIGHT * 1.4 * (
+                    self.mass.get_center()[0] - self.spring.amplitude - self.wall.get_right()[0]))
+        self.group_optomechanic_system = VGroup(self.system, self.capacitor)
+        self.play(self.group_optomechanic_system.animate.center())
+        self.electric_field = self.get_electric_field()
+        self.add(self.system)
+        self.add(self.capacitor)
+        self.play(self.spring.oscillate(0.25))
+        self.play(Create(self.electric_field))
+        self.set_electric_field_animation()
+        self.play(self.spring.oscillate(3))
 
     def create_spring_system(self):
         self.spring = Spring(self.spring_len / 2 * LEFT, length=self.spring_len, stroke_width=5)
@@ -461,7 +485,8 @@ class SpringScene(Scene):
                               fill_opacity=0.6).next_to(
             self.spring.get_end(), buff=0)
         self.mass.add_updater(lambda mob: mob.next_to(self.spring.get_end(), buff=0))
-        self.system = VGroup(self.spring, self.wall, self.mass)
+        center = (self.mass.get_left()[0] - self.wall.get_right()[0])
+        self.system = VGroup(self.spring, self.wall, self.mass).shift(RIGHT * center / 2)
 
     def draw_wall(self, pivot_mobject: Mobject, wall_len=2):
         color = WHITE
@@ -482,7 +507,7 @@ class SpringScene(Scene):
 
 
 #
-with tempconfig({"quality": "low_quality", "preview": True, "media_dir": "D:\projects\Manim\kotler_lab_lecture\media",
+with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
     scene = SpringScene()

@@ -2,7 +2,7 @@ from manim import *
 
 
 class Spring(VGroup):
-    def __init__(self, start=ORIGIN, length=2, bumps=8, bump_height=1.5, **kwargs):
+    def __init__(self, start=ORIGIN, length=2, bumps=6, bump_height=1.5, **kwargs):
         super().__init__(**kwargs)
         self.length = length
         self.empty = 0.13
