@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/EverestScene/658931040_4159664883_1150256379.mp4'
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/EverestScene/30215705_580627119_1150256379.mp4'
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/EverestScene/385886430_1905773313_4070304270.mp4'
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/EverestScene/385886430_1743025708_2631499151.mp4'

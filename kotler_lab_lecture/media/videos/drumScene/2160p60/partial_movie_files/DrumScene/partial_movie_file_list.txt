@@ -1,0 +1,3 @@
+# This file is used internally by FFMPEG.
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/DrumScene/3724740824_437641615_4174018169.mp4'
+file 'file:D:/projects/Manim/kotler_lab_lecture/media/videos/drumScene/2160p60/partial_movie_files/DrumScene/895716172_3081294815_443328851.mp4'
