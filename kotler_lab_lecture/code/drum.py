@@ -3,7 +3,7 @@ from manim.opengl import *
 from manim.mobject.opengl.opengl_compatibility import ConvertToOpenGL
 from scipy.special import jv, jn_zeros
 from copy import deepcopy
-
+#abc
 j_zeros = [jn_zeros(m, 20) for m in range(6)]
 # DRUM_COLOR = '#B22222	'
 DRUM_COLOR = BLUE
