@@ -9,7 +9,7 @@ from copy import deepcopy
 RESOURCE_DIR = Path(__file__).resolve().parent.parent / "resources"
 MAIN_PATH = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(MAIN_PATH))
-from my_tools.animations.animations import *
+from tools.animations import Count
 
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
@@ -426,10 +426,9 @@ class SpringScene(Scene):
         self.positive_electric_field = ArrowVectorField(lambda pos: RIGHT, color=BLUE,
                                                         x_range=(field_x_range + x_additions).tolist(),
                                                         y_range=(field_y_range + y_additions).tolist())
-        self.
-        # self.negative_electric_field = ArrowVectorField(lambda pos: LEFT, color=RED,
-        #                                                 x_range=(field_x_range).tolist(),
-        #                                                 y_range=(field_y_range- np.flip(y_additions)).tolist())
+        self.negative_electric_field = ArrowVectorField(lambda pos: LEFT, color=RED,
+                                                        x_range=(field_x_range).tolist(),
+                                                        y_range=(field_y_range- np.flip(y_additions)).tolist())
 
     def construct(self):
         self.create_spring_system()
