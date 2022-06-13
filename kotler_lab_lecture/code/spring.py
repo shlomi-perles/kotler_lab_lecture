@@ -50,4 +50,4 @@ class Spring(VGroup):
     def update_spring(self, mob, alpha):
         self.t = self.oscillates_num * TAU * alpha + self.start_t
         self.stretch_to_fit_width(
-            self.orig_width + self.amplitude * np.sin(self.t), about_edge=LEFT)
+            self.orig_width + self.amplitude * np.sin(self.t), about_edge=RIGHT)
