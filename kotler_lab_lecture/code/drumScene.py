@@ -1,3 +1,4 @@
+import numpy as np
 from manim import *
 from drum import Drum
 from manim.opengl import *
@@ -433,6 +434,7 @@ class SpringScene(Scene):
         self.omega = 3
         self.spring_len = 6
         self.arrows_dist = DOWN * 0.36
+        self.arrows_buff = 0.1
 
     def construct(self):
         self.create_spring_system()
@@ -471,70 +473,6 @@ class SpringScene(Scene):
         self.system += x_tex
         self.play(FadeIn(x_tex, shift=UP))
 
-    def set_electric_field_animation(self):
-        self.electric_field.add_updater(lambda field: field.become(self.get_electric_field()))
-
-    def play_electric_coupling(self):
-        self.fix_x = self.d0_line.get_x()
-        self.play(self.group_optomechanic_system.animate.to_edge(UP))
-        lc_circuit = SVGMobject(str(RESOURCE_DIR / "LC_circuit.svg"),
-                                width=np.abs(self.capacitor.get_x() - self.mass.get_x()),
-                                color=WHITE, stroke_color=WHITE)
-        lc_circuit.move_to(
-            np.array([(self.capacitor.get_x() + self.mass.get_x()) / 2,
-                      self.mass.get_bottom()[1] - lc_circuit.height / 2, 0]))
-        self.play(DrawBorderThenFill(lc_circuit), self.omega_mech_tex.animate.next_to(self.spring, UP, buff=0.7))
-
-        self.electric_field = self.get_electric_field()
-        self.play(Create(self.electric_field))
-        self.set_electric_field_animation()
-        self.wait()
-        self.play(Uncreate(lc_circuit))
-        self.wait()
-        self.force_e = self.get_e_force()
-        self.force_e.add_updater(lambda force_arrow: force_arrow.become(self.get_e_force()))
-        self.play(Create(self.force_e))
-        self.play(self.force_e.animate.to_edge(self.mass.get_bottom(), DOWN))
-
-        eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
-                                                      buff=1).set_color_by_tex("F_{E}", BLUE)
-        eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
-        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(
-            eq2).set_color_by_tex(
-            "F_{E}", BLUE)
-        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(
-            eq3).set_color_by_tex("F_{E}", BLUE)
-        self.play(Write(eq1))
-        self.wait(0.5)
-        self.play(TransformMatchingTex(eq1, eq2))
-        self.wait(0.5)
-        self.play(TransformMatchingTex(eq2, eq3))
-        self.wait(0.5)
-        self.play(TransformMatchingTex(eq3, eq4))
-
-        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex(
-            "F_{mech}", GREEN)
-        self.mech_force = self.get_mech_force()
-        self.mech_force.add_updater(lambda force_mech_arrow: force_mech_arrow.become(self.get_mech_force()))
-
-        self.play(Write(eq_mech), Create(self.mech_force))
-
-        # self.play(self.spring.oscillate(0.5))
-
-        # self.play(self.spring.oscillate(3))
-
-    def get_mech_force(self):
-        size_arr = self.fix_x - self.mass.get_x()
-        return Arrow(self.mass.get_bottom() + self.arrows_dist,
-                     self.mass.get_bottom() + RIGHT * size_arr + self.arrows_dist,
-                     stroke_width=12, stroke_color=GREEN)
-
-    def get_e_force(self):
-        size_arr = self.fix_x - self.mass.get_x()
-        return Arrow(self.mass.get_bottom() + self.arrows_dist,
-                     self.mass.get_bottom() - RIGHT * size_arr + self.arrows_dist,
-                     stroke_width=12, stroke_color=BLUE)
-
     def play_capacitor_addition(self):
         tmp_capacitor = Rectangle(width=self.mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0, stroke_opacity=0)
         tmp_capacitor.move_to(
@@ -553,6 +491,87 @@ class SpringScene(Scene):
         self.group_optomechanic_system += self.capacitor
         self.wait()
 
+    def play_electric_coupling(self):
+        self.play(self.group_optomechanic_system.animate.to_edge(UP))
+        lc_circuit = SVGMobject(str(RESOURCE_DIR / "LC_circuit.svg"),
+                                width=np.abs(self.capacitor.get_x() - self.mass.get_x()),
+                                color=WHITE, stroke_color=WHITE)
+        lc_circuit.move_to(
+            np.array([(self.capacitor.get_x() + self.mass.get_x()) / 2,
+                      self.mass.get_bottom()[1] - lc_circuit.height / 2, 0]))
+        self.play(DrawBorderThenFill(lc_circuit), self.omega_mech_tex.animate.next_to(self.spring, UP, buff=0.7))
+
+        self.electric_field = self.get_electric_field()
+        self.play(Create(self.electric_field))
+        self.set_electric_field_animation()
+        self.wait()
+        self.play(Uncreate(lc_circuit))
+        self.wait()
+        self.force_e = self.get_e_force()
+        size_arr = self.d0_line.get_x() - self.mass.get_x()
+
+
+        eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
+                                                      buff=1).set_color_by_tex("F_{E}", BLUE)
+        eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
+        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(
+            eq2).set_color_by_tex(
+            "F_{E}", BLUE)
+        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(
+            eq3).set_color_by_tex("F_{E}", BLUE)
+        self.play(Write(eq1))
+        self.wait(0.5)
+        self.play(Create(self.force_e))
+        self.wait()
+        self.play(TransformMatchingTex(eq1, eq2))
+        self.wait(0.5)
+        self.play(TransformMatchingTex(eq2, eq3))
+        self.wait(0.5)
+        self.play(TransformMatchingTex(eq3, eq4))
+
+        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex(
+            "F_{mech}", GREEN)
+        self.mech_force = self.get_mech_force()
+        self.play(Write(eq_mech), Create(self.mech_force))
+        self.mech_force.add_updater(
+            lambda force_mech_arrow: force_mech_arrow.put_start_and_end_on(*self.get_mech_force_size()))
+        self.force_e.add_updater(lambda force_arrow: force_arrow.put_start_and_end_on(
+            *self.get_e_force_size()))
+        self.play(self.spring.oscillate(0.2))
+
+        self.mech_force.add_updater(
+            lambda force_mech_arrow: force_mech_arrow.put_start_and_end_on(*self.get_mech_force_size()))
+        self.force_e.add_updater(lambda force_arrow: force_arrow.put_start_and_end_on(
+            *self.get_e_force_size()))
+        self.play(self.spring.oscillate(0.5))
+
+        # self.play(self.spring.oscillate(0.5))
+
+        # self.play(self.spring.oscillate(3))
+
+    def get_e_force_size(self):
+        addition_size = 1
+        size_arr = self.d0_line.get_x() - self.mass.get_x()
+        left_side = self.mass.get_bottom() + self.arrows_dist + self.arrows_buff * LEFT * np.sign(size_arr)
+        right_side = left_side + (addition_size + (self.spring.amplitude - np.abs(size_arr))) ** 0.7 * np.sign(
+            size_arr) * LEFT
+        return left_side, right_side
+
+    def get_mech_force_size(self):
+        size_arr = self.d0_line.get_x() - self.mass.get_x()
+        left_side = self.mass.get_bottom() + self.arrows_dist + self.arrows_buff * RIGHT * np.sign(size_arr)
+        right_side = left_side + size_arr * RIGHT
+        return left_side, right_side
+
+    def get_mech_force(self):
+        return Arrow(*self.get_mech_force_size(), stroke_width=12, stroke_color=GREEN, buff=0.1)
+
+    def get_e_force(self):
+        return Arrow(*self.get_e_force_size(), stroke_width=12, stroke_color=BLUE, buff=0.1)
+
+    def set_electric_field_animation(self):
+        self.electric_field.add_updater(lambda field: field.become(self.get_electric_field()))
+
     def create_spring_system(self):
         self.spring = Spring(self.spring_len / 2 * LEFT, length=self.spring_len, stroke_width=5)
         self.spring.set_color(YELLOW)
@@ -567,7 +586,7 @@ class SpringScene(Scene):
         size = np.sin(self.spring.t) * 2
         color = BLUE if size <= 0 else RED
         y_additions = np.array([0.3, -0.5])
-        x_additions = np.array([0.3, -1.2])
+        x_additions = np.array([0.4, -1])
         field_x_range = np.array([self.capacitor.get_right()[0], self.mass.get_left()[0]])
         field_y_range = np.array([self.mass.get_bottom()[1], self.mass.get_top()[1]])
         return ArrowVectorField(lambda pos: LEFT * size, color=color,
