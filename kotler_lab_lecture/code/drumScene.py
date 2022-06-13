@@ -7,8 +7,8 @@ from pathlib import Path
 from manim_editor import PresentationSectionType as pst
 from copy import deepcopy
 
-RESOURCE_DIR = Path(__file__).resolve().parent.parent / "resources"
-MAIN_PATH = Path(__file__).resolve().parent.parent.parent
+MAIN_PATH = Path(__file__).resolve().parent.parent
+RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from tools.animations import Count
 
@@ -653,17 +653,16 @@ class g0Scene(Scene):
         self.add(ax, energy_graph, exp_graph_dash)
         self.wait()
 
-
-
-        g0_digit = DecimalNumber(10, unit="[mH]")
+        g0_digit = DecimalNumber(g0_tracker.get_value() / 7 * 10, unit="[mH]")
         g0_tex = MathTex("g_{0}=", color=GREEN).scale(1.2).next_to(g0_digit.get_left(), LEFT, buff=0.2).set_y(
             g0_digit.get_center()[1] - 0.05)
         g0_tex_group = VGroup(g0_tex, g0_digit).to_edge(UR, buff=2.5)
         tau_tex = MathTex(r"\tau=", color=YELLOW).scale(1.2).move_to(g0_tex.get_bottom()).shift(DOWN * 0.75)
-        tau_digit = DecimalNumber(10, unit="[ms]").move_to(g0_digit.get_bottom()).match_y(tau_tex)
+        tau_digit = DecimalNumber(tau_tracker.get_value() / 7 * 10, unit="[ms]").move_to(g0_digit.get_bottom()).match_y(
+            tau_tex)
 
-        tau_digit.add_updater(lambda d: d.set_value(tau_tracker.get_value()/7*10))
-        g0_digit.add_updater(lambda d: d.set_value(g0_tracker.get_value()/7*10))
+        tau_digit.add_updater(lambda d: d.set_value(tau_tracker.get_value() / 7 * 10))
+        g0_digit.add_updater(lambda d: d.set_value(g0_tracker.get_value() / 7 * 10))
 
         tau_tex_group = VGroup(tau_tex, tau_digit)
         self.add(g0_tex_group, tau_tex_group)
@@ -675,12 +674,37 @@ class g0Scene(Scene):
         self.play(tau_tracker.animate.set_value(tau_init + 4), run_time=6)
         self.wait(3)
 
-        self.play(g0_tracker.animate(run_time=6).set_value(g0_init * 2))
+        self.play(g0_tracker.animate.set_value(g0_init + 4), run_time=6)
         self.wait(3)
+
+
+from manim.mobject.geometry.tips import ArrowTriangleFilledTip
+
+
+class SimulationRoad(Scene):
+    def construct(self):
+        tip_head = Dot(color=BLUE).scale(2).set_z_index(2)
+        TracedPath(tip_head.get_center(), color=YELLOW)
+        hell_road = SVGMobject(str(RESOURCE_DIR / "turture_road.svg"), background_stroke_width=20, stroke_width=20,
+                               width=12)
+        for path_road in hell_road:
+            path_road.set_stroke(width=10)
+        main_road = hell_road[0]
+        main_road.set_z_index(1)
+        hell_road = hell_road[1:]
+
+        self.add(main_road)
+        self.wait()
+        self.play(ShowPassingFlash(
+            main_road.copy().set_color(BLUE), run_time=4, time_width=1))
+        self.play(MoveAlongPath(tip_head, main_road[0]), run_time=12)
+        self.wait()
+        self.play(Write(hell_road))
+        self.wait()
 
 
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
-    scene = g0Scene()
+    scene = SimulationRoad()
     scene.render()
