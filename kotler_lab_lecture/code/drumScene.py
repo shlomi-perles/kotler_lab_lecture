@@ -507,10 +507,9 @@ class SpringScene(Scene):
         self.wait()
         self.play(Uncreate(lc_circuit))
         self.wait()
+
+        self.const_arrows = True
         self.force_e = self.get_e_force()
-        size_arr = self.d0_line.get_x() - self.mass.get_x()
-
-
         eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
                                                       buff=1).set_color_by_tex("F_{E}", BLUE)
         eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
@@ -533,16 +532,23 @@ class SpringScene(Scene):
             "F_{mech}", GREEN)
         self.mech_force = self.get_mech_force()
         self.play(Write(eq_mech), Create(self.mech_force))
+        self.wait()
         self.mech_force.add_updater(
             lambda force_mech_arrow: force_mech_arrow.put_start_and_end_on(*self.get_mech_force_size()))
-        self.force_e.add_updater(lambda force_arrow: force_arrow.put_start_and_end_on(
-            *self.get_e_force_size()))
+        self.force_e.add_updater(
+            lambda force_arrow: force_arrow.put_start_and_end_on(*self.get_e_force_size()))
         self.play(self.spring.oscillate(0.2))
+        self.wait()
 
-        self.mech_force.add_updater(
-            lambda force_mech_arrow: force_mech_arrow.put_start_and_end_on(*self.get_mech_force_size()))
-        self.force_e.add_updater(lambda force_arrow: force_arrow.put_start_and_end_on(
-            *self.get_e_force_size()))
+        self.const_arrows = False
+        self.mech_force.suspend_updating()
+        self.force_e.suspend_updating()
+        self.play(self.mech_force.animate.put_start_and_end_on(*self.get_mech_force_size()))
+        self.play(self.force_e.animate.put_start_and_end_on(*self.get_e_force_size()))
+        self.wait()
+
+        self.mech_force.resume_updating()
+        self.force_e.resume_updating()
         self.play(self.spring.oscillate(0.5))
 
         # self.play(self.spring.oscillate(0.5))
@@ -550,23 +556,23 @@ class SpringScene(Scene):
         # self.play(self.spring.oscillate(3))
 
     def get_e_force_size(self):
-        addition_size = 1
+        self.e_addition_size = 1
         size_arr = self.d0_line.get_x() - self.mass.get_x()
         left_side = self.mass.get_bottom() + self.arrows_dist + self.arrows_buff * LEFT * np.sign(size_arr)
-        right_side = left_side + (addition_size + (self.spring.amplitude - np.abs(size_arr))) ** 0.7 * np.sign(
-            size_arr) * LEFT
+        right_side = left_side + (self.e_addition_size + (self.spring.amplitude - np.abs(size_arr))) ** 0.7 * np.sign(
+            size_arr) * LEFT if not self.const_arrows else left_side + self.e_addition_size * RIGHT
         return left_side, right_side
 
     def get_mech_force_size(self):
         size_arr = self.d0_line.get_x() - self.mass.get_x()
         left_side = self.mass.get_bottom() + self.arrows_dist + self.arrows_buff * RIGHT * np.sign(size_arr)
-        right_side = left_side + size_arr * RIGHT
+        right_side = left_side + size_arr * RIGHT if not self.const_arrows else left_side + self.spring.amplitude * LEFT
         return left_side, right_side
 
-    def get_mech_force(self):
+    def get_mech_force(self) -> Arrow:
         return Arrow(*self.get_mech_force_size(), stroke_width=12, stroke_color=GREEN, buff=0.1)
 
-    def get_e_force(self):
+    def get_e_force(self) -> Arrow:
         return Arrow(*self.get_e_force_size(), stroke_width=12, stroke_color=BLUE, buff=0.1)
 
     def set_electric_field_animation(self):
@@ -611,9 +617,68 @@ class SpringScene(Scene):
         return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
 
-#
+class g0Scene(Scene):
+    def construct(self):
+        ax = Axes(x_range=(0, 10), y_range=[0, 1, 0.1], x_length=round(config.frame_width) - 5,
+                  y_length=round(config.frame_height) / 2 - 2,
+                  y_axis_config={"numbers_to_include": np.arange(0, 1 + 0.1, 0.5)})
+        ax += ax.get_y_axis_label(MathTex(r"\frac{E_{mech}}{E_{elec}}"), edge=LEFT, direction=LEFT * 2, buff=2)
+        ax += ax.get_x_axis_label(MathTex("t"), edge=DOWN, direction=DOWN)
+
+        g0_tracker = ValueTracker(3)
+        tau_tracker = ValueTracker(3)
+        exp_func = lambda x: np.exp(-x / tau_tracker.get_value())
+
+        energy_func = lambda t: (np.sin(g0_tracker.get_value() * t) + 1) * exp_func(t) / 2
+
+        energy_graph = always_redraw(lambda: ax.plot(energy_func, color=BLUE))
+
+        def get_exp_plot():
+            tmp = ax.plot(exp_func, color=YELLOW)
+            b = DashedVMobject(tmp, num_dashes=16, fill_opacity=0.7, stroke_opacity=0.5)
+            return b
+
+        exp_graph = always_redraw(lambda: ax.plot(exp_func, color=YELLOW))
+        exp_graph_dash = always_redraw(get_exp_plot)
+
+        # line = always_redraw(
+        #     lambda: ax.get_vertical_line(ax.c2p(tau_tracker.get_value(), exp_func(tau_tracker.get_value())),
+        #                                  line_config={"dashed_ratio": 0.85}))
+        # dot = always_redraw(lambda: Dot(ax.c2p(tau_tracker.get_value(), 0)))
+        # tau = MathTex(r"\tau")
+        # tau.add_updater(lambda tex: tex.to_edge(dot.get_bottom(), DOWN, buff=0))
+        ax += always_redraw(
+            lambda: ax.get_T_label(x_val=tau_tracker.get_value(), graph=exp_graph, label=MathTex(r"\tau", color=YELLOW),
+                                   line_func=DashedLine, label_color=YELLOW, line_color=WHITE))
+        self.add(ax, energy_graph, exp_graph_dash)
+        self.wait()
+
+        g0_init = g0_tracker.get_value()
+        tau_init = tau_tracker.get_value()
+
+        g0_digit = DecimalNumber(10, unit=r" [mH]").set_color(GREEN).scale(0.7)
+        g0_tex = MathTex("g_{0}=", color=GREEN).next_to(g0_digit.get_left(), LEFT, buff=0.5).set_y(
+            g0_digit.get_center()[1] - 0.05)
+        g0_tex_group = VGroup(g0_tex, g0_digit).to_edge(UR)
+
+        tau_digit = DecimalNumber(10, unit=r" [s]").set_color(YELLOW).scale(0.7)
+        tau_tex = MathTex(r"\tau=", color=YELLOW).next_to(tau_digit.get_left(), LEFT, buff=0.5).set_y(
+            tau_digit.get_center()[1] - 0.05)
+        tau_tex_group = VGroup(tau_tex, tau_digit).next_to(g0_tex_group.get_bottom(), DOWN)
+
+        self.add(g0_tex_group, tau_tex_group)
+        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init + 6))
+        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init + 4))
+        # self.wait()
+
+        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init))
+        self.play(g0_tracker.animate(run_time=6).set_value(g0_init * 2), Count(g0_digit, 10, 11))
+
+        # dot = Dot(point)
+
+
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
-    scene = SpringScene()
+    scene = g0Scene()
     scene.render()
