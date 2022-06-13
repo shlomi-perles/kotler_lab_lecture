@@ -631,11 +631,11 @@ class g0Scene(Scene):
 
         energy_func = lambda t: (np.sin(g0_tracker.get_value() * t) + 1) * exp_func(t) / 2
 
-        energy_graph = always_redraw(lambda: ax.plot(energy_func, color=BLUE))
+        energy_graph = always_redraw(lambda: ax.plot(energy_func, color=BLUE, z_index=2))
 
         def get_exp_plot():
             tmp = ax.plot(exp_func, color=YELLOW)
-            b = DashedVMobject(tmp, num_dashes=16, fill_opacity=0.7, stroke_opacity=0.5)
+            b = DashedVMobject(tmp, num_dashes=16, fill_opacity=0.7, stroke_opacity=0.5, background_stroke_opacity=0.5)
             return b
 
         exp_graph = always_redraw(lambda: ax.plot(exp_func, color=YELLOW))
@@ -653,28 +653,30 @@ class g0Scene(Scene):
         self.add(ax, energy_graph, exp_graph_dash)
         self.wait()
 
+
+
+        g0_digit = DecimalNumber(10, unit="[mH]")
+        g0_tex = MathTex("g_{0}=", color=GREEN).scale(1.2).next_to(g0_digit.get_left(), LEFT, buff=0.2).set_y(
+            g0_digit.get_center()[1] - 0.05)
+        g0_tex_group = VGroup(g0_tex, g0_digit).to_edge(UR, buff=2.5)
+        tau_tex = MathTex(r"\tau=", color=YELLOW).scale(1.2).move_to(g0_tex.get_bottom()).shift(DOWN * 0.75)
+        tau_digit = DecimalNumber(10, unit="[ms]").move_to(g0_digit.get_bottom()).match_y(tau_tex)
+
+        tau_digit.add_updater(lambda d: d.set_value(tau_tracker.get_value()/7*10))
+        g0_digit.add_updater(lambda d: d.set_value(g0_tracker.get_value()/7*10))
+
+        tau_tex_group = VGroup(tau_tex, tau_digit)
+        self.add(g0_tex_group, tau_tex_group)
+        self.wait(3)
+
         g0_init = g0_tracker.get_value()
         tau_init = tau_tracker.get_value()
+        self.play(tau_tracker.animate.set_value(tau_init + 6), run_time=6)
+        self.play(tau_tracker.animate.set_value(tau_init + 4), run_time=6)
+        self.wait(3)
 
-        g0_digit = DecimalNumber(10, unit=r" [mH]").set_color(GREEN).scale(0.7)
-        g0_tex = MathTex("g_{0}=", color=GREEN).next_to(g0_digit.get_left(), LEFT, buff=0.5).set_y(
-            g0_digit.get_center()[1] - 0.05)
-        g0_tex_group = VGroup(g0_tex, g0_digit).to_edge(UR)
-
-        tau_digit = DecimalNumber(10, unit=r" [s]").set_color(YELLOW).scale(0.7)
-        tau_tex = MathTex(r"\tau=", color=YELLOW).next_to(tau_digit.get_left(), LEFT, buff=0.5).set_y(
-            tau_digit.get_center()[1] - 0.05)
-        tau_tex_group = VGroup(tau_tex, tau_digit).next_to(g0_tex_group.get_bottom(), DOWN)
-
-        self.add(g0_tex_group, tau_tex_group)
-        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init + 6))
-        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init + 4))
-        # self.wait()
-
-        # self.play(tau_tracker.animate(run_time=6).set_value(tau_init))
-        self.play(g0_tracker.animate(run_time=6).set_value(g0_init * 2), Count(g0_digit, 10, 11))
-
-        # dot = Dot(point)
+        self.play(g0_tracker.animate(run_time=6).set_value(g0_init * 2))
+        self.wait(3)
 
 
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
