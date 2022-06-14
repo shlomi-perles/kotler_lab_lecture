@@ -12,13 +12,13 @@ MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from tools.animations import Count
+from spring import Spring
 
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
 BEAUTY_PLANE = True
 PRESENTATION_MODE = True
 Z_FACTOR = 0
-from spring import Spring
 
 
 # TODO: next: c2p Accepts coordinates from the axes and returns a point with respect to the scene. so check all code doing that
@@ -45,8 +45,8 @@ def draw_wall(pivot_mobject: Mobject, wall_len=2):
     return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
 
-def get_electric_field(spring, capacitor, mass):
-    size = np.sin(spring.t) * 2
+def get_electric_field_capac(spring, capacitor, mass):
+    size = np.sin(-0.2) * 2
     color = BLUE if size <= 0 else RED
     y_additions = np.array([0.3, -0.5])
     x_additions = np.array([0.4, -1])
@@ -62,15 +62,17 @@ def get_spring_system():
     spring = Spring(spring_len / 2 * LEFT, length=spring_len, stroke_width=5)
     spring.set_color(YELLOW)
     wall = draw_wall(spring.right_spring)
+    # VGroup(wall, spring).to_edge(RIGHT)
     mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
                      fill_opacity=0.6).next_to(spring.get_start(), LEFT, buff=0)
-    capacitor = Rectangle(width=mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9, stroke_opacity=1)
+    capacitor = Rectangle(height=mass.height, width=mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9,
+                          stroke_opacity=1)
     capacitor.move_to(
         np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (
             np.abs(mass.get_x() - wall.get_left()[0])))
-    electric_field = get_electric_field(spring, capacitor, mass)
-    omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP)
-    omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP)
+    electric_field = get_electric_field_capac(spring, capacitor, mass)
+    omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP, buff=1.4).scale(1.5)
+    omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP).scale(1.5).match_y(omega_mech_tex)
     return VGroup(spring, wall, mass, capacitor, electric_field, omega_mech_tex, omega_lc_tex)
 
 
@@ -857,48 +859,102 @@ class FirstSimuTry(ThreeDScene):
         self.current_part = 0
 
     def get_dt_lines(self, start, end, numbers, color):
+        len_line = end[0] - start[0]
+        len_line += len_line / numbers
         dt_lines = VGroup(
             DashedLine(
                 start=start,
-                end=end,
-                dashed_ratio=1.9,
-                dash_length=0.5,
-                color=color, stroke_width=8
+                end=start + RIGHT * len_line,
+                dashed_ratio=1,
+                dash_length=(len_line / numbers),
+                color=color, stroke_width=5
             ))
-        # [i.rotate(PI / 4, about_point=i.get_start()) for i in dt_lines[0].submobjects]
+        [i.rotate(PI / 2, about_point=i.get_start()) for i in dt_lines[0].submobjects]
         return dt_lines
 
     def construct(self):
-        infinity_time = Tex("Numeric convergence time=\infty")
+        infinity_time = Tex(r"Numeric run time $=\ \infty$").scale(1.4)
         self.play(Write(infinity_time))
         self.play(infinity_time.animate.to_edge(UP))
+        self.play_freq_graphs()
+
+    def get_system_recap(self):
+        system = get_spring_system()
+        remind_square = Square(color=YELLOW).match_width(system, stretch=True).match_height(system, stretch=True).scale(
+            1.2).move_to(system.get_center())
+        return VGroup(system, remind_square)
 
     def play_freq_graphs(self):
-        ax = Axes(x_range=(0, 10), y_range=[-1, 1], x_length=round(config.frame_width) - 5,
-                  y_length=round(config.frame_height) / 2 - 2)
+        system = self.get_system_recap().center().scale_to_fit_height(config.frame_height * 0.45).shift(DOWN * 0.5)
+        reminder = Text("Reminder").next_to(system.get_top(), UP)
+        self.play(FadeIn(system), Write(reminder))
+        self.wait()
+        self.play(FadeOut(reminder, shift=DOWN))
+
+        ax = Axes(x_range=(0, 10), y_range=[-1, 1], x_length=round(config.frame_width) - 2,
+                  y_length=round(config.frame_height) * 0.75, tips=False).to_edge(LEFT, buff=0.2)
         ax += ax.get_x_axis_label(MathTex("t"), edge=DOWN, direction=DOWN)
 
-        omega_mech = 3
+        omega_mech = 0.7
         omega_lc = omega_mech * 4
         omega_mech_func = lambda t: np.sin(omega_mech * t)
-        omega_lc_func = lambda t: np.sin(omega_lc * t)
+        omega_lc_func = lambda t: 0.3 * np.sin(omega_lc * t)
 
         omega_mech_graph = ax.plot(omega_mech_func, color=GREEN, z_index=2)
         omega_lc_graph = ax.plot(omega_lc_func, color=BLUE, z_index=2)
+
         dt_omega_mech = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_mech, 0), 6, GREEN_B)
-        dt_omega_lc = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_lc, 0), 12, GREEN_B)
+        dt_omega_mech.stretch_to_fit_height(dt_omega_mech.height * 0.3, about_edge=DOWN)
+        dt_omega_lc = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_lc, 0), 6, BLUE_B).stretch_to_fit_height(
+            dt_omega_mech.height, about_edge=DOWN)
+        dt_omega_lc_full = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_mech, 0), 6 * omega_lc / omega_mech,
+                                             BLUE_B).stretch_to_fit_height(dt_omega_mech.height, about_edge=DOWN)
+
         top_graph = ax.plot(lambda x: 0.9)
         t = ValueTracker(0)
-        time_marker = always_redraw(lambda: ax.get_T_label(x_val=t.get_value(), graph=top_graph,
-                                                           line_func=DashedLine, label_color=YELLOW, line_color=WHITE))
-        omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
+        time_marker = ax.get_T_label(x_val=t.get_value(), graph=top_graph, line_func=DashedLine,
+                                     label_color=YELLOW,
+                                     line_color=YELLOW)
+
         omega_lc_label = MathTex(r"\omega_{LC}").next_to(omega_mech_graph, UL)
+        omega_lc_label = VGroup(omega_lc_label, Line(color=BLUE).scale(0.4)).arrange(RIGHT).to_edge(DR, buff=1.2)
+        omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
+        omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(
+            omega_lc_label, UP)
+        max_mech_point = ax.c2p(PI / (omega_mech * 2), omega_mech_func(omega_mech * 2))
+
+        self.play(
+            system.animate.set_x(max_mech_point[0]).set_y((system.height * 0.8 - config.frame_height) / 2).scale(0.7))
+
         self.play(Create(ax))
         self.play(Create(omega_mech_graph), Write(omega_mech_label))
         self.play(Create(time_marker))
         self.play(t.animate.set_value(2 * PI / omega_mech))
-        self.play(t.animate.set_value(0))
+        self.play(Create(dt_omega_mech))
+
+        dt_brace_1, dt1text = self.get_dt_braces(dt_omega_mech)
+        dt_brace_2, dt2text = self.get_dt_braces(dt_omega_lc)
+        self.play(Write(dt_brace_1), Write(dt1text))
+        for mob in dt_omega_mech[0].submobjects:
+            self.play(time_marker.animate.match_x(mob))
+            self.wait(0.2)
+        self.play(time_marker.animate.set_x(ax.get_origin()[0]))
+
         self.play(Create(omega_lc_graph), Write(omega_lc_label))
+        self.play(Create(dt_omega_lc))
+        self.play(TransformMatchingTex(dt1text, dt2text), TransformMatchingShapes(dt_brace_1, dt_brace_2))
+        self.wait()
+        self.play(FadeOut(dt_omega_lc), FadeOut(dt_omega_mech))
+        self.play(Create(dt_omega_lc_full))
+        self.wait()
+        self.wait(2)
+
+    def get_dt_braces(self, dt_line):
+        line = Line(dt_line[0].submobjects[0].get_start(), dt_line[0].submobjects[1].get_start())
+        dt_brace = Brace(line, color=YELLOW)
+        b1text = dt_brace.get_text("dt")
+        b1text.set_color(YELLOW)
+        return dt_brace, b1text
 
 
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
