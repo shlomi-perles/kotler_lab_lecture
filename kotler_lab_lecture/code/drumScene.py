@@ -1,11 +1,12 @@
 import numpy as np
+from typing import Union
+from pathlib import Path
+from copy import deepcopy
+from manim.renderer.opengl_renderer import OpenGLRenderer
+from manim.opengl import *
 from manim import *
 from drum import Drum
-from manim.opengl import *
-from manim.renderer.opengl_renderer import OpenGLRenderer
-from pathlib import Path
 from manim_editor import PresentationSectionType as pst
-from copy import deepcopy
 
 MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
@@ -24,6 +25,53 @@ from spring import Spring
 # TODO:center axis in numper plane. maybe odd x and y ticks.
 # TODO:Try to fix z_index problem with - https://www.reddit.com/r/manim/comments/tsx6ks/objects_jumping_in_front_of_each_other_in_3d_scene/i6dtd8x/
 # config.renderer = "opengl"
+
+
+def draw_wall(pivot_mobject: Mobject, wall_len=2):
+    color = WHITE
+    wall = VGroup(
+        DashedLine(
+            start=wall_len * LEFT * 0.95,
+            end=(wall_len) * RIGHT * 0.95,
+            dashed_ratio=1.3,
+            dash_length=0.6,
+            color=GREY, stroke_width=8
+        ).shift(pivot_mobject.get_start()[1] * UP)
+    )
+    [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
+    wall.add(
+        Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
+
+    return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
+
+
+def get_electric_field(spring, capacitor, mass):
+    size = np.sin(spring.t) * 2
+    color = BLUE if size <= 0 else RED
+    y_additions = np.array([0.3, -0.5])
+    x_additions = np.array([0.4, -1])
+    field_x_range = np.array([capacitor.get_right()[0], mass.get_left()[0]])
+    field_y_range = np.array([mass.get_bottom()[1], mass.get_top()[1]])
+    return ArrowVectorField(lambda pos: LEFT * size, color=color,
+                            x_range=(field_x_range + x_additions).tolist(),
+                            y_range=(field_y_range + y_additions).tolist())
+
+
+def get_spring_system():
+    spring_len = 6
+    spring = Spring(spring_len / 2 * LEFT, length=spring_len, stroke_width=5)
+    spring.set_color(YELLOW)
+    wall = draw_wall(spring.right_spring)
+    mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
+                     fill_opacity=0.6).next_to(spring.get_start(), LEFT, buff=0)
+    capacitor = Rectangle(width=mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9, stroke_opacity=1)
+    capacitor.move_to(
+        np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (
+            np.abs(mass.get_x() - wall.get_left()[0])))
+    electric_field = get_electric_field(spring, capacitor, mass)
+    omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP)
+    omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP)
+    return VGroup(spring, wall, mass, capacitor, electric_field, omega_mech_tex, omega_lc_tex)
 
 
 class DrumScene(ThreeDScene):
@@ -678,9 +726,6 @@ class g0Scene(Scene):
         self.wait(3)
 
 
-from manim.mobject.geometry.tips import ArrowTriangleFilledTip
-
-
 class SimulationRoad(Scene):
     def construct(self):
         tip_head = Dot(color=BLUE).scale(2).set_z_index(2)
@@ -697,14 +742,167 @@ class SimulationRoad(Scene):
         self.wait()
         self.play(ShowPassingFlash(
             main_road.copy().set_color(BLUE), run_time=4, time_width=1))
-        self.play(MoveAlongPath(tip_head, main_road[0]), run_time=12)
+        self.play(MoveAlongPath(tip_head, main_road[0]),
+                  run_time=12)  # TODO: better: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master/English/extra/advanced/resume.md
         self.wait()
         self.play(Write(hell_road))
         self.wait()
 
 
+class IntroSummary(ThreeDScene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.parts_num = 3
+        self.current_part = 0
+
+    def construct(self):
+        progress_bar = self.make_progress_bar().to_edge(DOWN, buff=config["frame_height"] * 0.2)
+        self.add(progress_bar)
+
+        part_1_title = Tex("Theory", " of Quantum Mechanical Coupling")
+        part_1_sub = Tex("Theory")
+        part_1_img = SVGMobject(str(RESOURCE_DIR / "coupling_drums.svg"))
+        self.next_part(part_1_title, part_1_sub, image=part_1_img, first=True)
+
+        part_2_title = VGroup(
+            Tex("Our ", "Project", ":"),
+            Tex("Simulate MEMS Resonators")).arrange(DOWN)
+        part_2_sub = Tex("Project")
+        part_2_image = self.get_drum()
+        self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
+        self.play(part_2_image.vibrate(0.25))
+        self.end_part(part_2_title, part_2_sub, part_2_image)
+        self.wait()
+
+        part_3_title = VGroup(
+            Tex("Outline", ":"),
+            Tex("Whats next?")).arrange(DOWN)
+        part_3_sub = Tex("Outline")
+        part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
+        self.next_part(part_3_title, part_3_sub, image=part_3_img)
+
+    def next_part(self, title, sub_title: Tex, drum=False, image=None, include_end=True, first=False):
+        if not first:
+            self.play(self.moving_dot.animate.move_to(self.dots[self.current_part]), run_time=2, rate_func=linear)
+            self.wait(0.1)
+        sub_title.next_to(self.dots[self.current_part], DOWN)
+        if image:
+            title.to_edge(UP)
+        self.play(Write(title))
+        if image:
+            if not drum:
+                image.scale_to_fit_height(0.5 * (title.get_bottom()[1] - self.dots.get_top()[1]))
+                image.set_y(self.dots.get_top()[1] + (title.get_bottom()[1] - self.dots.get_top()[1]) / 2)
+            else:
+                image = self.drum_scailing(image, title)
+            if not isinstance(image, VMobject):
+                self.play(FadeIn(image))
+            else:
+                self.play(DrawBorderThenFill(image))
+
+        self.wait()
+        if include_end:
+            self.end_part(title, sub_title, image)
+
+    def end_part(self, title, sub_title: Tex, image=None):
+        if image:
+            self.play(TransformMatchingTex(title, sub_title),
+                      image.animate.match_width(sub_title).next_to(self.dots[self.current_part], UP))
+        else:
+            self.play(TransformMatchingTex(title, sub_title))
+        self.current_part += 1
+
+    def get_drum(self):
+        axes = ThreeDAxes()
+        R_factor = axes.x_length * 0.2
+        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2,
+                    d_0=0, amplitude=R_factor * 0.7 * 0.8, z_index=Z_FACTOR + 4,
+                    stroke_width=1, stroke_color=BLUE_A)
+        return drum
+
+    def drum_scailing(self, drum, title):
+        system = VGroup(drum, drum.axes)
+        system.rotate(105, LEFT)
+        system.scale_to_fit_height(1.2 * (title.get_bottom()[1] - self.dots.get_top()[1]))
+        system.center()
+        drum.opacity_all = 0
+        drum.set_opacity(0)
+        self.play(drum.vibrate(0.001))
+        self.remove(drum)
+        drum.opacity_all = 1
+        drum.set_opacity(1)
+        return drum
+
+    def make_progress_bar(self, scale_bar=2):  # only setting up the mobjects
+        dots = VGroup(*[Dot(z_index=3) for _ in range(self.parts_num)], z_index=0)
+        dots.arrange(buff=(config["frame_width"] * 0.6) / (scale_bar * (self.parts_num - 1))).scale(
+            scale_bar).set_color(
+            BLUE)
+        dots[0].set_color(ORANGE)
+        dots[-1].set_color(ORANGE)
+        moving_dot = Dot(color=ORANGE, z_index=4).scale(2.5)
+        moving_dot.move_to(dots[0])
+        path = Line(dots[0], dots[1], stroke_width=10, z_index=2, color=ORANGE)
+        background_line = Line(dots[0], dots[-1], stroke_width=10, z_index=0, color=GREY, fill_opacity=0.5)
+        path.add_updater(lambda x: x.become(Line(dots[0], moving_dot, stroke_width=10, z_index=2, color=ORANGE)))
+        self.dots = dots
+        self.moving_dot = moving_dot
+        return VGroup(dots, moving_dot, path, background_line)
+
+
+class FirstSimuTry(ThreeDScene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.parts_num = 3
+        self.current_part = 0
+
+    def get_dt_lines(self, start, end, numbers, color):
+        dt_lines = VGroup(
+            DashedLine(
+                start=start,
+                end=end,
+                dashed_ratio=1.9,
+                dash_length=0.5,
+                color=color, stroke_width=8
+            ))
+        # [i.rotate(PI / 4, about_point=i.get_start()) for i in dt_lines[0].submobjects]
+        return dt_lines
+
+    def construct(self):
+        infinity_time = Tex("Numeric convergence time=\infty")
+        self.play(Write(infinity_time))
+        self.play(infinity_time.animate.to_edge(UP))
+
+    def play_freq_graphs(self):
+        ax = Axes(x_range=(0, 10), y_range=[-1, 1], x_length=round(config.frame_width) - 5,
+                  y_length=round(config.frame_height) / 2 - 2)
+        ax += ax.get_x_axis_label(MathTex("t"), edge=DOWN, direction=DOWN)
+
+        omega_mech = 3
+        omega_lc = omega_mech * 4
+        omega_mech_func = lambda t: np.sin(omega_mech * t)
+        omega_lc_func = lambda t: np.sin(omega_lc * t)
+
+        omega_mech_graph = ax.plot(omega_mech_func, color=GREEN, z_index=2)
+        omega_lc_graph = ax.plot(omega_lc_func, color=BLUE, z_index=2)
+        dt_omega_mech = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_mech, 0), 6, GREEN_B)
+        dt_omega_lc = self.get_dt_lines(ax.c2p(0, 0), ax.c2p(2 * PI / omega_lc, 0), 12, GREEN_B)
+        top_graph = ax.plot(lambda x: 0.9)
+        t = ValueTracker(0)
+        time_marker = always_redraw(lambda: ax.get_T_label(x_val=t.get_value(), graph=top_graph,
+                                                           line_func=DashedLine, label_color=YELLOW, line_color=WHITE))
+        omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
+        omega_lc_label = MathTex(r"\omega_{LC}").next_to(omega_mech_graph, UL)
+        self.play(Create(ax))
+        self.play(Create(omega_mech_graph), Write(omega_mech_label))
+        self.play(Create(time_marker))
+        self.play(t.animate.set_value(2 * PI / omega_mech))
+        self.play(t.animate.set_value(0))
+        self.play(Create(omega_lc_graph), Write(omega_lc_label))
+
+
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
-    scene = SimulationRoad()
+    scene = FirstSimuTry()
     scene.render()
