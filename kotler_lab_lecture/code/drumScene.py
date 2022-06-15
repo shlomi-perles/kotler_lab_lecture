@@ -46,7 +46,7 @@ def draw_wall(pivot_mobject: Mobject, wall_len=2):
     return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
 
-def get_electric_field_capac(spring, capacitor, mass):
+def get_electric_field_capac(capacitor, mass):
     size = np.sin(-0.2) * 2
     color = BLUE if size <= 0 else RED
     y_additions = np.array([0.3, -0.5])
@@ -71,7 +71,7 @@ def get_spring_system():
     capacitor.move_to(
         np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (
             np.abs(mass.get_x() - wall.get_left()[0])))
-    electric_field = get_electric_field_capac(spring, capacitor, mass)
+    electric_field = get_electric_field_capac(capacitor, mass)
     omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP, buff=1.4).scale(1.5)
     omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP).scale(1.5).match_y(omega_mech_tex)
     return VGroup(spring, wall, mass, capacitor, electric_field, omega_mech_tex, omega_lc_tex)
@@ -476,12 +476,13 @@ class HistoryBrief(Scene):
         self.wait(3)
 
     def build_scene(self):
-        self.main_title = Text("Quantum's Order: Main History Phases")
+        self.main_title = Text("Quantum's Orders of Magnitude: Main History Phases").scale_to_fit_width(
+            config.frame_width * 0.97)
         self.play(Write(self.main_title))
         self.wait()
         self.play(self.main_title.animate.scale(0.95).to_edge(UP))
         self.tick_scale = 2.5
-        start = -12
+        start = -11
         end = -4
         self.num_to_idx = {num: idx for idx, num in enumerate(range(start, end + 1))}
         self.scailing_line = NumberLine(scaling=LogBase(),
@@ -497,7 +498,7 @@ class HistoryBrief(Scene):
         self.cur_title = title.scale_to_fit_width(config.frame_width * 0.9)
         title.center()
         self.play(Write(title))
-        self.play(title.animate.next_to(self.main_title, DOWN).scale(2 / 3))
+        self.play(title.animate.next_to(self.main_title, DOWN).scale_to_fit_width(self.main_title.width*0.8))
         tick = self.scailing_line.get_tick_marks()[self.num_to_idx[order]]
         label = self.scailing_line.labels[self.num_to_idx[order]]
         self.play(tick.animate.set_color(YELLOW).scale(self.tick_scale), label.animate.set_color(YELLOW))
@@ -516,7 +517,7 @@ class HistoryBrief(Scene):
     def play_bohr_phase(self):
         title = Tex("1. Ultraviolet catastrophe and ", "Bohr", "'s Model", " ~1900")
         sub_title = Tex("Bohr")
-        tick, label = self.next_part(title, -11)
+        tick, label = self.next_part(title, -10)
         self.create_bohr_orbits()
         self.play_bohr_orbits()
         self.end_part(title, sub_title, tick, label, self.bohr_model)
@@ -532,7 +533,7 @@ class HistoryBrief(Scene):
     def play_kotler_phase(self):
         title = Tex("3. ", "Mechanical ", "Coupling", " - 2021")
         sub_title = Tex("Coupling")
-        tick, label = self.next_part(title, -6)
+        tick, label = self.next_part(title, -5)
         self.create_kotler_image()
         self.play(Write(self.kotler_image[0]))
         self.play(FadeIn(self.kotler_image[1]))
@@ -1206,7 +1207,7 @@ class DissipationDilution(Scene):
 
 
 # # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
-scenes_lst = [DissipationDilution]
+scenes_lst = [HistoryBrief]
 for sc in scenes_lst:
     disable_caching = sc == DissipationDilution
 
