@@ -966,7 +966,7 @@ class FirstSimuTry(ThreeDScene):
 
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
 scenes_lst = [IntroSummary]
-with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
+with tempconfig({"quality": "fourk_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
     for sc in scenes_lst:
