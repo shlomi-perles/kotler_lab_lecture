@@ -1099,30 +1099,53 @@ class DissipationDilution(Scene):
 
         self.play(DrawBorderThenFill(self.system))
         self.mass = OscillateMobject(self.mass)
-        self.play(self.mass.oscillate())
-        # self.play_parallel_shift()
+        # self.play(self.mass.oscillate())
+        self.play_parallel_shift()
+        self.play_vertical_shift()
         self.wait()
 
     def play_parallel_shift(self):
         self.play(self.mass.oscillate(1.25, oscillate_direction=RIGHT))
-        x_shift_arrow = DoubleArrow(self.mass.reference_point, self.mass.get_center()).shift(
-            (self.mass.width / 2 + 0.2) * DOWN)
-        x_label = MathTex("r\Delta x").next_to(x_shift_arrow)
-        y_for_l_0 = x_shift_arrow.get_bottom()[1]
+        x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
+                                                    shift_size=(self.mass.width / 2 + 0.2) * DOWN)
+        y_for_l_0 = x_shift_brace.get_bottom()[1]
 
-        l_0_brace, l_0_tex = self.get_and_play_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
-                                                     np.array([x_shift_arrow.get_left()[0], y_for_l_0, 0]), "l_0")
+        l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                  np.array([x_shift_brace.get_left()[0], y_for_l_0, 0]), "l_0")
+        delt_x_brace, delta_x_label = self.get_and_brace(
+            np.array([self.mass.reference_point[0], self.mass.get_top()[1], 0]),
+            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]),
+            r"\Delta x", brace_color=RED, direc=UP)
+        labels = VGroup(x_label, l_0_label, delta_x_label)
+        braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
+        self.play(Write(labels), Write(braces))
+        self.wait()
+        self.play(Unwrite(labels), Unwrite(braces))
+        self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
 
-        delt_x_brace, delta_x_tex = self.get_and_play_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
-                                                            np.array([x_shift_arrow.get_left()[0], y_for_l_0, 0]),
-                                                            "r\Delta x", brace_color=RED,
-                                                            direc=UP)
+    def play_vertical_shift(self):
+        self.play(self.mass.oscillate(1.25))
+        x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
+                                                    shift_size=(self.mass.width / 2 + 0.2) * DOWN)
+        y_for_l_0 = x_shift_brace.get_bottom()[1]
 
-    def get_and_play_brace(self, start, end, text, brace_color=WHITE, shift_size=0 * RIGHT, direc=DOWN):
+        l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                  np.array([x_shift_brace.get_left()[0], y_for_l_0, 0]), "l_0")
+        delt_x_brace, delta_x_label = self.get_and_brace(
+            np.array([self.mass.reference_point[0], self.mass.get_top()[1], 0]),
+            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]),
+            r"\Delta x", brace_color=RED, direc=UP)
+        labels = VGroup(x_label, l_0_label, delta_x_label)
+        braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
+        self.play(Write(labels), Write(braces))
+        self.wait()
+        self.play(Unwrite(labels), Unwrite(braces))
+        self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+
+    def get_and_brace(self, start, end, text, brace_color=WHITE, shift_size=0 * RIGHT, direc=DOWN):
         ret_brace = BraceBetweenPoints(start, end, color=brace_color, direction=direc)
         b1text = ret_brace.get_tex(text).set_color(brace_color)
         VGroup(b1text, ret_brace).shift(shift_size)
-        self.play(DrawBorderThenFill(ret_brace), Write(b1text))
         return ret_brace, b1text
 
     def create_system(self):
@@ -1134,6 +1157,7 @@ class DissipationDilution(Scene):
 
         mass = Rectangle(height=right_wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
                          fill_opacity=0.6).next_to(right_spring.get_start(), LEFT, buff=0)
+        # self.mass = OscillateMobject(mass)
         self.mass = mass
         system = VGroup(mass, right_spring, right_wall)
 
@@ -1175,8 +1199,10 @@ class DissipationDilution(Scene):
 
 # # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
 scenes_lst = [DissipationDilution]
-with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
-                 "save_sections": True, "disable_caching": False}):
-    for sc in scenes_lst:
+for sc in scenes_lst:
+    disable_caching = sc == DissipationDilution
+
+    with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
+                     "save_sections": True, "disable_caching": disable_caching}):
         scene = sc()
         scene.render()
