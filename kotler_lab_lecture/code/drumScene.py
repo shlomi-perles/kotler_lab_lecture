@@ -11,7 +11,7 @@ from manim_editor import PresentationSectionType as pst
 MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
-from tools.animations import Count
+from tools.animations import Count, ShiftAndRotateAlongPath, get_path_pending
 from spring import Spring
 
 FAST_RENDER = True
@@ -730,7 +730,8 @@ class g0Scene(Scene):
 
 class SimulationRoad(Scene):
     def construct(self):
-        tip_head = Dot(color=BLUE).scale(2).set_z_index(2)
+        tip_head = Dot(color=BLUE, fill_opacity=1).scale(2).set_z_index(2)
+        tip_head = Triangle(color=BLUE, fill_opacity=1).scale(0.2).set_z_index(2)
         TracedPath(tip_head.get_center(), color=YELLOW)
         hell_road = SVGMobject(str(RESOURCE_DIR / "turture_road.svg"), background_stroke_width=20, stroke_width=20,
                                width=12)
@@ -740,12 +741,18 @@ class SimulationRoad(Scene):
         main_road.set_z_index(1)
         hell_road = hell_road[1:]
 
+        start_angle = get_path_pending(main_road[0], 0)
+        tip_head.move_to(main_road[0].get_start())
+        tip_head.rotate(start_angle).rotate(PI)
+
         self.add(main_road)
         self.wait()
         self.play(ShowPassingFlash(
             main_road.copy().set_color(BLUE), run_time=4, time_width=1))
-        self.play(MoveAlongPath(tip_head, main_road[0]),
-                  run_time=12)  # TODO: better: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master/English/extra/advanced/resume.md
+        self.play(ShiftAndRotateAlongPath(tip_head, main_road[0], run_time=8))
+
+        # self.play(MoveAlongPath(tip_head, main_road[0]),
+        # run_time = 12)  # TODO: better: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master/English/extra/advanced/resume.md
         self.wait()
         self.play(Write(hell_road))
         self.wait()
@@ -772,7 +779,7 @@ class IntroSummary(ThreeDScene):
         part_2_sub = Tex("Project")
         part_2_image = self.get_drum()
         self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
-        self.play(part_2_image.vibrate(0.25))
+        self.play(part_2_image.vibrate(2.25))
         self.end_part(part_2_title, part_2_sub, part_2_image)
         self.wait()
 
@@ -957,8 +964,11 @@ class FirstSimuTry(ThreeDScene):
         return dt_brace, b1text
 
 
+# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
+scenes_lst = [IntroSummary]
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
-    scene = FirstSimuTry()
-    scene.render()
+    for sc in scenes_lst:
+        scene = sc()
+        scene.render()

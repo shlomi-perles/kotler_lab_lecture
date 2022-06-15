@@ -11,7 +11,7 @@ OPACITY = 1
 # RESOLUTION = [37, 37]
 
 
-RESOLUTION = [12,12]
+RESOLUTION = [10, 10]
 
 
 def get_bessels_zeroes(m, n):
