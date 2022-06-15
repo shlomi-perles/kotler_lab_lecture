@@ -1124,23 +1124,31 @@ class DissipationDilution(Scene):
         self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
 
     def play_vertical_shift(self):
-        self.play(self.mass.oscillate(1.25))
-        x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
-                                                    shift_size=(self.mass.width / 2 + 0.2) * DOWN)
-        y_for_l_0 = x_shift_brace.get_bottom()[1]
+        self.play(self.mass.oscillate(0.75))
+        y_shift_brace, y_label = self.get_and_brace(
+            np.array([self.left_side[1].get_bottom()[1], self.mass.get_bottom()[1], 0]),
+            np.array([self.mass.get_bottom()[1], self.mass.get_bottom()[1], 0]),
+            r"\Delta y")
+        y_shift_brace.rotate(PI / 2).set_x(self.mass.get_right()[0] + 0.3).set_y(
+            self.left_side[1].get_bottom()[1] + (
+                    self.mass.get_bottom()[1] - self.left_side[1].get_bottom()[1]) / 2 - 0.3)
+        y_for_l_0 = y_shift_brace.get_bottom()[1]
 
         l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
-                                                  np.array([x_shift_brace.get_left()[0], y_for_l_0, 0]), "l_0")
-        delt_x_brace, delta_x_label = self.get_and_brace(
-            np.array([self.mass.reference_point[0], self.mass.get_top()[1], 0]),
-            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]),
-            r"\Delta x", brace_color=RED, direc=UP)
-        labels = VGroup(x_label, l_0_label, delta_x_label)
-        braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
+                                                  np.array([self.mass.get_center()[0], y_for_l_0, 0]), "l_0")
+        delt_x_brace, delta_x_label = self.get_and_brace(self.left_side[0].get_start(), self.left_side[0].get_center(),
+                                                         r"\Delta x", brace_color=RED,
+                                                         direc=UP)
+        VGroup(delt_x_brace, delta_x_label).rotate(self.left_side[0].orig_angle + PI).shift(UP * 0.2, LEFT * 0.2)
+        labels = VGroup(y_label, l_0_label, delta_x_label)
+        braces = VGroup(y_shift_brace, l_0_brace, delt_x_brace)
         self.play(Write(labels), Write(braces))
+        aprox_tex = MathTex(r"\Delta x \approx\frac{\Delta y^{2}}{2l_{0}}", color=RED).scale(1.5).to_edge(DOWN,
+                                                                                                          buff=0.3)
+        self.play(Write(aprox_tex))
         self.wait()
-        self.play(Unwrite(labels), Unwrite(braces))
-        self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+        self.play(Unwrite(labels), Unwrite(braces), Unwrite(aprox_tex))
+        self.play(self.mass.oscillate(0.25, new_reference_point=False))
 
     def get_and_brace(self, start, end, text, brace_color=WHITE, shift_size=0 * RIGHT, direc=DOWN):
         ret_brace = BraceBetweenPoints(start, end, color=brace_color, direction=direc)
