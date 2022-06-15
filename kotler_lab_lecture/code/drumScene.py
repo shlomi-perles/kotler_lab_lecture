@@ -7,6 +7,7 @@ from manim.opengl import *
 from manim import *
 from drum import Drum
 from manim_editor import PresentationSectionType as pst
+from itertools import cycle
 
 MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
@@ -468,14 +469,134 @@ class HistoryBrief(Scene):
         super().__init__(**kwargs)
 
     def construct(self):
-        self.play_kotler_win()
+        self.build_scene()
+        self.play_bohr_phase()
+        self.play_two_slits_phase()
+        self.play_kotler_phase()
         self.wait(3)
 
-    def play_kotler_win(self):
+    def build_scene(self):
+        self.main_title = Text("Quantum's Order: Main History Phases")
+        self.play(Write(self.main_title))
+        self.wait()
+        self.play(self.main_title.animate.scale(0.95).to_edge(UP))
+        self.tick_scale = 2.5
+        start = -12
+        end = -4
+        self.num_to_idx = {num: idx for idx, num in enumerate(range(start, end + 1))}
+        self.scailing_line = NumberLine(scaling=LogBase(),
+                                        x_range=[start, end, 1],
+                                        length=config.frame_width * 0.75,
+                                        # include_tip=True,
+                                        numbers_with_elongated_ticks=list(self.num_to_idx.keys()),
+                                        numbers_to_include=list(self.num_to_idx.keys())
+                                        ).to_edge(DOWN, buff=0.7)
+        self.play(Create(self.scailing_line))
+
+    def next_part(self, title, order):
+        self.cur_title = title.scale_to_fit_width(config.frame_width * 0.9)
+        title.center()
+        self.play(Write(title))
+        self.play(title.animate.next_to(self.main_title, DOWN).scale(2 / 3))
+        tick = self.scailing_line.get_tick_marks()[self.num_to_idx[order]]
+        label = self.scailing_line.labels[self.num_to_idx[order]]
+        self.play(tick.animate.set_color(YELLOW).scale(self.tick_scale), label.animate.set_color(YELLOW))
+        return tick, label
+
+    def end_part(self, title, sub_title: Tex, tick, label, image):
+        sub_title.next_to(tick, DOWN, buff=0.5)
+
+        if image:
+            self.play(TransformMatchingTex(title, sub_title),
+                      image.animate.scale_to_fit_height(sub_title.height * 2.3).next_to(tick, UP),
+                      tick.animate.scale(1 / self.tick_scale), label.animate.set_color(WHITE))
+        else:
+            self.play(TransformMatchingTex(title, sub_title))
+
+    def play_bohr_phase(self):
+        title = Tex("1. Ultraviolet catastrophe and ", "Bohr", "'s Model", " ~1900")
+        sub_title = Tex("Bohr")
+        tick, label = self.next_part(title, -11)
+        self.create_bohr_orbits()
+        self.play_bohr_orbits()
+        self.end_part(title, sub_title, tick, label, self.bohr_model)
+
+    def play_two_slits_phase(self):
+        title = Tex("2. ", "Double-slit", " experiment ", "- 1926")
+        sub_title = Tex("Double-slit")
+        tick, label = self.next_part(title, -8)
+        self.create_slits()
+        self.play_two_slits()
+        self.end_part(title, sub_title, tick, label, self.two_slits)
+
+    def play_kotler_phase(self):
+        title = Tex("3. ", "Mechanical ", "Coupling", " - 2021")
+        sub_title = Tex("Coupling")
+        tick, label = self.next_part(title, -6)
+        self.create_kotler_image()
+        self.play(Write(self.kotler_image[0]))
+        self.play(FadeIn(self.kotler_image[1]))
+        self.end_part(title, sub_title, tick, label, self.kotler_image)
+
+    def create_slits(self):
+        two_slits = SVGMobject(str(RESOURCE_DIR / "two_slits.svg"), width=4)
+        statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
+        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT, buff=0.2)
+
+        image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
+        self.two_slits = VGroup(two_slits, statistic_particles).scale_to_fit_height(image_size * 0.8).set_y(
+            self.cur_title.get_bottom()[1] - image_size / 2)
+
+    def play_two_slits(self):
+        self.play(Write(self.two_slits[0]))
+        for particle in self.two_slits[1]:
+            self.play(FadeIn(particle), run_time=0.2)
+
+    def create_bohr_orbits(self):
+        levels = [self.balmer(x) for x in range(2, 6)]
+        core = Dot().set_color(RED).center()
+        orbits = VGroup(
+            *[Circle(radius=lev, arc_center=core.get_center(), color=BLUE, stroke_width=DEFAULT_STROKE_WIDTH * 0.7) for
+              lev in levels])
+        n_labels = VGroup(
+            *[MathTex(f"n={n + 1}").scale(0.56).next_to(orbits[n].get_top(), UP) for n in range(len(levels))])
+        orbit_particle = core.copy().scale(2.7).set_color(GREEN).move_to(orbits[1].get_right())
+
+        self.orbit_particle = orbit_particle
+        self.orbits_order = cycle([1, 3, 0, 2])
+        self.orbits = orbits
+        image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
+        self.bohr_model = VGroup(core, orbits, n_labels, orbit_particle).scale_to_fit_height(image_size * 0.8).set_y(
+            self.cur_title.get_bottom()[1] - image_size / 2)
+
+        self.play(FadeIn(core))
+        self.play(FadeIn(orbits), lag_ratio=0.9, run_time=1)
+        self.play(FadeIn(n_labels), lag_ratio=0.9, run_time=2)
+        self.play(GrowFromCenter(orbit_particle))
+        self.wait(0.5)
+
+    def play_bohr_orbits(self):
+        orbit_particle = self.orbit_particle
+        for _ in range(len(self.orbits)):
+            n_orbit = next(self.orbits_order)
+            if n_orbit != 1:
+                orbit_particle.move_to(self.orbits[n_orbit].get_right())
+                self.play(GrowFromCenter(orbit_particle))
+            self.play(MoveAlongPath(orbit_particle, self.orbits[n_orbit]), time_rate=linear, run_time=2)
+
+    def create_kotler_image(self):
         winners_svg = SVGMobject(str(RESOURCE_DIR / "winners.svg"), width=4, stroke_color=WHITE)
-        self.play(Write(winners_svg))
         kotler_face = ImageMobject(str(RESOURCE_DIR / "kotler_face.png")).to_edge(winners_svg.get_top()).scale(1.5)
-        self.play(FadeIn(kotler_face))
+        image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
+        self.kotler_image = Group(winners_svg, kotler_face).scale_to_fit_height(image_size * 0.8).set_y(
+            self.cur_title.get_bottom()[1] - 0.7 * image_size / 2)
+
+    @staticmethod
+    def balmer(n):
+        Z = 1
+        a_0 = 1
+        scale_fac = 0.13
+        return scale_fac * n ** 2 / Z * a_0
 
 
 class SpringScene(Scene):
@@ -965,8 +1086,8 @@ class FirstSimuTry(ThreeDScene):
 
 
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
-scenes_lst = [IntroSummary]
-with tempconfig({"quality": "fourk_quality", "preview": True, "media_dir": MAIN_PATH / "media",
+scenes_lst = [HistoryBrief]
+with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
                  "save_sections": True, "disable_caching": False
                  }):
     for sc in scenes_lst:
