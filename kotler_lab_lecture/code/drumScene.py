@@ -13,7 +13,7 @@ MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from tools.animations import Count, ShiftAndRotateAlongPath, get_path_pending
-from spring import Spring
+from spring import Spring, OscillateMobject
 
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
@@ -541,15 +541,23 @@ class HistoryBrief(Scene):
     def create_slits(self):
         two_slits = SVGMobject(str(RESOURCE_DIR / "two_slits.svg"), width=4)
         statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
-        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT, buff=0.2)
+        slits_lines = SVGMobject(str(RESOURCE_DIR / "slits_lines.svg")).scale_to_fit_height(two_slits.height).next_to(
+            two_slits.get_right(), LEFT,
+            buff=0)
+        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT,
+                                                                                  buff=0.04)
 
         image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
-        self.two_slits = VGroup(two_slits, statistic_particles).scale_to_fit_height(image_size * 0.8).set_y(
+        self.two_slits = VGroup(two_slits, statistic_particles, slits_lines).scale_to_fit_height(
+            image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
 
     def play_two_slits(self):
         self.play(Write(self.two_slits[0]))
-        for particle in self.two_slits[1]:
+        self.play(Create(self.two_slits[2]))
+        random_particles = [a for a in self.two_slits[1]]
+        random.shuffle(random_particles)
+        for particle in random_particles:
             self.play(FadeIn(particle), run_time=0.2)
 
     def create_bohr_orbits(self):
@@ -1080,16 +1088,95 @@ class FirstSimuTry(ThreeDScene):
     def get_dt_braces(self, dt_line):
         line = Line(dt_line[0].submobjects[0].get_start(), dt_line[0].submobjects[1].get_start())
         dt_brace = Brace(line, color=YELLOW)
-        b1text = dt_brace.get_text("dt")
+        b1text = dt_brace.get_tex("dt")
         b1text.set_color(YELLOW)
         return dt_brace, b1text
 
 
-# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
-scenes_lst = [HistoryBrief]
+class DissipationDilution(Scene):
+    def construct(self):
+        self.create_system()
+
+        self.play(DrawBorderThenFill(self.system))
+        self.mass = OscillateMobject(self.mass)
+        self.play(self.mass.oscillate())
+        # self.play_parallel_shift()
+        self.wait()
+
+    def play_parallel_shift(self):
+        self.play(self.mass.oscillate(1.25, oscillate_direction=RIGHT))
+        x_shift_arrow = DoubleArrow(self.mass.reference_point, self.mass.get_center()).shift(
+            (self.mass.width / 2 + 0.2) * DOWN)
+        x_label = MathTex("r\Delta x").next_to(x_shift_arrow)
+        y_for_l_0 = x_shift_arrow.get_bottom()[1]
+
+        l_0_brace, l_0_tex = self.get_and_play_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                     np.array([x_shift_arrow.get_left()[0], y_for_l_0, 0]), "l_0")
+
+        delt_x_brace, delta_x_tex = self.get_and_play_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                            np.array([x_shift_arrow.get_left()[0], y_for_l_0, 0]),
+                                                            "r\Delta x", brace_color=RED,
+                                                            direc=UP)
+
+    def get_and_play_brace(self, start, end, text, brace_color=WHITE, shift_size=0 * RIGHT, direc=DOWN):
+        ret_brace = BraceBetweenPoints(start, end, color=brace_color, direction=direc)
+        b1text = ret_brace.get_tex(text).set_color(brace_color)
+        VGroup(b1text, ret_brace).shift(shift_size)
+        self.play(DrawBorderThenFill(ret_brace), Write(b1text))
+        return ret_brace, b1text
+
+    def create_system(self):
+        spring_len = 6
+        right_spring = Spring(spring_len / 2 * LEFT, length=spring_len, stroke_width=5)
+        right_spring.set_color(YELLOW)
+        right_wall = draw_wall(right_spring.right_spring)
+        self.right_side = right_side = VGroup(right_spring, right_wall)
+
+        mass = Rectangle(height=right_wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
+                         fill_opacity=0.6).next_to(right_spring.get_start(), LEFT, buff=0)
+        self.mass = mass
+        system = VGroup(mass, right_spring, right_wall)
+
+        left_spring = right_spring.copy()
+        left_wall = right_wall.copy()
+        left_spring.orig_angle = angle_between_vectors(left_wall.get_right(), mass.get_left())
+        right_spring.orig_angle = angle_between_vectors(right_wall.get_left(), mass.get_right())
+
+        self.left_side = left_side = VGroup(left_spring, left_wall).rotate(PI, UP)
+        system.next_to(left_spring.get_start(), RIGHT, buff=0)
+        system += left_spring
+        system += left_wall
+        system.stretch_to_fit_width(config.frame_width * 0.9).stretch_to_fit_height(system.height * 0.4).center()
+        self.system = system
+
+        def update_spring(spring_update):
+            if spring_update.get_x() < mass.get_x() or left_spring == spring_update:
+                wall_point = left_wall.get_right()
+                mass_point = mass.get_left()
+                side = LEFT
+            else:
+                wall_point = right_wall.get_left()
+                mass_point = mass.get_right()
+                side = LEFT
+
+            dist = np.linalg.norm(mass_point - wall_point)
+            spring_update.rotate(-spring_update.orig_angle, about_point=mass_point)
+            spring_update.stretch_to_fit_width(dist)
+            spring_update.next_to(mass_point, -side, buff=0)
+            spring_update.rotate(spring_update.orig_angle, about_point=mass_point)
+            addition_angle = np.arctan2(wall_point[1] - mass_point[1],
+                                        wall_point[0] - mass_point[0]) - spring_update.orig_angle
+            spring_update.orig_angle += addition_angle
+            spring_update.rotate(addition_angle, about_point=mass_point)
+
+        right_spring.add_updater(update_spring)
+        left_spring.add_updater(update_spring)
+
+
+# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
+scenes_lst = [DissipationDilution]
 with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
-                 "save_sections": True, "disable_caching": False
-                 }):
+                 "save_sections": True, "disable_caching": False}):
     for sc in scenes_lst:
         scene = sc()
         scene.render()
