@@ -13,7 +13,7 @@ MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from tools.animations import Count, ShiftAndRotateAlongPath, get_path_pending
-from spring import Spring
+from spring import Spring, OscillateMobject
 
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
@@ -22,33 +22,39 @@ PRESENTATION_MODE = True
 Z_FACTOR = 0
 
 
-# TODO: next: c2p Accepts coordinates from the axes and returns a point with respect to the scene. so check all code
-#  doing that
+# TODO: next: c2p Accepts coordinates from the axes and returns a point with respect to the scene. so check all code doing that
 # TODO:center axis in numper plane. maybe odd x and y ticks.
-# TODO:Try to fix z_index problem with -
-#  https://www.reddit.com/r/manim/comments/tsx6ks/objects_jumping_in_front_of_each_other_in_3d_scene/i6dtd8x/
+# TODO:Try to fix z_index problem with - https://www.reddit.com/r/manim/comments/tsx6ks/objects_jumping_in_front_of_each_other_in_3d_scene/i6dtd8x/
 # config.renderer = "opengl"
 
 
 def draw_wall(pivot_mobject: Mobject, wall_len=2):
     color = WHITE
     wall = VGroup(
-        DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
-            color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
+        DashedLine(
+            start=wall_len * LEFT * 0.95,
+            end=(wall_len) * RIGHT * 0.95,
+            dashed_ratio=1.3,
+            dash_length=0.6,
+            color=GREY, stroke_width=8
+        ).shift(pivot_mobject.get_start()[1] * UP)
+    )
     [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
-    wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
+    wall.add(
+        Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
     return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
 
-def get_electric_field_capac(spring, capacitor, mass):
+def get_electric_field_capac(capacitor, mass):
     size = np.sin(-0.2) * 2
     color = BLUE if size <= 0 else RED
     y_additions = np.array([0.3, -0.5])
     x_additions = np.array([0.4, -1])
     field_x_range = np.array([capacitor.get_right()[0], mass.get_left()[0]])
     field_y_range = np.array([mass.get_bottom()[1], mass.get_top()[1]])
-    return ArrowVectorField(lambda pos: LEFT * size, color=color, x_range=(field_x_range + x_additions).tolist(),
+    return ArrowVectorField(lambda pos: LEFT * size, color=color,
+                            x_range=(field_x_range + x_additions).tolist(),
                             y_range=(field_y_range + y_additions).tolist())
 
 
@@ -58,13 +64,14 @@ def get_spring_system():
     spring.set_color(YELLOW)
     wall = draw_wall(spring.right_spring)
     # VGroup(wall, spring).to_edge(RIGHT)
-    mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE, fill_opacity=0.6).next_to(
-        spring.get_start(), LEFT, buff=0)
+    mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
+                     fill_opacity=0.6).next_to(spring.get_start(), LEFT, buff=0)
     capacitor = Rectangle(height=mass.height, width=mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9,
                           stroke_opacity=1)
     capacitor.move_to(
-        np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (np.abs(mass.get_x() - wall.get_left()[0])))
-    electric_field = get_electric_field_capac(spring, capacitor, mass)
+        np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (
+            np.abs(mass.get_x() - wall.get_left()[0])))
+    electric_field = get_electric_field_capac(capacitor, mass)
     omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP, buff=1.4).scale(1.5)
     omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP).scale(1.5).match_y(omega_mech_tex)
     return VGroup(spring, wall, mass, capacitor, electric_field, omega_mech_tex, omega_lc_tex)
@@ -85,9 +92,13 @@ class DrumScene(ThreeDScene):
             self.renderer = OpenGLRenderer()
 
         else:
-            self.renderer = CairoRenderer(camera_class=self.camera_class, skip_animations=self.skip_animations, )
+            self.renderer = CairoRenderer(
+                camera_class=self.camera_class,
+                skip_animations=self.skip_animations,
+            )
 
-        low_quality_config = {"camera_config": {"should_apply_shading": False},
+        low_quality_config = {
+            "camera_config": {"should_apply_shading": False},
             "three_d_axes_config": dict(num_axis_pieces=1, **self.three_d_axes_config)}
         super().__init__(three_d_axes_config=self.three_d_axes_config, low_quality_config=low_quality_config, **kwargs)
 
@@ -96,12 +107,16 @@ class DrumScene(ThreeDScene):
         factor = 3 if FAST_RENDER else 3
         factor_range = factor * 1 if FAST_RENDER else factor * 4
         addition = 0.5 if BEAUTY_PLANE else 0
-        self.basic_coords_config = {"x_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,
-                                                round(config["frame_y_radius"] * factor_range) + addition + epsilon),
-            "y_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
-                        round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
+        self.basic_coords_config = {
+            "x_range": (
+                -round(config["frame_y_radius"] * factor_range) - addition - epsilon,
+                round(config["frame_y_radius"] * factor_range) + addition + epsilon),
+            "y_range": (
+                -round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
+                round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
             "x_length": round(config["frame_height"] * factor), "y_length": round(config["frame_height"] * factor)}
-        self.three_d_axes_config = dict(stroke_opacity=0.4, z_length=config.frame_height // 2 - 1, z_index=Z_FACTOR,
+        self.three_d_axes_config = dict(stroke_opacity=0.4, z_length=config.frame_height // 2 - 1,
+                                        z_index=Z_FACTOR,
                                         z_range=[0, config["frame_height"] - 2], **self.basic_coords_config)
 
     def get_axes(self) -> ThreeDAxes:
@@ -160,8 +175,8 @@ class DrumScene(ThreeDScene):
 
     def get_drum(self):
         R_factor = self.axes.x_length * 0.2
-        return Drum(bessel_order=1, mode=2, axes=self.axes, R=R_factor, d_0=R_factor * 0.3,
-                    amplitude=R_factor * 0.3 * 0.8, z_index=Z_FACTOR + 4, stroke_width=0.01)
+        return Drum(bessel_order=1, mode=2, axes=self.axes, R=R_factor,
+                    d_0=R_factor * 0.3, amplitude=R_factor * 0.3 * 0.8, z_index=Z_FACTOR + 4, stroke_width=0.01)
 
     def move_camera_comp(self, **kwargs):
         if config.renderer == "opengl":
@@ -174,9 +189,12 @@ class DrumScene(ThreeDScene):
     def get_camera_position(self):
         if config.renderer == "opengl":
             return [75 * DEGREES, -30 * DEGREES, 0]
-        return dict(phi=self.camera.get_phi(), theta=self.camera.get_theta(), zoom=self.camera.get_zoom())
+        return dict(phi=self.camera.get_phi(),
+                    theta=self.camera.get_theta(),
+                    zoom=self.camera.get_zoom())
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
+                        skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -191,7 +209,8 @@ class DrumScene(ThreeDScene):
 
         drum = self.get_drum()
         if not config.renderer == "opengl":
-            drum.set_z_index_by_z_coordinate()  # drum.set_z_index(5, family=True)
+            drum.set_z_index_by_z_coordinate()
+            # drum.set_z_index(5, family=True)
         self.wait()
         self.my_next_section("Intro", pst.NORMAL)
         self.space[1].set_z_index_by_z_coordinate()
@@ -226,8 +245,8 @@ class DrumScene(ThreeDScene):
         drum.save_state()
         # np.ndarray().data
         camera_start_pos = self.get_camera_position()
-        capacitor = Circle(fill_opacity=1, z_index=Z_FACTOR).scale_to_fit_width(drum.width * 0.5).move_to(
-            self.axes.get_center()).set_color([PURPLE, ORANGE])
+        capacitor = Circle(fill_opacity=1, z_index=Z_FACTOR).scale_to_fit_width(
+            drum.width * 0.5).move_to(self.axes.get_center()).set_color([PURPLE, ORANGE])
         capacitor.next_to(self.axes.c2p(*(UR * capacitor.radius * 0.6).data), self.axes.c2p(*UR.data))
         self.my_next_section("Show capacitor", pst.SUB_NORMAL)
         self.space[1].set_z_index_by_z_coordinate()
@@ -250,7 +269,8 @@ class DrumScene(ThreeDScene):
         self.add(Arrow().shift(DOWN + OUT))
         self.add(Sphere())
         self.add(MathTex(r"wwwwwwwwwwww", color=RED).shift(UP + OUT).scale(5))
-        self.move_camera_comp(phi=120 * DEGREES, theta=-30 * DEGREES, anim=[DrawBorderThenFill(capacitor)])
+        self.move_camera_comp(phi=120 * DEGREES, theta=-30 * DEGREES,
+                              anim=[DrawBorderThenFill(capacitor)])
         self.wait(3)
         self.bring_to_front(drum)
         self.my_next_section("Move capacitor", pst.SUB_NORMAL)
@@ -316,7 +336,8 @@ class DrumScene(ThreeDScene):
         self.bring_to_front(right_drum)
         # self.camera.use_z_index = False
         self.my_next_section("Polar trick", pst.SKIP)
-        self.move_camera_comp(phi=50 * DEGREES, theta=-90 * DEGREES, zoom=0.6, )
+        self.move_camera_comp(phi=50 * DEGREES, theta=-90 * DEGREES, zoom=0.6,
+                              )
         self.my_next_section("Moving one drum", pst.SUB_COMPLETE_LOOP)
         self.play(drum.vibrate(oscillates=1))
         self.wait(0.00001)
@@ -340,7 +361,8 @@ class DrumScene(ThreeDScene):
 
         self.my_next_section("Stretch drums", pst.SUB_NORMAL)
         self.play(Count(right_freq[1], right_freq[1].get_value(), right_freq[1].get_value() - shift_freq),
-                  Count(left_freq[1], left_freq[1].get_value(), left_freq[1].get_value() + shift_freq), run_time=4)
+                  Count(left_freq[1], left_freq[1].get_value(), left_freq[1].get_value() + shift_freq),
+                  run_time=4)
         # self.interactive_embed()
         self.my_next_section("Stretch vibrate", pst.SUB_COMPLETE_LOOP)
         self.play(left_drum.vibrate(1), right_drum.vibrate(1))
@@ -351,18 +373,26 @@ class DrumScene(ThreeDScene):
         self.wait()
         self.play(AnimationGroup(Unwrite(left_drum), right_drum.animate(run_time=2.5).restore(), lag_ratio=0.8))
         drum.t = drum.start_t = 0
-        self.move_camera_comp(
-            **camera_start_pos, )  # self.play(Uncreate(left_drum), Uncreate(right_drum))  # self.play(Uncreate(
-        # self.space))
+        self.move_camera_comp(**camera_start_pos,
+                              )
+        # self.play(Uncreate(left_drum), Uncreate(right_drum))
+        # self.play(Uncreate(self.space))
 
 
 class EverestScene(ZoomedScene):
     def __init__(self, **kwargs):
-        ZoomedScene.__init__(self, zoom_factor=0.3, zoomed_display_height=1, zoomed_display_width=4,
+        ZoomedScene.__init__(
+            self,
+            zoom_factor=0.3,
+            zoomed_display_height=1,
+            zoomed_display_width=4,
             # image_frame_stroke_width=20,
-            zoomed_camera_config={"default_frame_stroke_width": 3, "default_frame_stroke_color": YELLOW,
-                # TODO:change all rectangle yellow
-            }, **kwargs)
+            zoomed_camera_config={
+                "default_frame_stroke_width": 3,
+                "default_frame_stroke_color": YELLOW,  # TODO:change all rectangle yellow
+            },
+            **kwargs
+        )
 
     def construct(self):
         dot = Dot().shift(UP * 2.3 + LEFT * 0.7)
@@ -402,7 +432,9 @@ class EverestScene(ZoomedScene):
         # self.wait()
         # Scale in        x   y  z
         scale_factor = [0.5, 1.5, 0]
-        self.play(frame.animate.scale(scale_factor), zoomed_display.animate.scale(scale_factor),
+        self.play(
+            frame.animate.scale(scale_factor),
+            zoomed_display.animate.scale(scale_factor),
             # FadeOut(zoomed_camera_text),
             # FadeOut(frame_text)
         )
@@ -417,7 +449,8 @@ class EverestScene(ZoomedScene):
         mountain_run_time = 5
 
         def oscilate_everest(everest, alpha):
-            everest.stretch_to_fit_height(self.everest_orig_height + 0.15 * np.sin(alpha * 2 * PI), about_edge=DOWN)
+            everest.stretch_to_fit_height(
+                self.everest_orig_height + 0.15 * np.sin(alpha * 2 * PI), about_edge=DOWN)
 
         oscilate_animation = UpdateFromAlphaFunc(everest_svg, oscilate_everest)
         self.next_section("Move Mountain", pst.SUB_COMPLETE_LOOP)
@@ -443,7 +476,8 @@ class HistoryBrief(Scene):
         self.wait(3)
 
     def build_scene(self):
-        self.main_title = Text("Quantum's Order: Main History Phases")
+        self.main_title = Text("Quantum's Orders of Magnitude: Main History Phases").scale_to_fit_width(
+            config.frame_width * 0.97)
         self.play(Write(self.main_title))
         self.wait()
         self.next_section(pst.SUB_NORMAL)
@@ -452,17 +486,20 @@ class HistoryBrief(Scene):
         start = -12
         end = -4
         self.num_to_idx = {num: idx for idx, num in enumerate(range(start, end + 1))}
-        self.scailing_line = NumberLine(scaling=LogBase(), x_range=[start, end, 1], length=config.frame_width * 0.75,
+        self.scailing_line = NumberLine(scaling=LogBase(),
+                                        x_range=[start, end, 1],
+                                        length=config.frame_width * 0.75,
                                         # include_tip=True,
                                         numbers_with_elongated_ticks=list(self.num_to_idx.keys()),
-                                        numbers_to_include=list(self.num_to_idx.keys())).to_edge(DOWN, buff=0.7)
+                                        numbers_to_include=list(self.num_to_idx.keys())
+                                        ).to_edge(DOWN, buff=0.7)
         self.play(Create(self.scailing_line))
 
     def next_part(self, title, order):
         self.cur_title = title.scale_to_fit_width(config.frame_width * 0.9)
         title.center()
         self.play(Write(title))
-        self.play(title.animate.next_to(self.main_title, DOWN).scale(2 / 3))
+        self.play(title.animate.next_to(self.main_title, DOWN).scale_to_fit_width(self.main_title.width * 0.8))
         tick = self.scailing_line.get_tick_marks()[self.num_to_idx[order]]
         label = self.scailing_line.labels[self.num_to_idx[order]]
         self.play(tick.animate.set_color(YELLOW).scale(self.tick_scale), label.animate.set_color(YELLOW))
@@ -509,14 +546,24 @@ class HistoryBrief(Scene):
     def create_slits(self):
         two_slits = SVGMobject(str(RESOURCE_DIR / "two_slits.svg"), width=4)
         statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
-        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT, buff=0.2)
+        slits_lines = SVGMobject(str(RESOURCE_DIR / "slits_lines.svg")).scale_to_fit_height(two_slits.height).next_to(
+            two_slits.get_right(), LEFT,
+            buff=0)
+        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT,
+                                                                                  buff=0.04)
 
         image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
-        self.two_slits = VGroup(two_slits, statistic_particles).scale_to_fit_height(image_size * 0.8).set_y(
+        self.two_slits = VGroup(two_slits, statistic_particles, slits_lines).scale_to_fit_height(
+            image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
 
     def play_two_slits(self):
         self.play(Write(self.two_slits[0]))
+        self.play(Create(self.two_slits[2]))
+        random_particles = [a for a in self.two_slits[1]]
+        random.shuffle(random_particles)
+        for particle in random_particles:
+            self.play(FadeIn(particle), run_time=0.2)
         for particle in self.two_slits[1]:
             self.play(FadeIn(particle), run_time=0.1)
 
@@ -612,7 +659,6 @@ class SpringScene(Scene):
         x_tex = MathTex("x").next_to(move_arrow, UP, buff=0.2)
         self.system += x_tex
         self.play(FadeIn(x_tex, shift=UP))
-        # self.next_section(pst.SUB_NORMAL)
 
     def play_capacitor_addition(self):
         tmp_capacitor = Rectangle(width=self.mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0, stroke_opacity=0)
@@ -654,10 +700,11 @@ class SpringScene(Scene):
         eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
                                                       buff=1).set_color_by_tex("F_{E}", BLUE)
         eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
-        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(eq2).set_color_by_tex(
+        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(
+            eq2).set_color_by_tex(
             "F_{E}", BLUE)
-        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(eq3).set_color_by_tex(
-            "F_{E}", BLUE)
+        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(
+            eq3).set_color_by_tex("F_{E}", BLUE)
         self.play(Write(eq1))
         self.wait(0.5)
         self.next_section(pst.SUB_NORMAL)
@@ -672,8 +719,8 @@ class SpringScene(Scene):
         self.next_section(pst.SUB_NORMAL)
         self.play(TransformMatchingTex(eq3, eq4))
 
-        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex("F_{mech}",
-            GREEN)
+        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex(
+            "F_{mech}", GREEN)
         self.mech_force = self.get_mech_force()
         self.next_section(pst.SUB_NORMAL)
         self.play(Write(eq_mech), Create(self.mech_force))
@@ -740,16 +787,24 @@ class SpringScene(Scene):
         x_additions = np.array([0.4, -1])
         field_x_range = np.array([self.capacitor.get_right()[0], self.mass.get_left()[0]])
         field_y_range = np.array([self.mass.get_bottom()[1], self.mass.get_top()[1]])
-        return ArrowVectorField(lambda pos: LEFT * size, color=color, x_range=(field_x_range + x_additions).tolist(),
+        return ArrowVectorField(lambda pos: LEFT * size, color=color,
+                                x_range=(field_x_range + x_additions).tolist(),
                                 y_range=(field_y_range + y_additions).tolist())
 
     def draw_wall(self, pivot_mobject: Mobject, wall_len=2):
         color = WHITE
         wall = VGroup(
-            DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
-                color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
+            DashedLine(
+                start=wall_len * LEFT * 0.95,
+                end=(wall_len) * RIGHT * 0.95,
+                dashed_ratio=1.3,
+                dash_length=0.6,
+                color=GREY, stroke_width=8
+            ).shift(pivot_mobject.get_start()[1] * UP)
+        )
         [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
-        wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
+        wall.add(
+            Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
         return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
@@ -804,6 +859,11 @@ class g0Scene(Scene):
         tau_tex_group = VGroup(tau_tex, tau_digit)
         self.add(g0_tex_group, tau_tex_group)
         self.wait(3)
+        one_calc_graph = ax.plot(energy_func, color=RED, z_index=4,
+                                 x_range=[0, 4.5 * g0_tracker.get_value() / (2 * PI)])
+        self.play(Create(one_calc_graph))
+        self.wait()
+        self.play(Uncreate(one_calc_graph))
 
         g0_init = g0_tracker.get_value()
         tau_init = tau_tracker.get_value()
@@ -834,12 +894,12 @@ class SimulationRoad(Scene):
 
         self.add(main_road)
         self.wait()
-        self.play(ShowPassingFlash(main_road.copy().set_color(BLUE), run_time=4, time_width=1))
+        self.play(ShowPassingFlash(
+            main_road.copy().set_color(BLUE), run_time=4, time_width=1))
         self.play(ShiftAndRotateAlongPath(tip_head, main_road[0], run_time=8))
 
         # self.play(MoveAlongPath(tip_head, main_road[0]),
-        # run_time = 12)  # TODO: better: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master
-        #  /English/extra/advanced/resume.md
+        # run_time = 12)  # TODO: better: https://github.com/Elteoremadebeethoven/AnimationsWithManim/blob/master/English/extra/advanced/resume.md
         self.wait()
         self.play(Write(hell_road))
         self.wait()
@@ -860,7 +920,9 @@ class IntroSummary(ThreeDScene):
         part_1_img = SVGMobject(str(RESOURCE_DIR / "coupling_drums.svg"))
         self.next_part(part_1_title, part_1_sub, image=part_1_img, first=True)
 
-        part_2_title = VGroup(Tex("Our ", "Project", ":"), Tex("Simulate MEMS Resonators")).arrange(DOWN)
+        part_2_title = VGroup(
+            Tex("Our ", "Project", ":"),
+            Tex("Simulate MEMS Resonators")).arrange(DOWN)
         part_2_sub = Tex("Project")
         part_2_image = self.get_drum()
         self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
@@ -868,7 +930,9 @@ class IntroSummary(ThreeDScene):
         self.end_part(part_2_title, part_2_sub, part_2_image)
         self.wait()
 
-        part_3_title = VGroup(Tex("Outline", ":"), Tex("Whats next?")).arrange(DOWN)
+        part_3_title = VGroup(
+            Tex("Outline", ":"),
+            Tex("Whats next?")).arrange(DOWN)
         part_3_sub = Tex("Outline")
         part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
         self.next_part(part_3_title, part_3_sub, image=part_3_img)
@@ -908,8 +972,9 @@ class IntroSummary(ThreeDScene):
     def get_drum(self):
         axes = ThreeDAxes()
         R_factor = axes.x_length * 0.2
-        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2, d_0=0, amplitude=R_factor * 0.7 * 0.8,
-                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A)
+        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2,
+                    d_0=0, amplitude=R_factor * 0.7 * 0.8, z_index=Z_FACTOR + 4,
+                    stroke_width=1, stroke_color=BLUE_A)
         return drum
 
     def drum_scailing(self, drum, title):
@@ -928,7 +993,8 @@ class IntroSummary(ThreeDScene):
     def make_progress_bar(self, scale_bar=2):  # only setting up the mobjects
         dots = VGroup(*[Dot(z_index=3) for _ in range(self.parts_num)], z_index=0)
         dots.arrange(buff=(config["frame_width"] * 0.6) / (scale_bar * (self.parts_num - 1))).scale(
-            scale_bar).set_color(BLUE)
+            scale_bar).set_color(
+            BLUE)
         dots[0].set_color(ORANGE)
         dots[-1].set_color(ORANGE)
         moving_dot = Dot(color=ORANGE, z_index=4).scale(2.5)
@@ -951,8 +1017,13 @@ class FirstSimuTry(ThreeDScene):
         len_line = end[0] - start[0]
         len_line += len_line / numbers
         dt_lines = VGroup(
-            DashedLine(start=start, end=start + RIGHT * len_line, dashed_ratio=1, dash_length=(len_line / numbers),
-                color=color, stroke_width=5))
+            DashedLine(
+                start=start,
+                end=start + RIGHT * len_line,
+                dashed_ratio=1,
+                dash_length=(len_line / numbers),
+                color=color, stroke_width=5
+            ))
         [i.rotate(PI / 2, about_point=i.get_start()) for i in dt_lines[0].submobjects]
         return dt_lines
 
@@ -996,14 +1067,15 @@ class FirstSimuTry(ThreeDScene):
 
         top_graph = ax.plot(lambda x: 0.9)
         t = ValueTracker(0)
-        time_marker = ax.get_T_label(x_val=t.get_value(), graph=top_graph, line_func=DashedLine, label_color=YELLOW,
+        time_marker = ax.get_T_label(x_val=t.get_value(), graph=top_graph, line_func=DashedLine,
+                                     label_color=YELLOW,
                                      line_color=YELLOW)
 
         omega_lc_label = MathTex(r"\omega_{LC}").next_to(omega_mech_graph, UL)
         omega_lc_label = VGroup(omega_lc_label, Line(color=BLUE).scale(0.4)).arrange(RIGHT).to_edge(DR, buff=1.2)
         omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
-        omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(omega_lc_label,
-            UP)
+        omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(
+            omega_lc_label, UP)
         max_mech_point = ax.c2p(PI / (omega_mech * 2), omega_mech_func(omega_mech * 2))
 
         self.play(
@@ -1035,15 +1107,129 @@ class FirstSimuTry(ThreeDScene):
     def get_dt_braces(self, dt_line):
         line = Line(dt_line[0].submobjects[0].get_start(), dt_line[0].submobjects[1].get_start())
         dt_brace = Brace(line, color=YELLOW)
-        b1text = dt_brace.get_text("dt")
+        b1text = dt_brace.get_tex("dt")
         b1text.set_color(YELLOW)
         return dt_brace, b1text
 
-# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
-# scenes_lst = [IntroSummary]
-# with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
-#                  "save_sections": True, "disable_caching": False
-#                  }):
-#     for sc in scenes_lst:
-#         scene = sc()
-#         scene.render()
+
+class DissipationDilution(Scene):
+    def construct(self):
+        self.create_system()
+
+        self.play(DrawBorderThenFill(self.system))
+        self.mass = OscillateMobject(self.mass)
+        # self.play(self.mass.oscillate())
+        self.play_parallel_shift()
+        self.play_vertical_shift()
+        self.wait()
+
+    def play_parallel_shift(self):
+        self.play(self.mass.oscillate(1.25, oscillate_direction=RIGHT))
+        x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
+                                                    shift_size=(self.mass.width / 2 + 0.2) * DOWN)
+        y_for_l_0 = x_shift_brace.get_bottom()[1]
+
+        l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                  np.array([x_shift_brace.get_left()[0], y_for_l_0, 0]), "l_0")
+        delt_x_brace, delta_x_label = self.get_and_brace(
+            np.array([self.mass.reference_point[0], self.mass.get_top()[1], 0]),
+            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]),
+            r"\Delta x", brace_color=RED, direc=UP)
+        labels = VGroup(x_label, l_0_label, delta_x_label)
+        braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
+        self.play(Write(labels), Write(braces))
+        self.wait()
+        self.play(Unwrite(labels), Unwrite(braces))
+        self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+
+    def play_vertical_shift(self):
+        self.play(self.mass.oscillate(0.75))
+        y_shift_brace, y_label = self.get_and_brace(
+            np.array([self.left_side[1].get_bottom()[1], self.mass.get_bottom()[1], 0]),
+            np.array([self.mass.get_bottom()[1], self.mass.get_bottom()[1], 0]),
+            r"\Delta y")
+        y_shift_brace.rotate(PI / 2).set_x(self.mass.get_right()[0] + 0.3).set_y(
+            self.left_side[1].get_bottom()[1] + (
+                    self.mass.get_bottom()[1] - self.left_side[1].get_bottom()[1]) / 2 - 0.3)
+        y_for_l_0 = y_shift_brace.get_bottom()[1]
+
+        l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
+                                                  np.array([self.mass.get_center()[0], y_for_l_0, 0]), "l_0")
+        delt_x_brace, delta_x_label = self.get_and_brace(self.left_side[0].get_start(), self.left_side[0].get_center(),
+                                                         r"\Delta x", brace_color=RED,
+                                                         direc=UP)
+        VGroup(delt_x_brace, delta_x_label).rotate(self.left_side[0].orig_angle + PI).shift(UP * 0.2, LEFT * 0.2)
+        labels = VGroup(y_label, l_0_label, delta_x_label)
+        braces = VGroup(y_shift_brace, l_0_brace, delt_x_brace)
+        self.play(Write(labels), Write(braces))
+        aprox_tex = MathTex(r"\Delta x \approx\frac{\Delta y^{2}}{2l_{0}}", color=RED).scale(1.5).to_edge(DOWN,
+                                                                                                          buff=0.3)
+        self.play(Write(aprox_tex))
+        self.wait()
+        self.play(Unwrite(labels), Unwrite(braces), Unwrite(aprox_tex))
+        self.play(self.mass.oscillate(0.25, new_reference_point=False))
+
+    def get_and_brace(self, start, end, text, brace_color=WHITE, shift_size=0 * RIGHT, direc=DOWN):
+        ret_brace = BraceBetweenPoints(start, end, color=brace_color, direction=direc)
+        b1text = ret_brace.get_tex(text).set_color(brace_color)
+        VGroup(b1text, ret_brace).shift(shift_size)
+        return ret_brace, b1text
+
+    def create_system(self):
+        spring_len = 6
+        right_spring = Spring(spring_len / 2 * LEFT, length=spring_len, stroke_width=5)
+        right_spring.set_color(YELLOW)
+        right_wall = draw_wall(right_spring.right_spring)
+        self.right_side = right_side = VGroup(right_spring, right_wall)
+
+        mass = Rectangle(height=right_wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
+                         fill_opacity=0.6).next_to(right_spring.get_start(), LEFT, buff=0)
+        # self.mass = OscillateMobject(mass)
+        self.mass = mass
+        system = VGroup(mass, right_spring, right_wall)
+
+        left_spring = right_spring.copy()
+        left_wall = right_wall.copy()
+        left_spring.orig_angle = angle_between_vectors(left_wall.get_right(), mass.get_left())
+        right_spring.orig_angle = angle_between_vectors(right_wall.get_left(), mass.get_right())
+
+        self.left_side = left_side = VGroup(left_spring, left_wall).rotate(PI, UP)
+        system.next_to(left_spring.get_start(), RIGHT, buff=0)
+        system += left_spring
+        system += left_wall
+        system.stretch_to_fit_width(config.frame_width * 0.9).stretch_to_fit_height(system.height * 0.4).center()
+        self.system = system
+
+        def update_spring(spring_update):
+            if spring_update.get_x() < mass.get_x() or left_spring == spring_update:
+                wall_point = left_wall.get_right()
+                mass_point = mass.get_left()
+                side = LEFT
+            else:
+                wall_point = right_wall.get_left()
+                mass_point = mass.get_right()
+                side = LEFT
+
+            dist = np.linalg.norm(mass_point - wall_point)
+            spring_update.rotate(-spring_update.orig_angle, about_point=mass_point)
+            spring_update.stretch_to_fit_width(dist)
+            spring_update.next_to(mass_point, -side, buff=0)
+            spring_update.rotate(spring_update.orig_angle, about_point=mass_point)
+            addition_angle = np.arctan2(wall_point[1] - mass_point[1],
+                                        wall_point[0] - mass_point[0]) - spring_update.orig_angle
+            spring_update.orig_angle += addition_angle
+            spring_update.rotate(addition_angle, about_point=mass_point)
+
+        right_spring.add_updater(update_spring)
+        left_spring.add_updater(update_spring)
+
+
+# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
+scenes_lst = [g0Scene]
+for sc in scenes_lst:
+    disable_caching = sc == DissipationDilution
+
+    with tempconfig({"quality": "low_quality", "preview": True, "media_dir": MAIN_PATH / "media",
+                     "save_sections": True, "disable_caching": disable_caching}):
+        scene = sc()
+        scene.render()

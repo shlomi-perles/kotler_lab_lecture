@@ -36,7 +36,8 @@ class Spring(VGroup):
         self.orig_width = self.width
         self.t = 0
         self.omega = 4
-        self.amplitude=1.75
+        self.amplitude = 1.75
+        self.orig_angle = 0
         # self.add(self.left_spring)
         # self.add(self.right_spring)
 
@@ -51,3 +52,29 @@ class Spring(VGroup):
         self.t = self.oscillates_num * TAU * alpha + self.start_t
         self.stretch_to_fit_width(
             self.orig_width + self.amplitude * np.sin(self.t), about_edge=RIGHT)
+
+
+class OscillateMobject(VGroup):
+    def __init__(self, oscillate_mobject, omega=4, amplitude=None, t=0, **kwargs):
+        super().__init__(**kwargs)
+        self.oscillate_mobject = oscillate_mobject
+        self.add(oscillate_mobject)
+        self.t = t
+        self.omega = omega
+        if amplitude is None:
+            self.amplitude = oscillate_mobject.width * 1.5
+
+    def oscillate(self, oscillates_num=1, amplitude=None, oscillate_direction=UP, new_reference_point=True):
+        if new_reference_point:
+            self.reference_point = self.oscillate_mobject.get_center()
+        if amplitude is not None:
+            self.amplitude = amplitude
+        self.oscilate_direction = oscillate_direction
+        self.oscillates_num = oscillates_num
+        self.start_t = self.t
+        return UpdateFromAlphaFunc(self, self.update_oscillate_mobject, rate_func=linear,
+                                   run_time=self.omega * oscillates_num)
+
+    def update_oscillate_mobject(self, mob, alpha):
+        self.t = self.oscillates_num * TAU * alpha + self.start_t
+        self.oscillate_mobject.move_to(self.reference_point + self.amplitude * np.sin(self.t) * self.oscilate_direction)
