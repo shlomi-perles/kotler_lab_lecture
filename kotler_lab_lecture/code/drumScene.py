@@ -848,7 +848,7 @@ class g0Scene(Scene):
         self.add(g0_tex_group, tau_tex_group)
         self.wait(3)
         one_calc_graph = ax.plot(energy_func, color=RED, z_index=4,
-                                 x_range=[0, 4.7 * g0_tracker.get_value() / (2 * PI)])
+                                 x_range=[0, 4.5 * g0_tracker.get_value() / (2 * PI)])
         self.play(Create(one_calc_graph))
         self.wait()
         self.play(Uncreate(one_calc_graph))
