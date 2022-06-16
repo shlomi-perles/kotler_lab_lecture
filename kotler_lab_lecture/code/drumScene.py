@@ -498,7 +498,7 @@ class HistoryBrief(Scene):
         self.cur_title = title.scale_to_fit_width(config.frame_width * 0.9)
         title.center()
         self.play(Write(title))
-        self.play(title.animate.next_to(self.main_title, DOWN).scale_to_fit_width(self.main_title.width*0.8))
+        self.play(title.animate.next_to(self.main_title, DOWN).scale_to_fit_width(self.main_title.width * 0.8))
         tick = self.scailing_line.get_tick_marks()[self.num_to_idx[order]]
         label = self.scailing_line.labels[self.num_to_idx[order]]
         self.play(tick.animate.set_color(YELLOW).scale(self.tick_scale), label.animate.set_color(YELLOW))
@@ -847,6 +847,11 @@ class g0Scene(Scene):
         tau_tex_group = VGroup(tau_tex, tau_digit)
         self.add(g0_tex_group, tau_tex_group)
         self.wait(3)
+        one_calc_graph = ax.plot(energy_func, color=RED, z_index=4,
+                                 x_range=[0, 4.7 * g0_tracker.get_value() / (2 * PI)])
+        self.play(Create(one_calc_graph))
+        self.wait()
+        self.play(Uncreate(one_calc_graph))
 
         g0_init = g0_tracker.get_value()
         tau_init = tau_tracker.get_value()
@@ -1207,7 +1212,7 @@ class DissipationDilution(Scene):
 
 
 # # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad]
-scenes_lst = [HistoryBrief]
+scenes_lst = [g0Scene]
 for sc in scenes_lst:
     disable_caching = sc == DissipationDilution
 
