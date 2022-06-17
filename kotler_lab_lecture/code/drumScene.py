@@ -668,7 +668,7 @@ class HistoryBrief(Scene):
         self.wait(0.1)
 
     def build_scene(self):
-        self.main_title = Text("Quantum's Orders of Magnitude: Main History Phases").scale_to_fit_width(
+        self.main_title = Text("Quantum's Phenomenons & Orders of Magnitude: Main History Phases").scale_to_fit_width(
             config.frame_width * 0.97)
         self.play(Write(self.main_title))
         self.wait()
@@ -719,45 +719,65 @@ class HistoryBrief(Scene):
         self.end_part(title, sub_title, tick, label, self.bohr_model)
 
     def play_two_slits_phase(self):
-        title = Tex("1926:  ", "Schrödinger equation - Superposition in particles").set_color_by_tex("1926:  ", YELLOW)
+        title = Tex("1978:  ", "David J. Wineland - Superposition in trapped ions").set_color_by_tex("1978:  ", YELLOW)
         sub_title = Tex("Superposition")
-        tick, label = self.next_part(title, -12)
-        self.create_slits()
-        self.play_two_slits()
-        self.end_part(title, sub_title, tick, label, self.two_slits)
+        tick, label = self.next_part(title, -8)
+        self.create_ion()
+        # self.play_two_slits()
+        self.end_part(title, sub_title, tick, label, self.ion)
+        self.cleland = ImageMobject(str(RESOURCE_DIR / "cleland.png")).match_height(self.ion).match_width(
+            self.ion).next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP)
+        self.next_section(pst.SUB_NORMAL)
+        cleland = Tex("2010:  ",
+                      "Andrew N. "
+                      "Cleland").set_color_by_tex("2010:  ", YELLOW).center()
+        self.play(Write(cleland))
+        self.play(FadeOut(self.ion), FadeIn(self.cleland), sub_title.animate.next_to(self.scailing_line.get_tick_marks()[
+                                                                                         self.num_to_idx[-5]], UP,
+                                                                                     buff=0))
+
+
+        self.next_section(pst.SUB_NORMAL)
+        self.play(Unwrite(cleland))
+        # sub_title.shift(RIGHT*0.6)
+        # self.cleland.shift(RIGHT*0.6)
+        self.s = sub_title
+    # def play_cleland_phase(self):
+    #     title = Tex("2010:  ", "Andrew N. Cleland - Superposition in macro-mechanical device").set_color_by_tex(
+    #         "2010:  ", YELLOW)
 
     def play_kotler_phase(self):
         title = Tex("2021:  ", "Macroscopic entanglement of mechanical devices").set_color_by_tex("2021:  ", YELLOW)
         sub_title = Tex("Entanglement")
-        tick, label = self.next_part(title, -6)
+        tick, label = self.next_part(title, -5)
         self.create_kotler_image()
         self.play(Write(self.kotler_image[0]))
         self.play(FadeIn(self.kotler_image[1]))
+        self.play(FadeOut(self.cleland), Uncreate(self.s))
         self.end_part(title, sub_title, tick, label, self.kotler_image)
 
-    def create_slits(self):
-        two_slits = SVGMobject(str(RESOURCE_DIR / "two_slits.svg"), width=4)
-        statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
-        slits_lines = SVGMobject(str(RESOURCE_DIR / "slits_lines.svg")).scale_to_fit_height(two_slits.height).next_to(
-            two_slits.get_right(), LEFT,
-            buff=0)
-        statistic_particles.scale_to_fit_width(two_slits[-1].width * 0.8).next_to(two_slits.get_right(), LEFT,
-                                                                                  buff=0.04)
+    def create_ion(self):
+        ion = ImageMobject(str(RESOURCE_DIR / "ion.png"))
+        # statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
+        # slits_lines = SVGMobject(str(RESOURCE_DIR / "slits_lines.svg")).scale_to_fit_height(ion.height).next_to(
+        #     ion.get_right(), LEFT,
+        #     buff=0)
+        # statistic_particles.scale_to_fit_width(ion[-1].width * 0.8).next_to(ion.get_right(), LEFT,
+        #                                                                           buff=0.04)
 
         image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
-        self.two_slits = VGroup(two_slits, statistic_particles, slits_lines).scale_to_fit_height(
+        self.ion = ion.scale_to_fit_height(
             image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
+        self.play(FadeIn(self.ion))
+    # def play_two_slits(self):
 
-    def play_two_slits(self):
-        self.play(Write(self.two_slits[0]))
-        self.play(Create(self.two_slits[2]))
-        random_particles = [a for a in self.two_slits[1]]
-        random.shuffle(random_particles)
-        for particle in random_particles:
-            self.play(FadeIn(particle), run_time=0.2)
-        for particle in self.two_slits[1]:
-            self.play(FadeIn(particle), run_time=0.1)
+        # random_particles = [a for a in self.ion[1]]
+        # random.shuffle(random_particles)
+        # for particle in random_particles:
+        #     self.play(FadeIn(particle), run_time=0.2)
+        # for particle in self.ion[1]:
+        #     self.play(FadeIn(particle), run_time=0.1)
 
     def create_bohr_orbits(self):
         levels = [self.balmer(x) for x in range(2, 6)]
