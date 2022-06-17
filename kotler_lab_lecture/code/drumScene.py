@@ -648,6 +648,30 @@ class EverestScene(ZoomedScene):
         # self.play()
         self.wait()
 
+class Comsol(Scene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def construct(self):
+        device_image = ImageMobject(str(RESOURCE_DIR / "device.png")).scale_to_fit_height(
+            config.frame_height*0.7).shift(DOWN*0.5)
+        comsol_image = ImageMobject(str(RESOURCE_DIR / "comsol.png")).scale_to_fit_height(config.frame_height*0.6)
+        mesh_image = ImageMobject(str(RESOURCE_DIR / "mesh.png"))
+        title1 = Text("Complicated Physics...").scale_to_fit_width(config.frame_width * 0.5).to_edge(UP).scale(1.3)
+        title2 = Text("Solution:").to_edge(UP).scale(1.3)
+        self.play(Write(title1), FadeIn(device_image.scale_to_fit_height((title1.get_bottom()[1] -
+                                                                                    config.bottom[1]) * 0.8)))
+        self.next_section(pst.SUB_NORMAL)
+        self.play(Unwrite(title1, run_time=0.1), FadeOut(device_image))
+        self.play(Write(title2), FadeIn(comsol_image))
+        self.next_section(pst.SUB_NORMAL)
+        self.play(comsol_image.animate.shift(LEFT*3), FadeIn(mesh_image.shift(RIGHT*3).scale_to_fit_height(
+            device_image.height)))
+
+
+
+
+
 
 class HistoryBrief(Scene):
     def __init__(self, **kwargs):
@@ -669,7 +693,7 @@ class HistoryBrief(Scene):
 
     def build_scene(self):
         self.main_title = Text("Quantum's Phenomenons & Orders of Magnitude: Main History Phases").scale_to_fit_width(
-            config.frame_width * 0.97)
+            config.frame_width * 0.9)
         self.play(Write(self.main_title))
         self.wait()
         self.my_next_section("Quantum's Orders")
@@ -1478,12 +1502,12 @@ class DissipationDilution(Scene):
 
 
 # # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution]
-scenes_lst = [TheoryToPracti]
-for sc in scenes_lst:
-    disable_caching = sc == DissipationDilution
-    quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-
-    with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
-                     "save_sections": True, "disable_caching": disable_caching}):
-        scene = sc()
-        scene.render()
+# scenes_lst = [Comsol]
+# for sc in scenes_lst:
+#     disable_caching = sc == DissipationDilution
+#     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
+#
+#     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
+#                      "save_sections": True, "disable_caching": disable_caching}):
+#         scene = sc()
+#         scene.render()
