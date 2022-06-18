@@ -671,7 +671,28 @@ class Comsol(Scene):
 
 
 
+class Results(Scene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
+    def construct(self):
+        # t0 = Table(
+        #     [["1", "2", "3"],
+        #      ["4","5", "6"]],
+        #     row_labels=[Text("freq = ___"), Text("R2")],
+        #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
+        #     top_left_entry=Text("TOP")).scale(0.5)
+        t0 = MathTable(
+            [["1", "2", "3"],
+             ["4", "5", "6"]],
+            row_labels=[MathTex("freq = ___"), MathTex("R2")],
+            col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
+            top_left_entry=Text("TOP")).scale(0.5)
+        t0.add_highlighted_cell((2,2), color=GREEN)
+        title = Text("Results")
+        self.play(Write(title), title.animate.to_edge(UP))
+        self.wait(1)
+        self.play(FadeIn(t0))
 
 class HistoryBrief(Scene):
     def __init__(self, **kwargs):
@@ -1501,13 +1522,13 @@ class DissipationDilution(Scene):
         left_spring.add_updater(update_spring)
 
 
-# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution]
-# scenes_lst = [Comsol]
-# for sc in scenes_lst:
-#     disable_caching = sc == DissipationDilution
-#     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-#
-#     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
-#                      "save_sections": True, "disable_caching": disable_caching}):
-#         scene = sc()
-#         scene.render()
+# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution,Comsol, Results]
+scenes_lst = [Results]
+for sc in scenes_lst:
+    disable_caching = sc == DissipationDilution
+    quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
+
+    with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
+                     "save_sections": True, "disable_caching": disable_caching}):
+        scene = sc()
+        scene.render()
