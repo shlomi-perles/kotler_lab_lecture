@@ -41,17 +41,24 @@ class Spring(VGroup):
         # self.add(self.left_spring)
         # self.add(self.right_spring)
 
-    def oscillate(self, oscillates_num=1, amplitude=None):
+    def oscillate(self, oscillates_num=1, amplitude=None, about_edge=RIGHT, new_oscillate=True):
         if amplitude is not None:
             self.amplitude = amplitude
+        self.oscillate_about_edge = about_edge
+        if about_edge is OUT:
+            self.stretch_func = self.stretch_to_fit_depth
+            if new_oscillate: self.orig_width = self.depth
+        else:
+            self.stretch_func = self.stretch_to_fit_width
+
         self.oscillates_num = oscillates_num
         self.start_t = self.t
         return UpdateFromAlphaFunc(self, self.update_spring, rate_func=linear, run_time=self.omega * oscillates_num)
 
     def update_spring(self, mob, alpha):
         self.t = self.oscillates_num * TAU * alpha + self.start_t
-        self.stretch_to_fit_width(
-            self.orig_width + self.amplitude * np.sin(self.t), about_edge=RIGHT)
+        self.stretch_func(
+            self.orig_width + self.amplitude * np.sin(self.t), about_edge=self.oscillate_about_edge)
 
 
 class OscillateMobject(VGroup):
