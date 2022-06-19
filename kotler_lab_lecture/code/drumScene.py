@@ -407,9 +407,9 @@ class TheoryToPracti(ThreeDScene):
 
     def get_basic_coords_config(self):
         epsilon = 0.01
-        factor = 3 if FAST_RENDER else 3
+        factor = 2 if FAST_RENDER else 3
         factor_range = factor * 1 if FAST_RENDER else factor * 4
-        factor_range = factor * 1.3
+        factor_range = factor * 2
         addition = 0.5 if BEAUTY_PLANE else 0
         self.basic_coords_config = {
             "x_range": (
@@ -419,8 +419,7 @@ class TheoryToPracti(ThreeDScene):
                 -round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
                 round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
             "x_length": round(config["frame_height"] * factor), "y_length": round(config["frame_height"] * factor)}
-        self.three_d_axes_config = dict(stroke_opacity=0.4, z_length=config.frame_height // 2 - 1, z_index=Z_FACTOR,
-                                        z_range=[0, config["frame_height"] - 2],
+        self.three_d_axes_config = dict(stroke_opacity=0.4,
                                         axis_config=dict(stroke_width=2, include_ticks=False,
                                                          include_tip=False, line_to_number_buff=SMALL_BUFF,
                                                          label_direction=DR,
@@ -439,9 +438,10 @@ class TheoryToPracti(ThreeDScene):
 
     def build_axes(self):
         self.axes = self.get_axes()
-        self.x_axis, self.y_axis, self.z_axis = self.axes
+        # self.x_axis, self.y_axis, self.z_axis = self.axes
         # self.axes = Dot()
         self.plane = NumberPlane(**self.basic_coords_config, faded_line_ratio=2 if BEAUTY_PLANE else 1)
+        self.axes.move_to(self.plane.c2p(0, 0, 0)).set_opacity(0)
         # self.plane.remove(self.plane.axes)
         # self.plane.remove(*self.plane.axes)
         # self.plane.remove(self.plane.background_lines)
@@ -456,14 +456,18 @@ class TheoryToPracti(ThreeDScene):
         self.plane.set_z_index_by_z_coordinate()
         self.plane[0].set_z_index_by_z_coordinate()
         self.plane[1].set_z_index_by_z_coordinate()
-        # self.space = VGroup(self.axes, self.plane)
-        self.space = self.plane
+        self.x_axis, self.y_axis = self.plane.axes
+        self.space = VGroup(self.axes, self.plane)
+        # self.space = self.plane
 
     def get_drum(self):
-        R_factor = self.axes.x_length * 0.2
-        drum = Drum(bessel_order=1, mode=2, axes=self.plane, R=R_factor,
-                    d_0=R_factor * 0.3, amplitude=R_factor * 0.3 * 0.8, z_index=Z_FACTOR + 4,
-                    stroke_width=1, stroke_color=BLUE_A, resolution=self.reso)
+        # R_factor = self.axes.x_length * 0.2
+        self.plane.z_normal = Z_AXIS
+        R_factor = self.plane.p2c([self.drum_2d.height / 2, 0, 0])[0]
+        drum = Drum(bessel_order=1, mode=2, axes=self.axes, R=R_factor,
+                    d_0=self.axes.p2c(self.drum_2d.get_left() - self.drum_2d.depth / 2 * OUT)[2],
+                    amplitude=R_factor * 0.3 * 0.8,
+                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A, resolution=self.reso)
 
         return drum
 
@@ -493,50 +497,39 @@ class TheoryToPracti(ThreeDScene):
     def construct(self):
         self.zoom = 2
         self.set_camera_orientation(phi=90 * DEGREES, theta=180 * DEGREES, gamma=-90 * DEGREES, zoom=self.zoom)
-        self.build_axes()
-        drum = self.get_drum()
-        self.drum = drum
 
+        self.build_axes()
         # self.add(drum)
         self.draw_spring_system()
         self.spring_system_2d.move_to(self.plane.c2p(0, 0, 0))
-        # self.play(self.space.animate.shift(self.capacitor_3d.get_x() - self.axes.get_x(), LEFT))
-        self.space.next_to(self.capacitor_2d.get_left(), OUT, buff=0)
-        self.capacitor_3d.move_to(self.plane.c2p(0, 0, 0)).move_to(self.capacitor_2d.get_left())
-        # self.add(self.drum_3d, self.capacitor_3d)
+        self.space.move_to(self.capacitor_2d.get_left()).set_z(
+            self.capacitor_2d.get_center()[2] - self.capacitor_2d.depth / 2)
+        self.capacitor_3d.move_to(self.plane.c2p(0, 0, 0))
         self.add(self.space)
         self.move_camera_comp(phi=90 * DEGREES, theta=210 * DEGREES, gamma=0,
-                              frame_center=self.plane.get_center() + OUT * 2,
+                              frame_center=self.plane.get_center() + OUT * 2.8,
                               zoom=1)
         self.play(FadeOut(self.field), self.spring_system_2d[0].oscillate(1, about_edge=OUT))
-        self.play(self.spring_system_2d[0].oscillate(0.25, about_edge=OUT, new_oscillate=False))
-        self.play(Transform(self.drum, self.drum_3d), Transform(self.capacitor_2d, self.capacitor_3d))
-        # self.spring_system.next_to(self.axes.c2p(0, 0, 0), OUT, buff=0)
-        # self.spring_system.stretch_to_fit_width(self.drum.d_0)
+        self.play(self.spring_system_2d[0].oscillate(0.25, about_edge=OUT, amplitude=2.2, new_oscillate=False))
+        self.play(*[FadeOut(mob) for mob in self.spring_system_2d if
+                    mob not in {self.capacitor_2d, self.drum_2d, self.field}])
+        # self.reso = [12, 12]
+        drum = self.get_drum()
+        self.drum = drum
+        self.move_camera_comp(phi=81 * DEGREES, theta=222 * DEGREES,
+                              frame_center=self.drum.get_center() + self.axes.c2p(
+                                  *(self.drum.d_0 * OUT)) * 0.12 + LEFT * 0.34,
+                              zoom=4.1)
+        self.wait()
+        self.play(ReplacementTransform(self.drum_2d, self.drum),
+                  ReplacementTransform(self.capacitor_2d, self.capacitor_3d))
+
+        new_d_0 = drum.R * 0.17
+        self.play(drum.animate.set_z(self.axes.c2p(*(new_d_0 * OUT))[2]))
+        drum.d_0 = new_d_0
+        self.play(drum.vibrate())
         self.wait()
         return
-        # if ROTATE_SCENE: self.begin_ambient_camera_rotation(rate=0.01)
-
-        if not config.renderer == "opengl":
-            drum.set_z_index_by_z_coordinate()
-        self.wait()
-        self.my_next_section("Intro", pst.NORMAL)
-        self.space[1].set_z_index_by_z_coordinate()
-        self.space[0].set_z_index_by_z_coordinate()
-        drum.set_z_index_by_z_coordinate()
-        self.play(Create(self.space[0]), Create(self.space[1]))
-        self.wait()
-        self.axes_shift = 1.3 * IN
-        #     VGroup(self.space, drum).shift(1.5 * IN)
-
-        # self.play(Create(self.space))
-        self.play(DrawBorderThenFill(drum), run_time=3)
-        return
-        self.show_capacitor(drum)
-
-        self.my_next_section("Finish drums scene", pst.NORMAL)
-        self.play(Unwrite(drum), Unwrite(self.space[1]), Unwrite(self.space[0]))
-        self.wait(0.1)
 
     def draw_spring_system(self):
         self.spring_system_2d = get_spring_system().center().scale_to_fit_width(config.frame_width * 0.8).scale(
@@ -544,86 +537,18 @@ class TheoryToPracti(ThreeDScene):
         drum_2d = self.spring_system_2d[2]
         capacitor_2d = self.spring_system_2d[3].set_opacity(1)
         self.field = self.spring_system_2d[4]
-        # drum_3d = Cylinder(radius=drum_2d.height / 2, height=drum_2d.width,
-        #                    checkerboard_colors=[drum_2d.get_fill_color()] * 2,
-        #                    resolution=self.reso).set_color(drum_2d.get_fill_color()).rotate(PI / 2, UP)
-        # capacitor_3d = Cylinder(radius=capacitor_2d.height / 2, height=capacitor_2d.width,
-        #                         checkerboard_colors=[capacitor_2d.get_fill_color()] * 2,
-        #                         checkerboard_colors=[capacitor_2d.get_fill_color()] * space2,
-        #                         resolution=self.reso).set_color(capacitor_2d.get_fill_color()).rotate(PI / 2, UP)
+
         drum_3d = Circle(radius=drum_2d.height / 2, color=drum_2d.get_fill_color(), fill_opacity=1).rotate(PI / 2,
                                                                                                            UP)
         drum_2d.add_updater(lambda mob1: mob1.next_to(self.spring_system_2d[0].get_start(), IN, buff=0))
         drum_3d.add_updater(lambda mob2: mob2.next_to(self.spring_system_2d[0].get_start(), IN, buff=0))
         capacitor_3d = Circle(radius=capacitor_2d.height / 2, color=capacitor_2d.get_fill_color(),
-                              fill_opacity=1).rotate(PI / 2, UP).move_to(capacitor_2d.get_left())
+                              fill_opacity=1).move_to(capacitor_2d.get_left())
         self.drum_3d = drum_3d
         self.drum_2d = drum_2d
         self.capacitor_3d = capacitor_3d
         self.capacitor_2d = capacitor_2d
         self.play(Create(self.spring_system_2d))
-
-    def show_capacitor(self, drum):
-        self.my_next_section("Capacitor description", pst.NORMAL)
-        drum.save_state()
-        # np.ndarray().data
-        camera_start_pos = self.get_camera_position()
-        capacitor = Circle(fill_opacity=1, z_index=Z_FACTOR).scale_to_fit_width(
-            drum.width * 0.5).move_to(self.axes.get_center()).set_color([PURPLE, ORANGE])
-        capacitor.next_to(self.axes.c2p(*(UR * capacitor.radius * 0.6).data), self.axes.c2p(*UR.data))
-        self.my_next_section("Show capacitor", pst.SUB_NORMAL)
-        self.space[1].set_z_index_by_z_coordinate()
-        self.space[0].set_z_index_by_z_coordinate()
-        drum.set_z_index_by_z_coordinate()
-        self.move_camera_comp(phi=80 * DEGREES, theta=-30 * DEGREES)
-        self.bring_to_front(drum)
-        if config.renderer == "opengl":
-            self.play(Create(capacitor))
-        else:
-            capacitor.set_z_index_by_z_coordinate()
-            self.play(DrawBorderThenFill(capacitor))
-        # print(drum.get_center()[2], capacitor.get_center()[2], self.plane.get_center()[2], self.axes.get_center()[2])
-        # for a in drum:
-        #     print(a.get_center()[2])
-        drum.move_to(capacitor).shift(UP)
-        capacitor.add(drum)
-        # self.remove(drum)
-        self.play(Create(ThreeDAxes().shift(LEFT * 1 + 2.5 * IN)))
-        self.add(Arrow().shift(DOWN + OUT))
-        self.add(Sphere())
-        self.add(MathTex(r"wwwwwwwwwwww", color=RED).shift(UP + OUT).scale(5))
-        self.move_camera_comp(phi=120 * DEGREES, theta=-30 * DEGREES,
-                              anim=[DrawBorderThenFill(capacitor)])
-        self.wait(3)
-        self.bring_to_front(drum)
-        self.my_next_section("Move capacitor", pst.SUB_NORMAL)
-        # a = VGroup(drum, capacitor)
-        # self.remove(a)
-        # a.arrange()
-        # self.play(Create(a))
-        NumberPlane()
-        self.move_camera_comp(phi=0 * DEGREES, theta=-30 * DEGREES,
-                              added_anims=[drum.animate.shift(LEFT * capacitor.get_x() * 2)])
-        self.play(capacitor.animate.shift(LEFT * capacitor.get_x() * 2))
-        return
-        self.play(capacitor.animate.move_to(RIGHT * capacitor.width / 2))
-        # self.interactive_embed()
-        self.my_next_section("Camera move", pst.SUB_SKIP)
-        self.move_camera_comp(phi=75 * DEGREES, theta=-30 * DEGREES)
-        self.my_next_section("Vibrate drum", pst.SUB_COMPLETE_LOOP)
-        self.play(drum.vibrate(oscillates=1))
-        self.wait(0.0001)
-        self.my_next_section("Vibrate drum", pst.SUB_SKIP)
-        self.play(drum.vibrate(oscillates=0.25))
-        self.my_next_section("Finish", pst.SUB_SKIP)
-
-        self.move_camera_comp(phi=80 * DEGREES, theta=-30 * DEGREES)
-        self.bring_to_front(drum)
-        self.play(Unwrite(capacitor))
-        self.move_camera_comp(**camera_start_pos)
-        self.play(drum.animate(run_time=2.5).restore())
-        drum.t = drum.start_t = 0
-        return
 
 
 class EverestScene(ZoomedScene):
@@ -912,7 +837,10 @@ class SpringScene(Scene):
         self.play_capacitor_addition()
         self.play_electric_coupling()
         self.play_g0()
-        self.play(Uncreate(self.group_optomechanic_system))
+        self.play(Uncreate(self.force_e), Uncreate(self.mech_force))
+        self.play(self.group_optomechanic_system.animate.center().scale_to_fit_width(config.frame_width * 0.8))
+        self.play(self.spring.oscillate(0.25))
+        # self.play(Uncreate(self.group_optomechanic_system))
         self.wait(0.1)
 
     def play_spring_intro(self):
@@ -1541,8 +1469,8 @@ class DissipationDilution(Scene):
         left_spring.add_updater(update_spring)
 
 
-# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution]
-scenes_lst = [TheoryToPracti]
+# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution,TheoryToPracti]
+scenes_lst = [SpringScene]
 for sc in scenes_lst:
     disable_caching = sc in {DissipationDilution, TheoryToPracti}
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
