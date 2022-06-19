@@ -699,6 +699,7 @@ class HistoryBrief(Scene):
         self.play_bohr_phase()
         self.play_cleland_phase()
         self.play_kotler_phase()
+        self.my_next_section("End Quantum's Orders", pst.SUB_NORMAL)
         self.play(FadeOut(self.images_remove_at_end), Uncreate(self.mob_remove_at_end))
         self.wait(0.1)
 
@@ -723,14 +724,15 @@ class HistoryBrief(Scene):
         self.mob_remove_at_end += self.scailing_line
         self.play(Create(self.scailing_line))
 
-    def next_part(self, title, order):
+    def next_part(self, title, order, enlarge_tip=True):
         self.cur_title = title.scale_to_fit_width(config.frame_width * 0.9)
         title.center()
         self.play(Write(title))
         self.play(title.animate.next_to(self.main_title, DOWN).scale_to_fit_width(self.main_title.width * 0.8))
         tick = self.scailing_line.get_tick_marks()[self.num_to_idx[order]]
         label = self.scailing_line.labels[self.num_to_idx[order]]
-        self.play(tick.animate.set_color(YELLOW).scale(self.tick_scale), label.animate.set_color(YELLOW))
+        tick_scale = self.tick_scale if enlarge_tip else 1
+        self.play(tick.animate.set_color(YELLOW).scale(tick_scale), label.animate.set_color(YELLOW))
         return tick, label
 
     def end_part(self, title, sub_title: Tex, tick, label, image):
@@ -762,14 +764,14 @@ class HistoryBrief(Scene):
         self.mob_remove_at_end += sub_title
         tick, label = self.next_part(title, -8)
         self.create_ion()
-        self.images_remove_at_end += self.ion
+        self.images_remove_at_end.add(self.ion)
         self.my_next_section("End ion", pst.SUB_NORMAL)
 
         # self.play_two_slits()
         self.end_part(title, sub_title, tick, label, self.ion)
         self.cleland = ImageMobject(str(RESOURCE_DIR / "cleland.png")).match_height(self.ion).match_width(
             self.ion).next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP)
-        self.images_remove_at_end += self.cleland
+        self.images_remove_at_end.add(self.cleland)
         self.my_next_section("End ion", pst.SUB_NORMAL)
 
         cleland = Tex("2010:  ",
@@ -790,13 +792,14 @@ class HistoryBrief(Scene):
 
     def play_kotler_phase(self):
         title = Tex("2021:  ", "Macroscopic entanglement of mechanical devices").set_color_by_tex("2021:  ", YELLOW)
+        self.mob_remove_at_end += title
         sub_title = Tex("Entanglement")
-        tick, label = self.next_part(title, -5)
+        tick, label = self.next_part(title, -5, False)
         self.create_kotler_image()
         self.play(FadeIn(self.drums_photo))
         self.play(Write(self.kotler_image[0]))
         self.play(FadeIn(self.kotler_image[1]))
-        self.play(FadeOut(self.cleland), Uncreate(self.s))
+        # self.play(FadeOut(self.cleland), Uncreate(self.s))
         # self.end_part(title, sub_title, tick, label, self.kotler_image)
 
     def create_ion(self):
@@ -843,12 +846,12 @@ class HistoryBrief(Scene):
         self.drums_photo = ImageMobject(str(RESOURCE_DIR / "drums_photo.png")).scale_to_fit_height(
             image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
-        self.images_remove_at_end += self.drums_photo
+        self.images_remove_at_end.add(self.drums_photo)
         winners_svg = SVGMobject(str(RESOURCE_DIR / "winners.svg"), width=4, stroke_color=WHITE)
         kotler_face = ImageMobject(str(RESOURCE_DIR / "kotler_face.png")).to_edge(winners_svg.get_top()).scale(1.5)
-        self.kotler_image = Group(winners_svg, kotler_face).scale_to_fit_height(image_size * 0.4).set_y(
-            self.cur_title.get_bottom()[1] - 0.7 * image_size / 2)
-        self.images_remove_at_end += self.kotler_image
+        self.kotler_image = Group(winners_svg, kotler_face).scale_to_fit_height(image_size * 0.7).next_to(
+            self.drums_photo, RIGHT)
+        self.images_remove_at_end.add(self.kotler_image)
 
     @staticmethod
     def balmer(n):
@@ -952,16 +955,16 @@ class SpringScene(Scene):
         lc_circuit.move_to(np.array(
             [(self.capacitor.get_x() + self.mass.get_x()) / 2, self.mass.get_bottom()[1] - lc_circuit.height / 2, 0]))
         self.electric_field = self.get_electric_field()
-        self.group_optomechanic_system += self.electric_field
 
         self.play(DrawBorderThenFill(lc_circuit), self.omega_mech_tex.animate.next_to(self.spring, UP, buff=0.7))
+        self.play(Create(self.electric_field))
+        self.group_optomechanic_system += self.electric_field
         self.omega_lc_tex = MathTex("\omega_{LC}").next_to(self.electric_field, UP, buff=0.7).match_y(
             self.omega_mech_tex)
         self.play(Write(self.omega_lc_tex))
         self.system += self.omega_lc_tex
         self.my_next_section(type=pst.SUB_NORMAL)
 
-        self.play(Create(self.electric_field))
         self.set_electric_field_animation()
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Uncreate(lc_circuit))
@@ -969,7 +972,6 @@ class SpringScene(Scene):
 
         self.const_arrows = True
         self.force_e = self.get_e_force()
-        self.group_optomechanic_system += self.force_e
         eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
                                                       buff=1).set_color_by_tex("F_{E}", BLUE)
         eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
@@ -981,6 +983,7 @@ class SpringScene(Scene):
         self.play(Write(eq1))
         self.wait(0.5)
         self.play(Create(self.force_e))
+        self.group_optomechanic_system += self.force_e
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(TransformMatchingTex(eq1, eq2))
         self.my_next_section(type=pst.SUB_NORMAL)
@@ -992,8 +995,8 @@ class SpringScene(Scene):
         eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex(
             "F_{mech}", GREEN)
         self.mech_force = self.get_mech_force()
-        self.group_optomechanic_system += self.mech_force
         self.play(Write(eq_mech), Create(self.mech_force))
+        self.group_optomechanic_system += self.mech_force
         self.mech_force.add_updater(
             lambda force_mech_arrow: force_mech_arrow.put_start_and_end_on(*self.get_mech_force_size()))
         self.force_e.add_updater(lambda force_arrow: force_arrow.put_start_and_end_on(*self.get_e_force_size()))
@@ -1022,6 +1025,12 @@ class SpringScene(Scene):
         self.play(FadeOut(self.shift_d0_info))
         self.play(self.group_optomechanic_system.animate.to_edge(DOWN, buff=0.1))
         self.my_next_section("g0 Scene")
+        title_go = Text("What is $g_{0}$?").scale_to_fit_width(config.frame_width * 0.8).next_to(
+            self.group_optomechanic_system, UP, buff=2)
+        self.play(Write(title_go))
+        self.my_next_section(type=pst.SUB_NORMAL)
+        self.play(Unwrite(title_go))
+
         ax = Axes(x_range=(0, 10), y_range=[0, 1, 0.1], x_length=round(config.frame_width) - 5,
                   y_length=round(config.frame_height - self.group_optomechanic_system.height) * 0.6,
                   y_axis_config={"numbers_to_include": np.arange(0, 1 + 0.1, 0.5)})
@@ -1516,7 +1525,7 @@ class DissipationDilution(Scene):
 
 scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry, DissipationDilution, Comsol,
               Results]
-scenes_lst = [HistoryBrief]
+scenes_lst = [SpringScene]
 for sc in scenes_lst:
     disable_caching = sc in {DissipationDilution, TheoryToPracti}
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
