@@ -18,7 +18,7 @@ from spring import Spring, OscillateMobject
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
 BEAUTY_PLANE = True
-PRESENTATION_MODE = False
+PRESENTATION_MODE = True
 Z_FACTOR = 0
 
 
@@ -458,17 +458,15 @@ class TheoryToPracti(ThreeDScene):
         self.plane[1].set_z_index_by_z_coordinate()
         self.x_axis, self.y_axis = self.plane.axes
         self.space = VGroup(self.axes, self.plane)
-        # self.space = self.plane
 
     def get_drum(self):
-        # R_factor = self.axes.x_length * 0.2
         self.plane.z_normal = Z_AXIS
         R_factor = self.plane.p2c([self.drum_2d.height / 2, 0, 0])[0]
         drum = Drum(bessel_order=1, mode=2, axes=self.axes, R=R_factor,
                     d_0=self.axes.p2c(self.drum_2d.get_left() - self.drum_2d.depth / 2 * OUT)[2],
                     amplitude=R_factor * 0.3 * 0.8,
-                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A, resolution=self.reso)
-
+                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A, resolution=self.reso, sheen_factor=0.5,
+                    sheen_direction=self.axes.c2p(*(DOWN * 4)))
         return drum
 
     def move_camera_comp(self, **kwargs):
@@ -495,41 +493,53 @@ class TheoryToPracti(ThreeDScene):
             self.wait()
 
     def construct(self):
+        self.my_next_section("3D Drums")
         self.zoom = 2
         self.set_camera_orientation(phi=90 * DEGREES, theta=180 * DEGREES, gamma=-90 * DEGREES, zoom=self.zoom)
 
         self.build_axes()
-        # self.add(drum)
         self.draw_spring_system()
         self.spring_system_2d.move_to(self.plane.c2p(0, 0, 0))
         self.space.move_to(self.capacitor_2d.get_left()).set_z(
             self.capacitor_2d.get_center()[2] - self.capacitor_2d.depth / 2)
         self.capacitor_3d.move_to(self.plane.c2p(0, 0, 0))
+        self.my_next_section(type=pst.SUB_NORMAL)
+
         self.add(self.space)
         self.move_camera_comp(phi=90 * DEGREES, theta=210 * DEGREES, gamma=0,
                               frame_center=self.plane.get_center() + OUT * 2.8,
                               zoom=1)
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(self.field), self.spring_system_2d[0].oscillate(1, about_edge=OUT))
         self.play(self.spring_system_2d[0].oscillate(0.25, about_edge=OUT, amplitude=2.2, new_oscillate=False))
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(*[FadeOut(mob) for mob in self.spring_system_2d if
                     mob not in {self.capacitor_2d, self.drum_2d, self.field}])
-        # self.reso = [12, 12]
+        self.renderer.camera.light_source.move_to((6 * DOWN - 7 * LEFT + 7 * OUT) * 4)
         drum = self.get_drum()
         self.drum = drum
         self.move_camera_comp(phi=81 * DEGREES, theta=222 * DEGREES,
                               frame_center=self.drum.get_center() + self.axes.c2p(
                                   *(self.drum.d_0 * OUT)) * 0.12 + LEFT * 0.34,
                               zoom=4.1)
-        self.wait()
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(ReplacementTransform(self.drum_2d, self.drum),
                   ReplacementTransform(self.capacitor_2d, self.capacitor_3d))
 
+        self.my_next_section(type=pst.SUB_NORMAL)
         new_d_0 = drum.R * 0.17
         self.play(drum.animate.set_z(self.axes.c2p(*(new_d_0 * OUT))[2]))
         drum.d_0 = new_d_0
-        self.play(drum.vibrate())
-        self.wait()
-        return
+        self.my_next_section(type=pst.SUB_NORMAL)
+        self.play(drum.vibrate(1))
+        self.wait(0.0001)
+        self.my_next_section("Vibrate drum", pst.SUB_SKIP)
+        self.play(drum.vibrate(0.25))
+        self.play(Unwrite(self.space), Unwrite(drum), Unwrite(self.capacitor_3d))
+        self.wait(0.1)
 
     def draw_spring_system(self):
         self.spring_system_2d = get_spring_system().center().scale_to_fit_width(config.frame_width * 0.8).scale(
@@ -681,6 +691,158 @@ class Results(Scene):
         self.play(FadeIn(t0))
 
 
+class IntroSummary(ThreeDScene):
+    def __init__(self, start_point=0, **kwargs):
+        super().__init__(**kwargs)
+        self.start_point = start_point
+        self.parts_num = 3
+        self.current_part = 0
+
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
+                        skip_animations: bool = False):
+        if PRESENTATION_MODE:
+            self.next_section(name, type, skip_animations)
+        else:
+            self.wait()
+
+    def play_strating_point(self):
+        self.start = True
+        self.my_next_section("Lecture Summary")
+        self.play(Write(self.starting_mobjects))
+
+    def construct(self):
+        self.start = False
+        progress_bar = self.make_progress_bar().to_edge(DOWN, buff=config["frame_height"] * 0.2)
+        self.starting_mobjects = VGroup()
+        self.starting_mobjects += progress_bar
+
+        part_1_title = Tex("Theory", " of Quantum Mechanical Coupling")
+        part_1_sub = Tex("Theory")
+        part_1_img = SVGMobject(str(RESOURCE_DIR / "coupling_drums.svg"))
+        self.next_part(part_1_title, part_1_sub, image=part_1_img, first=True)
+
+        part_2_title = VGroup(
+            Tex("Our ", "Project", ":"),
+            Tex("Simulate MEMS Resonators")).arrange(DOWN)
+        part_2_sub = Tex("Project")
+        part_2_image = self.get_drum()
+        if self.start: self.my_next_section("Second Intro", pst.SUB_NORMAL)
+        self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
+
+        if self.start: self.my_next_section("Vibrating Membrene  Intro", pst.SUB_COMPLETE_LOOP)
+        if self.start:
+            self.play(part_2_image.vibrate(1))
+            self.wait(0.00001)
+            self.my_next_section("Vibrating end Intro", pst.SUB_SKIP)
+            self.play(part_2_image.vibrate(0.25))
+        self.end_part(part_2_title, part_2_sub, part_2_image)
+
+        part_3_title = VGroup(
+            Tex("Outline", ":"),
+            Tex("Whats next?")).arrange(DOWN)
+        part_3_sub = Tex("Outline")
+        part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
+        self.next_part(part_3_title, part_3_sub, image=part_3_img)
+        self.my_next_section("End Intro", pst.SUB_NORMAL)
+        self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img),
+                  Unwrite(part_1_sub), Unwrite(part_2_sub), Unwrite(part_3_sub))
+        self.wait(0.5)
+
+    def next_part(self, title, sub_title: Tex, drum=False, image=None, include_end=True, first=False):
+        if self.current_part == self.start_point:
+            self.play_strating_point()
+
+        if not first:
+            if self.start:
+                self.play(self.moving_dot.animate.move_to(self.dots[self.current_part]), run_time=2, rate_func=linear)
+                self.wait(0.1)
+            else:
+                self.moving_dot.move_to(self.dots[self.current_part])
+
+        sub_title.next_to(self.dots[self.current_part], DOWN)
+        if not self.start: self.starting_mobjects += sub_title
+        if image:
+            title.to_edge(UP)
+        if self.start: self.play(Write(title))
+        if image:
+            if not drum:
+                image.scale_to_fit_height(0.5 * (title.get_bottom()[1] - self.dots.get_top()[1]))
+                image.set_y(self.dots.get_top()[1] + (title.get_bottom()[1] - self.dots.get_top()[1]) / 2)
+            else:
+                image = self.drum_scailing(image, title)
+
+            if not isinstance(image, VMobject):
+                if self.start: self.play(FadeIn(image))
+            else:
+                if self.start: self.play(DrawBorderThenFill(image))
+
+            if not self.start:
+                self.starting_mobjects += image
+
+        if include_end:
+            self.end_part(title, sub_title, image)
+
+    def end_part(self, title, sub_title: Tex, image=None):
+        if self.start: self.next_section(pst.SUB_NORMAL)
+        if image:
+            if self.start:
+                self.play(TransformMatchingTex(title, sub_title),
+                          image.animate.match_width(sub_title).next_to(self.dots[self.current_part], UP))
+            else:
+                image.match_width(sub_title).next_to(self.dots[self.current_part], UP)
+        else:
+            self.play(TransformMatchingTex(title, sub_title))
+        self.current_part += 1
+
+    def get_drum(self):
+        axes = ThreeDAxes()
+        R_factor = axes.x_length * 0.2
+        reso = [37, 37] if PRESENTATION_MODE else [3, 3]
+        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2,
+                    d_0=0, amplitude=R_factor * 0.7 * 0.8, z_index=Z_FACTOR + 4,
+                    stroke_width=1, stroke_color=BLUE_A, resolution=reso)
+        return drum
+
+    def drum_scailing(self, drum, title):
+        system = VGroup(drum, drum.axes)
+        system.rotate(105, LEFT)
+        system.scale_to_fit_height(1.2 * (title.get_bottom()[1] - self.dots.get_top()[1]))
+        system.center()
+        drum.opacity_all = 0
+        drum.set_opacity(0)
+        self.play(drum.vibrate(0.001))
+        self.remove(drum)
+        drum.opacity_all = 1
+        drum.set_opacity(1)
+        return drum
+
+    def make_progress_bar(self, scale_bar=2):  # only setting up the mobjects
+        dots = VGroup(*[Dot(z_index=3) for _ in range(self.parts_num)], z_index=0)
+        dots.arrange(buff=(config["frame_width"] * 0.6) / (scale_bar * (self.parts_num - 1))).scale(
+            scale_bar).set_color(
+            BLUE)
+        dots[0].set_color(ORANGE)
+        dots[-1].set_color(ORANGE)
+        moving_dot = Dot(color=ORANGE, z_index=4).scale(2.5)
+        moving_dot.move_to(dots[0])
+        path = Line(dots[0], dots[1], stroke_width=10, z_index=2, color=ORANGE)
+        background_line = Line(dots[0], dots[-1], stroke_width=10, z_index=0, color=GREY, fill_opacity=0.5)
+        path.add_updater(lambda x: x.become(Line(dots[0], moving_dot, stroke_width=10, z_index=2, color=ORANGE)))
+        self.dots = dots
+        self.moving_dot = moving_dot
+        return VGroup(dots, moving_dot, path, background_line)
+
+
+class IntroSummary2(IntroSummary):
+    def __init__(self, **kwargs):
+        super().__init__(start_point=1, **kwargs)
+
+
+class IntroSummary3(IntroSummary):
+    def __init__(self, **kwargs):
+        super().__init__(start_point=2, **kwargs)
+
+
 class HistoryBrief(Scene):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -700,7 +862,7 @@ class HistoryBrief(Scene):
         self.play_cleland_phase()
         self.play_kotler_phase()
         self.my_next_section("End Quantum's Orders", pst.SUB_NORMAL)
-        self.play(FadeOut(self.images_remove_at_end), Uncreate(self.mob_remove_at_end))
+        self.play(FadeOut(self.images_remove_at_end), Unwrite(self.mob_remove_at_end))
         self.wait(0.1)
 
     def build_scene(self):
@@ -885,10 +1047,9 @@ class SpringScene(Scene):
         self.play_electric_coupling()
         self.play_g0()
         self.play(self.group_optomechanic_system.animate.center().scale_to_fit_width(config.frame_width * 0.8))
-        self.new_sys = get_spring_system().scale_to_fit_width(config.frame_width * 0.8)
-        self.play(TransformMatchingShapes(self.group_optomechanic_system, self.new_sys))
-        self.play(self.spring.oscillate(0.25))
+        self.new_sys = get_spring_system().center().scale_to_fit_width(config.frame_width * 0.8)
         self.play(Uncreate(self.force_e), Uncreate(self.mech_force))
+        self.play(TransformMatchingShapes(self.group_optomechanic_system, self.new_sys))
         self.wait(0.1)
 
     def play_spring_intro(self):
@@ -1025,8 +1186,8 @@ class SpringScene(Scene):
         self.play(FadeOut(self.shift_d0_info))
         self.play(self.group_optomechanic_system.animate.to_edge(DOWN, buff=0.1))
         self.my_next_section("g0 Scene")
-        title_go = Text("What is $g_{0}$?").scale_to_fit_width(config.frame_width * 0.8).next_to(
-            self.group_optomechanic_system, UP, buff=2)
+        title_go = Tex("What is $g_{0}$?").scale_to_fit_width(config.frame_width * 0.8).next_to(
+            self.group_optomechanic_system, UP, buff=1.4)
         self.play(Write(title_go))
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(title_go))
@@ -1184,7 +1345,7 @@ class SimulationRoad(Scene):
         self.wait()
 
 
-class IntroSummary(ThreeDScene):
+class FirstSimuTry(ThreeDScene):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.parts_num = 3
@@ -1196,120 +1357,6 @@ class IntroSummary(ThreeDScene):
             self.next_section(name, type, skip_animations)
         else:
             self.wait()
-
-    def construct(self):
-        progress_bar = self.make_progress_bar().to_edge(DOWN, buff=config["frame_height"] * 0.2)
-        self.my_next_section("Intro Strart")
-        self.play(Write(progress_bar))
-
-        part_1_title = Tex("Theory", " of Quantum Mechanical Coupling")
-        part_1_sub = Tex("Theory")
-        part_1_img = SVGMobject(str(RESOURCE_DIR / "coupling_drums.svg"))
-        self.my_next_section("First Intro", pst.SUB_NORMAL)
-        self.next_part(part_1_title, part_1_sub, image=part_1_img, first=True)
-
-        part_2_title = VGroup(
-            Tex("Our ", "Project", ":"),
-            Tex("Simulate MEMS Resonators")).arrange(DOWN)
-        part_2_sub = Tex("Project")
-        part_2_image = self.get_drum()
-        self.my_next_section("Second Intro", pst.SUB_NORMAL)
-        self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
-
-        self.my_next_section("Vibrating Membrene  Intro", pst.SUB_COMPLETE_LOOP)
-        self.play(part_2_image.vibrate(1))
-        self.wait(0.00001)
-        self.my_next_section("Vibrating end Intro", pst.SUB_SKIP)
-        self.play(part_2_image.vibrate(0.25))
-        self.end_part(part_2_title, part_2_sub, part_2_image)
-
-        part_3_title = VGroup(
-            Tex("Outline", ":"),
-            Tex("Whats next?")).arrange(DOWN)
-        part_3_sub = Tex("Outline")
-        part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
-        self.next_part(part_3_title, part_3_sub, image=part_3_img)
-        self.my_next_section("End Intro", pst.SUB_NORMAL)
-        self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img),
-                  Unwrite(part_1_sub), Unwrite(part_2_sub), Unwrite(part_3_sub))
-        self.wait(0.1)
-
-    def next_part(self, title, sub_title: Tex, drum=False, image=None, include_end=True, first=False):
-        if not first:
-            self.play(self.moving_dot.animate.move_to(self.dots[self.current_part]), run_time=2, rate_func=linear)
-            self.wait(0.1)
-        sub_title.next_to(self.dots[self.current_part], DOWN)
-        if image:
-            title.to_edge(UP)
-        self.play(Write(title))
-        if image:
-            if not drum:
-                image.scale_to_fit_height(0.5 * (title.get_bottom()[1] - self.dots.get_top()[1]))
-                image.set_y(self.dots.get_top()[1] + (title.get_bottom()[1] - self.dots.get_top()[1]) / 2)
-            else:
-                image = self.drum_scailing(image, title)
-            if not isinstance(image, VMobject):
-                self.play(FadeIn(image))
-            else:
-                self.play(DrawBorderThenFill(image))
-
-        self.wait()
-        if include_end:
-            self.end_part(title, sub_title, image)
-
-    def end_part(self, title, sub_title: Tex, image=None):
-        self.next_section(pst.SUB_NORMAL)
-        if image:
-            self.play(TransformMatchingTex(title, sub_title),
-                      image.animate.match_width(sub_title).next_to(self.dots[self.current_part], UP))
-        else:
-            self.play(TransformMatchingTex(title, sub_title))
-        self.current_part += 1
-
-    def get_drum(self):
-        axes = ThreeDAxes()
-        R_factor = axes.x_length * 0.2
-        reso = [37, 37] if PRESENTATION_MODE else [3, 3]
-        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2,
-                    d_0=0, amplitude=R_factor * 0.7 * 0.8, z_index=Z_FACTOR + 4,
-                    stroke_width=1, stroke_color=BLUE_A, resolution=reso)
-        return drum
-
-    def drum_scailing(self, drum, title):
-        system = VGroup(drum, drum.axes)
-        system.rotate(105, LEFT)
-        system.scale_to_fit_height(1.2 * (title.get_bottom()[1] - self.dots.get_top()[1]))
-        system.center()
-        drum.opacity_all = 0
-        drum.set_opacity(0)
-        self.play(drum.vibrate(0.001))
-        self.remove(drum)
-        drum.opacity_all = 1
-        drum.set_opacity(1)
-        return drum
-
-    def make_progress_bar(self, scale_bar=2):  # only setting up the mobjects
-        dots = VGroup(*[Dot(z_index=3) for _ in range(self.parts_num)], z_index=0)
-        dots.arrange(buff=(config["frame_width"] * 0.6) / (scale_bar * (self.parts_num - 1))).scale(
-            scale_bar).set_color(
-            BLUE)
-        dots[0].set_color(ORANGE)
-        dots[-1].set_color(ORANGE)
-        moving_dot = Dot(color=ORANGE, z_index=4).scale(2.5)
-        moving_dot.move_to(dots[0])
-        path = Line(dots[0], dots[1], stroke_width=10, z_index=2, color=ORANGE)
-        background_line = Line(dots[0], dots[-1], stroke_width=10, z_index=0, color=GREY, fill_opacity=0.5)
-        path.add_updater(lambda x: x.become(Line(dots[0], moving_dot, stroke_width=10, z_index=2, color=ORANGE)))
-        self.dots = dots
-        self.moving_dot = moving_dot
-        return VGroup(dots, moving_dot, path, background_line)
-
-
-class FirstSimuTry(ThreeDScene):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.parts_num = 3
-        self.current_part = 0
 
     def get_dt_lines(self, start, end, numbers, color):
         len_line = end[0] - start[0]
@@ -1326,11 +1373,14 @@ class FirstSimuTry(ThreeDScene):
         return dt_lines
 
     def construct(self):
-        infinity_time = Tex(r"Numeric run time $=\ \infty$").scale(1.4)
-        self.play(Write(infinity_time))
-        self.play(infinity_time.animate.to_edge(UP))
+        # infinity_time = Tex(r"Numeric run time $=\ \infty$").scale(1.4)
+        # self.play(Write(infinity_time))
+        # self.play(infinity_time.animate.to_edge(UP))
+        self.remove_at_end = VGroup()
+        self.my_next_section("Numeric run time")
         self.play_freq_graphs()
-        self.wait(0.1)
+        self.play(Unwrite(self.remove_at_end))
+        self.wait(0.5)
 
     def get_system_recap(self):
         system = get_spring_system()
@@ -1340,9 +1390,11 @@ class FirstSimuTry(ThreeDScene):
 
     def play_freq_graphs(self):
         system = self.get_system_recap().center().scale_to_fit_height(config.frame_height * 0.45).shift(DOWN * 0.5)
+        self.remove_at_end += system
         reminder = Text("Reminder").next_to(system.get_top(), UP)
         self.play(FadeIn(system), Write(reminder))
-        self.wait()
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(reminder, shift=DOWN))
 
         ax = Axes(x_range=(0, 10), y_range=[-1, 1], x_length=round(config.frame_width) - 2,
@@ -1381,27 +1433,49 @@ class FirstSimuTry(ThreeDScene):
             system.animate.set_x(max_mech_point[0]).set_y((system.height * 0.8 - config.frame_height) / 2).scale(0.7))
 
         self.play(Create(ax))
+        self.remove_at_end += ax
         self.play(Create(omega_mech_graph), Write(omega_mech_label))
+        self.remove_at_end += omega_mech_graph
+        self.remove_at_end += omega_mech_label
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Create(time_marker))
+        self.remove_at_end += time_marker
         self.play(t.animate.set_value(2 * PI / omega_mech))
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Create(dt_omega_mech))
 
         dt_brace_1, dt1text = self.get_dt_braces(dt_omega_mech)
         dt_brace_2, dt2text = self.get_dt_braces(dt_omega_lc)
+
         self.play(Write(dt_brace_1), Write(dt1text))
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         for mob in dt_omega_mech[0].submobjects:
             self.play(time_marker.animate.match_x(mob))
             self.wait(0.2)
+
         self.play(time_marker.animate.set_x(ax.get_origin()[0]))
 
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Create(omega_lc_graph), Write(omega_lc_label))
+        self.remove_at_end += omega_lc_graph
+        self.remove_at_end += omega_lc_label
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Create(dt_omega_lc))
-        self.play(TransformMatchingTex(dt1text, dt2text), TransformMatchingShapes(dt_brace_1, dt_brace_2))
-        self.wait()
+
+        self.my_next_section(type=pst.SUB_NORMAL)
+        self.play(TransformMatchingTex(dt1text, dt2text), ReplacementTransform(dt_brace_1, dt_brace_2))
+        self.remove_at_end += dt_brace_2
+        self.remove_at_end += dt2text
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(dt_omega_lc), FadeOut(dt_omega_mech))
         self.play(Create(dt_omega_lc_full))
-        self.wait()
-        self.wait(2)
+        self.my_next_section(type=pst.SUB_NORMAL)
+        self.remove_at_end += dt_omega_lc_full
 
     def get_dt_braces(self, dt_line):
         line = Line(dt_line[0].submobjects[0].get_start(), dt_line[0].submobjects[1].get_start())
@@ -1411,19 +1485,78 @@ class FirstSimuTry(ThreeDScene):
         return dt_brace, b1text
 
 
+class ComsolEigenmodes(Scene):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
+                        skip_animations: bool = False):
+        if PRESENTATION_MODE:
+            self.next_section(name, type, skip_animations)
+        else:
+            self.wait()
+
+    def construct(self):
+        title = Text("COMSOL Eigenmodes").scale_to_fit_width(config.frame_width * 0.8).to_edge(UP)
+        small_image_size = config.frame_height * 0.2
+        large_image_size = config.frame_height * 0.8
+        images_eigen = Group(*[ImageMobject(str(RESOURCE_DIR / f"simulation_mode_{x}.png")) for x in range(1, 3)])
+        images_eigen_side = Group(
+            *[ImageMobject(str(RESOURCE_DIR / f"simulation_mode_{x}_d.png")) for x in range(1, 4)])
+        images_eigen_arrange = Group(
+            *[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen]).arrange(RIGHT).next_to(
+            title, DOWN, buff=DEFAULT_MOBJECT_TO_MOBJECT_BUFFER * 0.5)
+        images_eigen_side_arrange = Group(
+            *[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen_side]).arrange(
+            RIGHT).next_to(
+            images_eigen_arrange, DOWN, buff=0)
+        self.my_next_section("COMSOL Eigenmodes")
+        title.center()
+        self.play(Write(title))
+        self.my_next_section(type=pst.SUB_NORMAL)
+        self.play(title.animate.to_edge(UP))
+
+        large_image_y = -(images_eigen_side_arrange.get_bottom()[1] + config.frame_height / 2) / 2
+        for idx, image in enumerate(images_eigen):
+            image.scale_to_fit_height(large_image_size).set_y(large_image_y)
+            self.play(FadeIn(image))
+            self.my_next_section(type=pst.SUB_NORMAL)
+            self.play(ReplacementTransform(image, images_eigen_arrange[idx]))
+
+        for idx, image in enumerate(images_eigen_side):
+            image.scale_to_fit_height(large_image_size).set_y(large_image_y)
+            self.play(FadeIn(image))
+            self.my_next_section(type=pst.SUB_NORMAL)
+            self.play(ReplacementTransform(image, images_eigen_side_arrange[idx]))
+
+        self.play(Group(images_eigen_side_arrange, images_eigen_arrange).animate.scale_to_fit_height(
+            0.9 * (config.frame_height - title.height)).set_y(
+            title.get_bottom()[1] - (config.frame_height - title.height) / 2))
+        self.my_next_section(type=pst.SUB_NORMAL)
+
+
 class DissipationDilution(Scene):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
+                        skip_animations: bool = False):
+        if PRESENTATION_MODE:
+            self.next_section(name, type, skip_animations)
+        else:
+            self.wait()
+
     def construct(self):
         self.create_system()
-
+        self.my_next_section("Dissipation Dilution")
         self.play(DrawBorderThenFill(self.system))
         self.mass = OscillateMobject(self.mass)
-        # self.play(self.mass.oscillate())
         self.play_parallel_shift()
         self.play_vertical_shift()
+        self.play(Unwrite(self.system))
         self.wait(0.1)
 
     def play_parallel_shift(self):
-        self.play(self.mass.oscillate(1.25, oscillate_direction=RIGHT))
+        self.my_next_section(type=pst.SUB_COMPLETE_LOOP)
+        self.play(self.mass.oscillate(1, oscillate_direction=RIGHT))
+        self.wait(0.00001)
+        self.my_next_section(type=pst.SUB_SKIP)
+        self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+
         x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
                                                     shift_size=(self.mass.width / 2 + 0.2) * DOWN)
         y_for_l_0 = x_shift_brace.get_bottom()[1]
@@ -1437,9 +1570,11 @@ class DissipationDilution(Scene):
         labels = VGroup(x_label, l_0_label, delta_x_label)
         braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
         self.play(Write(labels), Write(braces))
-        self.wait()
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(labels), Unwrite(braces))
         self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+        self.my_next_section(type=pst.SUB_NORMAL)
 
     def play_vertical_shift(self):
         self.play(self.mass.oscillate(0.75))
@@ -1464,7 +1599,8 @@ class DissipationDilution(Scene):
         aprox_tex = MathTex(r"\Delta x \approx\frac{\Delta y^{2}}{2l_{0}}", color=RED).scale(1.5).to_edge(DOWN,
                                                                                                           buff=0.3)
         self.play(Write(aprox_tex))
-        self.wait()
+
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(labels), Unwrite(braces), Unwrite(aprox_tex))
         self.play(self.mass.oscillate(0.25, new_reference_point=False))
 
@@ -1523,12 +1659,14 @@ class DissipationDilution(Scene):
         left_spring.add_updater(update_spring)
 
 
-scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry, DissipationDilution, Comsol,
-              Results]
-scenes_lst = [SpringScene]
+scenes_lst = [IntroSummary, IntroSummary2, IntroSummary3, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry,
+              ComsolEigenmodes, DissipationDilution, Comsol, Results]
+# scenes_lst = [IntroSummary3]
+
 for sc in scenes_lst:
-    disable_caching = sc in {DissipationDilution, TheoryToPracti}
+    disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
+    quality = "low_quality"
 
     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
                      "save_sections": True, "disable_caching": disable_caching}):
