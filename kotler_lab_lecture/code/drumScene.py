@@ -9,7 +9,6 @@ from itertools import cycle
 MAIN_PATH = Path(__file__).resolve().parent.parent
 RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
-from tools.animations import Count, ShiftAndRotateAlongPath, get_path_pending
 from spring import Spring, OscillateMobject
 
 FAST_RENDER = True
@@ -17,7 +16,6 @@ ROTATE_SCENE = False if FAST_RENDER else True
 BEAUTY_PLANE = True
 PRESENTATION_MODE = True
 Z_FACTOR = 0
-
 
 
 def draw_wall(pivot_mobject: Mobject, wall_len=2):
@@ -751,17 +749,9 @@ class TheoryToPracti(ThreeDScene):
 
     def build_axes(self):
         self.axes = self.get_axes()
-        # self.x_axis, self.y_axis, self.z_axis = self.axes
-        # self.axes = Dot()
         self.plane = NumberPlane(**self.basic_coords_config, faded_line_ratio=2 if BEAUTY_PLANE else 1)
         self.axes.move_to(self.plane.c2p(0, 0, 0)).set_opacity(0)
-        # self.plane.remove(self.plane.axes)
-        # self.plane.remove(*self.plane.axes)
-        # self.plane.remove(self.plane.background_lines)
-        # self.plane.remove(self.plane.faded_lines)
-        # self.plane.axes = VGroup(self.x_axis, self.y_axis)
-        # self.add(*self.plane.axes)
-        # self.plane._init_background_lines()
+
         for line in self.plane.background_lines:
             line.set_z_index_by_z_coordinate()
         for line in self.plane.faded_lines:
