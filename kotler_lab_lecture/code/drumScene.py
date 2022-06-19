@@ -11,10 +11,8 @@ RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from spring import Spring, OscillateMobject
 
-FAST_RENDER = True
-ROTATE_SCENE = False if FAST_RENDER else True
-BEAUTY_PLANE = True
 PRESENTATION_MODE = True
+BEAUTY_PLANE = True
 Z_FACTOR = 0
 
 
@@ -84,7 +82,16 @@ class IntroSummary(ThreeDScene):
     def play_strating_point(self):
         self.start = True
         self.my_next_section("Lecture Summary")
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Write(self.starting_mobjects))
+
+    # def end_strating_point(self):
+    #     self.start = True
+    #     self.my_next_section("Lecture Summary")
+    #     self.my_next_section(typ=pst.SUB_NORMAL)
+    #     self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img),
+    #               Unwrite(part_1_sub), Unwrite(part_2_sub), Unwrite(part_3_sub))
+    #     self.wait(0.5)
 
     def construct(self):
         self.start = False
@@ -102,13 +109,12 @@ class IntroSummary(ThreeDScene):
             Tex("Simulate MEMS Resonators")).arrange(DOWN)
         part_2_sub = Tex("Project")
         part_2_image = self.get_drum()
-        if self.start: self.my_next_section("Second Intro", pst.SUB_NORMAL)
         self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
-
+        self.wait(0.1)
         if self.start: self.my_next_section("Vibrating Membrene  Intro", pst.SUB_COMPLETE_LOOP)
         if self.start:
             self.play(part_2_image.vibrate(1))
-            self.wait(0.00001)
+            self.wait(0.001)
             self.my_next_section("Vibrating end Intro", pst.SUB_SKIP)
             self.play(part_2_image.vibrate(0.25))
         self.end_part(part_2_title, part_2_sub, part_2_image)
@@ -300,7 +306,7 @@ class HistoryBrief(Scene):
         title = Tex("1978:  ", "David J. Wineland - Superposition in trapped ions").set_color_by_tex("1978:  ", YELLOW)
         sub_title = Tex("Superposition")
         self.mob_remove_at_end += sub_title
-        tick, label = self.next_part(title, -8)
+        tick, label = self.next_part(title, -8, enlarge_tip=False)
         self.create_ion()
         self.images_remove_at_end.add(self.ion)
         self.my_next_section("End ion", pst.SUB_NORMAL)
@@ -310,7 +316,6 @@ class HistoryBrief(Scene):
         self.cleland = ImageMobject(str(RESOURCE_DIR / "cleland.png")).match_height(self.ion).match_width(
             self.ion).next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP)
         self.images_remove_at_end.add(self.cleland)
-        self.my_next_section("End ion", pst.SUB_NORMAL)
 
         cleland = Tex("2010:  ",
                       "Andrew N. "
@@ -334,7 +339,7 @@ class HistoryBrief(Scene):
         sub_title = Tex("Entanglement")
         tick, label = self.next_part(title, -5, False)
         self.create_kotler_image()
-        self.play(FadeIn(self.drums_photo))
+        self.play(FadeIn(self.drums_photo), run_time=0.5)
         self.play(Write(self.kotler_image[0]))
         self.play(FadeIn(self.kotler_image[1]))
         # self.play(FadeOut(self.cleland), Uncreate(self.s))
@@ -451,9 +456,10 @@ class SpringScene(Scene):
         self.system += move_arrow
         self.my_next_section('oscillate start', pst.SUB_NORMAL)
         self.play(AnimationGroup(self.spring.oscillate(1.5), Write(omega), lag_ratio=0.2))
+        self.wait(0.1)
         self.my_next_section('oscillate middle', pst.SUB_COMPLETE_LOOP)
         self.play(self.spring.oscillate(1))
-        self.wait(0.00001)
+        self.wait(0.001)
         self.my_next_section('Shift right', pst.SUB_SKIP)
         self.play(Create(d0_line))
         self.play(Write(d0_tex))
@@ -505,6 +511,7 @@ class SpringScene(Scene):
         self.set_electric_field_animation()
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Uncreate(lc_circuit))
+        self.wait(0.5)
         self.my_next_section(type=pst.SUB_NORMAL)
 
         self.const_arrows = True
@@ -561,10 +568,11 @@ class SpringScene(Scene):
             self.system.remove(mob_d_0)
         self.play(FadeOut(self.shift_d0_info))
         self.play(self.group_optomechanic_system.animate.to_edge(DOWN, buff=0.1))
-        self.my_next_section("g0 Scene")
+        self.my_next_section("g0 Scene", type=pst.SUB_SKIP)
         title_go = Tex("What is $g_{0}$?").scale_to_fit_width(config.frame_width * 0.8).next_to(
             self.group_optomechanic_system, UP, buff=1.4)
         self.play(Write(title_go))
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(title_go))
 
@@ -606,8 +614,8 @@ class SpringScene(Scene):
         tau_digit.add_updater(lambda d: d.set_value(tau_tracker.get_value() / 7 * 10))
 
         tau_tex_group = VGroup(tau_tex, tau_digit).arrange(RIGHT).next_to(g0_tex_group, DOWN)
-        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Write(g0_tex_group), Write(tau_tex_group))
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
 
         one_calc_graph = ax.plot(energy_func, color=RED, z_index=4,
@@ -622,9 +630,11 @@ class SpringScene(Scene):
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(tau_tracker.animate.set_value(tau_init + 6), run_time=6)
         self.play(tau_tracker.animate.set_value(tau_init + 4), run_time=6)
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
 
         self.play(g0_tracker.animate.set_value(g0_init + 4), run_time=6)
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(g0_tex_group), Unwrite(tau_tex_group))
         self.play(Uncreate(ax), Uncreate(exp_graph_dash), Uncreate(energy_graph))
@@ -718,8 +728,8 @@ class TheoryToPracti(ThreeDScene):
 
     def get_basic_coords_config(self):
         epsilon = 0.01
-        factor = 2 if FAST_RENDER else 3
-        factor_range = factor * 1 if FAST_RENDER else factor * 4
+        factor = 2
+        factor_range = factor * 1
         factor_range = factor * 2
         addition = 0.5 if BEAUTY_PLANE else 0
         self.basic_coords_config = {
@@ -796,7 +806,7 @@ class TheoryToPracti(ThreeDScene):
             self.wait()
 
     def construct(self):
-        self.my_next_section("3D Drums")
+        self.my_next_section("3D Drums", type=pst.SKIP)
         self.zoom = 2
         self.set_camera_orientation(phi=90 * DEGREES, theta=180 * DEGREES, gamma=-90 * DEGREES, zoom=self.zoom)
 
@@ -806,13 +816,14 @@ class TheoryToPracti(ThreeDScene):
         self.space.move_to(self.capacitor_2d.get_left()).set_z(
             self.capacitor_2d.get_center()[2] - self.capacitor_2d.depth / 2)
         self.capacitor_3d.move_to(self.plane.c2p(0, 0, 0))
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
 
         self.add(self.space)
         self.move_camera_comp(phi=90 * DEGREES, theta=210 * DEGREES, gamma=0,
                               frame_center=self.plane.get_center() + OUT * 2.8,
                               zoom=1)
-
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(self.field), self.spring_system_2d[0].oscillate(1, about_edge=OUT))
         self.play(self.spring_system_2d[0].oscillate(0.25, about_edge=OUT, amplitude=2.2, new_oscillate=False))
@@ -827,21 +838,23 @@ class TheoryToPracti(ThreeDScene):
                               frame_center=self.drum.get_center() + self.axes.c2p(
                                   *(self.drum.d_0 * OUT)) * 0.12 + LEFT * 0.34,
                               zoom=4.1)
-
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(ReplacementTransform(self.drum_2d, self.drum),
                   ReplacementTransform(self.capacitor_2d, self.capacitor_3d))
-
+        self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         new_d_0 = drum.R * 0.17
         self.play(drum.animate.set_z(self.axes.c2p(*(new_d_0 * OUT))[2]))
         drum.d_0 = new_d_0
-        self.my_next_section(type=pst.SUB_NORMAL)
+        self.wait(0.4)
+        self.my_next_section(type=pst.SUB_COMPLETE_LOOP)
         self.play(drum.vibrate(1))
-        self.wait(0.0001)
+        self.wait(0.001)
         self.my_next_section("Vibrate drum", pst.SUB_SKIP)
         self.play(drum.vibrate(0.25))
-        self.play(Unwrite(self.space), Unwrite(drum), Unwrite(self.capacitor_3d))
+        self.play(Unwrite(drum))
+        self.play(Unwrite(self.capacitor_3d), Unwrite(self.space))
         self.wait(0.1)
 
     def draw_spring_system(self):
@@ -873,6 +886,7 @@ class FirstSimuTry(ThreeDScene):
     def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
                         skip_animations: bool = False):
         if PRESENTATION_MODE:
+            self.wait(0.3)
             self.next_section(name, type, skip_animations)
         else:
             self.wait()
@@ -957,7 +971,6 @@ class FirstSimuTry(ThreeDScene):
         self.remove_at_end += omega_mech_graph
         self.remove_at_end += omega_mech_label
 
-        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Create(time_marker))
         self.remove_at_end += time_marker
         self.play(t.animate.set_value(2 * PI / omega_mech))
@@ -1070,9 +1083,10 @@ class DissipationDilution(Scene):
         self.wait(0.1)
 
     def play_parallel_shift(self):
+        self.wait(0.1)
         self.my_next_section(type=pst.SUB_COMPLETE_LOOP)
         self.play(self.mass.oscillate(1, oscillate_direction=RIGHT))
-        self.wait(0.00001)
+        self.wait(0.001)
         self.my_next_section(type=pst.SUB_SKIP)
         self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
 
@@ -1089,10 +1103,11 @@ class DissipationDilution(Scene):
         labels = VGroup(x_label, l_0_label, delta_x_label)
         braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
         self.play(Write(labels), Write(braces))
-
+        self.wait(0.2)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(labels), Unwrite(braces))
         self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
+        self.wait(0.2)
         self.my_next_section(type=pst.SUB_NORMAL)
 
     def play_vertical_shift(self):
@@ -1223,16 +1238,18 @@ class Results(Scene):
         self.play(FadeIn(t0))
 
 
-scenes_lst = [IntroSummary, IntroSummary2, IntroSummary3, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry,
-              ComsolEigenmodes, DissipationDilution, Comsol, Results]
+scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
+              ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results]
 # scenes_lst = [IntroSummary3]
 
 for sc in scenes_lst:
-    disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
-    quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-    quality = "low_quality"
-
-    with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
-                     "save_sections": True, "disable_caching": disable_caching}):
-        scene = sc()
-        scene.render()
+    try:
+        disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
+        quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
+        # quality = "low_quality"
+        with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
+                         "save_sections": True, "disable_caching": disable_caching}):
+            scene = sc()
+            scene.render()
+    except:
+        continue
