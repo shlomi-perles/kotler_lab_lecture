@@ -18,7 +18,7 @@ from spring import Spring, OscillateMobject
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
 BEAUTY_PLANE = True
-PRESENTATION_MODE = False
+PRESENTATION_MODE = True
 Z_FACTOR = 0
 
 
@@ -635,27 +635,26 @@ class EverestScene(ZoomedScene):
         # self.play()
         self.wait()
 
+
 class Comsol(Scene):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def construct(self):
         device_image = ImageMobject(str(RESOURCE_DIR / "device.png")).scale_to_fit_height(
-            config.frame_height*0.7).shift(DOWN*0.5)
-        comsol_image = ImageMobject(str(RESOURCE_DIR / "comsol.png")).scale_to_fit_height(config.frame_height*0.6)
+            config.frame_height * 0.7).shift(DOWN * 0.5)
+        comsol_image = ImageMobject(str(RESOURCE_DIR / "comsol.png")).scale_to_fit_height(config.frame_height * 0.6)
         mesh_image = ImageMobject(str(RESOURCE_DIR / "mesh.png"))
         title1 = Text("Complicated Physics...").scale_to_fit_width(config.frame_width * 0.5).to_edge(UP).scale(1.3)
         title2 = Text("Solution:").to_edge(UP).scale(1.3)
         self.play(Write(title1), FadeIn(device_image.scale_to_fit_height((title1.get_bottom()[1] -
-                                                                                    config.bottom[1]) * 0.8)))
+                                                                          config.bottom[1]) * 0.8)))
         self.next_section(pst.SUB_NORMAL)
         self.play(Unwrite(title1, run_time=0.1), FadeOut(device_image))
         self.play(Write(title2), FadeIn(comsol_image))
         self.next_section(pst.SUB_NORMAL)
-        self.play(comsol_image.animate.shift(LEFT*3), FadeIn(mesh_image.shift(RIGHT*3).scale_to_fit_height(
+        self.play(comsol_image.animate.shift(LEFT * 3), FadeIn(mesh_image.shift(RIGHT * 3).scale_to_fit_height(
             device_image.height)))
-
-
 
 
 class Results(Scene):
@@ -675,11 +674,12 @@ class Results(Scene):
             row_labels=[MathTex("freq = ___"), MathTex("R2")],
             col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
             top_left_entry=Text("TOP")).scale(0.5)
-        t0.add_highlighted_cell((2,2), color=GREEN)
+        t0.add_highlighted_cell((2, 2), color=GREEN)
         title = Text("Results")
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(1)
         self.play(FadeIn(t0))
+
 
 class HistoryBrief(Scene):
     def __init__(self, **kwargs):
@@ -764,16 +764,17 @@ class HistoryBrief(Scene):
                       "Andrew N. "
                       "Cleland").set_color_by_tex("2010:  ", YELLOW).center()
         self.play(Write(cleland))
-        self.play(FadeOut(self.ion), FadeIn(self.cleland), sub_title.animate.next_to(self.scailing_line.get_tick_marks()[
-                                                                                         self.num_to_idx[-5]], UP,
-                                                                                     buff=0))
-
+        self.play(FadeOut(self.ion), FadeIn(self.cleland),
+                  sub_title.animate.next_to(self.scailing_line.get_tick_marks()[
+                                                self.num_to_idx[-5]], UP,
+                                            buff=0))
 
         self.next_section(pst.SUB_NORMAL)
         self.play(Unwrite(cleland))
         # sub_title.shift(RIGHT*0.6)
         # self.cleland.shift(RIGHT*0.6)
         self.s = sub_title
+
     # def play_cleland_phase(self):
     #     title = Tex("2010:  ", "Andrew N. Cleland - Superposition in macro-mechanical device").set_color_by_tex(
     #         "2010:  ", YELLOW)
@@ -802,14 +803,15 @@ class HistoryBrief(Scene):
             image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
         self.play(FadeIn(self.ion))
+
     # def play_two_slits(self):
 
-        # random_particles = [a for a in self.ion[1]]
-        # random.shuffle(random_particles)
-        # for particle in random_particles:
-        #     self.play(FadeIn(particle), run_time=0.2)
-        # for particle in self.ion[1]:
-        #     self.play(FadeIn(particle), run_time=0.1)
+    # random_particles = [a for a in self.ion[1]]
+    # random.shuffle(random_particles)
+    # for particle in random_particles:
+    #     self.play(FadeIn(particle), run_time=0.2)
+    # for particle in self.ion[1]:
+    #     self.play(FadeIn(particle), run_time=0.1)
 
     def create_bohr_orbits(self):
         levels = [self.balmer(x) for x in range(2, 6)]
@@ -880,10 +882,10 @@ class SpringScene(Scene):
         self.play_capacitor_addition()
         self.play_electric_coupling()
         self.play_g0()
-        self.play(Uncreate(self.force_e), Uncreate(self.mech_force))
         self.play(self.group_optomechanic_system.animate.center().scale_to_fit_width(config.frame_width * 0.8))
+        self.play(self.group_optomechanic_system.animate.stretch_to_fit_height(self.system.height * 2))
         self.play(self.spring.oscillate(0.25))
-        # self.play(Uncreate(self.group_optomechanic_system))
+        self.play(Uncreate(self.force_e), Uncreate(self.mech_force))
         self.wait(0.1)
 
     def play_spring_intro(self):
@@ -1512,8 +1514,9 @@ class DissipationDilution(Scene):
         left_spring.add_updater(update_spring)
 
 
-# # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, g0Scene, FirstSimuTry, SimulationRoad,DissipationDilution,TheoryToPracti]
-scenes_lst = [SpringScene]
+scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry, DissipationDilution, Comsol,
+              Results]
+# scenes_lst = [SpringScene]
 for sc in scenes_lst:
     disable_caching = sc in {DissipationDilution, TheoryToPracti}
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
