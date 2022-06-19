@@ -18,7 +18,7 @@ from spring import Spring, OscillateMobject
 FAST_RENDER = True
 ROTATE_SCENE = False if FAST_RENDER else True
 BEAUTY_PLANE = True
-PRESENTATION_MODE = True
+PRESENTATION_MODE = False
 Z_FACTOR = 0
 
 
@@ -693,17 +693,20 @@ class HistoryBrief(Scene):
             self.wait()
 
     def construct(self):
+        self.mob_remove_at_end = VGroup()
+        self.images_remove_at_end = Group()
         self.build_scene()
         self.play_bohr_phase()
-        self.play_two_slits_phase()
+        self.play_cleland_phase()
         self.play_kotler_phase()
+        self.play(FadeOut(self.images_remove_at_end), Uncreate(self.mob_remove_at_end))
         self.wait(0.1)
 
     def build_scene(self):
         self.main_title = Text("Quantum's Phenomenons & Orders of Magnitude: Main History Phases").scale_to_fit_width(
             config.frame_width * 0.9)
+        self.mob_remove_at_end += self.main_title
         self.play(Write(self.main_title))
-        self.wait()
         self.my_next_section("Quantum's Orders")
         self.play(self.main_title.animate.scale(0.95).to_edge(UP))
         self.tick_scale = 2.5
@@ -717,6 +720,7 @@ class HistoryBrief(Scene):
                                         numbers_with_elongated_ticks=list(self.num_to_idx.keys()),
                                         numbers_to_include=list(self.num_to_idx.keys())
                                         ).to_edge(DOWN, buff=0.7)
+        self.mob_remove_at_end += self.scailing_line
         self.play(Create(self.scailing_line))
 
     def next_part(self, title, order):
@@ -744,74 +748,64 @@ class HistoryBrief(Scene):
         title = Tex("1900 - 1913:  ", "Ultraviolet catastrophe and Bohr's Model").set_color_by_tex("1900 - 1913:  ",
                                                                                                    YELLOW)
         sub_title = Tex("Quantization")
+        self.mob_remove_at_end += sub_title
         tick, label = self.next_part(title, -10)
         self.create_bohr_orbits()
-        self.next_section(pst.SUB_COMPLETE_LOOP)
+        self.mob_remove_at_end += self.bohr_model
+        self.my_next_section("Bohr's phase", pst.SUB_COMPLETE_LOOP)
         self.play_bohr_orbits()
         self.end_part(title, sub_title, tick, label, self.bohr_model)
 
-    def play_two_slits_phase(self):
+    def play_cleland_phase(self):
         title = Tex("1978:  ", "David J. Wineland - Superposition in trapped ions").set_color_by_tex("1978:  ", YELLOW)
         sub_title = Tex("Superposition")
+        self.mob_remove_at_end += sub_title
         tick, label = self.next_part(title, -8)
         self.create_ion()
+        self.images_remove_at_end += self.ion
+        self.my_next_section("End ion", pst.SUB_NORMAL)
+
         # self.play_two_slits()
         self.end_part(title, sub_title, tick, label, self.ion)
         self.cleland = ImageMobject(str(RESOURCE_DIR / "cleland.png")).match_height(self.ion).match_width(
             self.ion).next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP)
-        self.next_section(pst.SUB_NORMAL)
+        self.images_remove_at_end += self.cleland
+        self.my_next_section("End ion", pst.SUB_NORMAL)
+
         cleland = Tex("2010:  ",
                       "Andrew N. "
                       "Cleland").set_color_by_tex("2010:  ", YELLOW).center()
+        sub_title2 = sub_title.copy()
+        self.mob_remove_at_end += sub_title2
         self.play(Write(cleland))
-        self.play(FadeOut(self.ion), FadeIn(self.cleland),
-                  sub_title.animate.next_to(self.scailing_line.get_tick_marks()[
-                                                self.num_to_idx[-5]], UP,
-                                            buff=0))
+        self.add(sub_title2)
+        self.play(FadeIn(self.cleland),
+                  sub_title2.animate.next_to(self.scailing_line.get_tick_marks()[
+                                                 self.num_to_idx[-5]], UP,
+                                             buff=0))
 
-        self.next_section(pst.SUB_NORMAL)
+        self.my_next_section("End cleland", pst.SUB_NORMAL)
         self.play(Unwrite(cleland))
-        # sub_title.shift(RIGHT*0.6)
-        # self.cleland.shift(RIGHT*0.6)
         self.s = sub_title
-
-    # def play_cleland_phase(self):
-    #     title = Tex("2010:  ", "Andrew N. Cleland - Superposition in macro-mechanical device").set_color_by_tex(
-    #         "2010:  ", YELLOW)
 
     def play_kotler_phase(self):
         title = Tex("2021:  ", "Macroscopic entanglement of mechanical devices").set_color_by_tex("2021:  ", YELLOW)
         sub_title = Tex("Entanglement")
         tick, label = self.next_part(title, -5)
         self.create_kotler_image()
+        self.play(FadeIn(self.drums_photo))
         self.play(Write(self.kotler_image[0]))
         self.play(FadeIn(self.kotler_image[1]))
         self.play(FadeOut(self.cleland), Uncreate(self.s))
-        self.end_part(title, sub_title, tick, label, self.kotler_image)
+        # self.end_part(title, sub_title, tick, label, self.kotler_image)
 
     def create_ion(self):
         ion = ImageMobject(str(RESOURCE_DIR / "ion.png"))
-        # statistic_particles = SVGMobject(str(RESOURCE_DIR / "statistic_particles.svg"))
-        # slits_lines = SVGMobject(str(RESOURCE_DIR / "slits_lines.svg")).scale_to_fit_height(ion.height).next_to(
-        #     ion.get_right(), LEFT,
-        #     buff=0)
-        # statistic_particles.scale_to_fit_width(ion[-1].width * 0.8).next_to(ion.get_right(), LEFT,
-        #                                                                           buff=0.04)
-
         image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
         self.ion = ion.scale_to_fit_height(
             image_size * 0.8).set_y(
             self.cur_title.get_bottom()[1] - image_size / 2)
         self.play(FadeIn(self.ion))
-
-    # def play_two_slits(self):
-
-    # random_particles = [a for a in self.ion[1]]
-    # random.shuffle(random_particles)
-    # for particle in random_particles:
-    #     self.play(FadeIn(particle), run_time=0.2)
-    # for particle in self.ion[1]:
-    #     self.play(FadeIn(particle), run_time=0.1)
 
     def create_bohr_orbits(self):
         levels = [self.balmer(x) for x in range(2, 6)]
@@ -845,11 +839,16 @@ class HistoryBrief(Scene):
             self.play(MoveAlongPath(orbit_particle, self.orbits[n_orbit]), time_rate=linear, run_time=2)
 
     def create_kotler_image(self):
+        image_size = self.cur_title.get_bottom()[1] - self.ion.get_top()[1]
+        self.drums_photo = ImageMobject(str(RESOURCE_DIR / "drums_photo.png")).scale_to_fit_height(
+            image_size * 0.8).set_y(
+            self.cur_title.get_bottom()[1] - image_size / 2)
+        self.images_remove_at_end += self.drums_photo
         winners_svg = SVGMobject(str(RESOURCE_DIR / "winners.svg"), width=4, stroke_color=WHITE)
         kotler_face = ImageMobject(str(RESOURCE_DIR / "kotler_face.png")).to_edge(winners_svg.get_top()).scale(1.5)
-        image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
-        self.kotler_image = Group(winners_svg, kotler_face).scale_to_fit_height(image_size * 0.8).set_y(
+        self.kotler_image = Group(winners_svg, kotler_face).scale_to_fit_height(image_size * 0.4).set_y(
             self.cur_title.get_bottom()[1] - 0.7 * image_size / 2)
+        self.images_remove_at_end += self.kotler_image
 
     @staticmethod
     def balmer(n):
@@ -883,7 +882,8 @@ class SpringScene(Scene):
         self.play_electric_coupling()
         self.play_g0()
         self.play(self.group_optomechanic_system.animate.center().scale_to_fit_width(config.frame_width * 0.8))
-        self.play(self.group_optomechanic_system.animate.stretch_to_fit_height(self.system.height * 2))
+        self.new_sys = get_spring_system().scale_to_fit_width(config.frame_width * 0.8)
+        self.play(TransformMatchingShapes(self.group_optomechanic_system, self.new_sys))
         self.play(self.spring.oscillate(0.25))
         self.play(Uncreate(self.force_e), Uncreate(self.mech_force))
         self.wait(0.1)
@@ -1516,7 +1516,7 @@ class DissipationDilution(Scene):
 
 scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, FirstSimuTry, DissipationDilution, Comsol,
               Results]
-# scenes_lst = [SpringScene]
+scenes_lst = [HistoryBrief]
 for sc in scenes_lst:
     disable_caching = sc in {DissipationDilution, TheoryToPracti}
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
