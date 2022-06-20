@@ -1157,18 +1157,20 @@ class Results(Scene):
         #     row_labels=[Text("freq = ___"), Text("R2")],
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
+        self.next_section("Results", pst.NORMAL)
         t0 = MathTable([["Analytical\hspace{1em}g_{0}", "Numerical\hspace{1em}g_{0}",
                          "Observed\hspace{1em}g_{0}", r"\%\frac{Numeric}{Observed}"], ["4", "5",
-                                                                                                         "6", "7"]],
+                                                                                       "6", "7"]],
                        include_outer_lines=True, element_to_mobject=MathTex
                        ).scale(0.7)
         for i in range(4):
-            t0.add_highlighted_cell((1,i), color=GREEN)
-            t0.add_highlighted_cell((0,i), color=BLUE)
-        title = Text("Results")
+            t0.add_highlighted_cell((1, i), color=GREEN)
+            t0.add_highlighted_cell((0, i), color=BLUE)
+        title = Text("Results").scale_to_fit_width(config.frame_width * 0.3)
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(1)
         self.play(FadeIn(t0))
+        self.wait(0.4)
 
 
 class Conclusion(Scene):
@@ -1176,24 +1178,27 @@ class Conclusion(Scene):
         super().__init__(**kwargs)
 
     def construct(self):
-        title = Text("Conclusion:")
-        blist = BulletedList("Developing theory and analytics behind the study",
-                             "Simulation of realistic physics - not what we thought",
-                             "Results - The project was completed for a basic case", height=13, width=13)
+        self.next_section("Conclusion")
+        title = Text("Conclusion:").scale_to_fit_width(config.frame_width * 0.5)
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(0.5)
+        blist = BulletedList(" Developing theory and analytics equations.",
+                             r" Simulation $\neq$ Magic Box.",
+                             " Results.", height=13, width=13, buff=0.6).next_to(title, DOWN, buff=1.5)
         self.play(Create(blist))
+        self.wait(0.5)
 
 
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results, Conclusion]
-scenes_lst = [Results]
 
+scenes_lst = [IntroSummary, HistoryBrief, TheoryToPracti, Comsol, Results, Conclusion]
+scenes_lst = [Results]
 for sc in scenes_lst:
     # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-    # quality = "low_quality"
+    quality = "low_quality"
     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media", "save_sections": True,
                      "disable_caching": disable_caching}):
         scene = sc()
