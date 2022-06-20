@@ -104,7 +104,7 @@ class IntroSummary(ThreeDScene):
         #     Tex("Outline", ":"),
         #     Tex("What next?")).arrange(DOWN)
         part_3_title = Tex("What next?")
-        part_3_sub = part_3_title
+        part_3_sub = part_3_title.copy()
         part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
         self.next_part(part_3_title, part_3_sub, image=part_3_img)
         self.my_next_section("End Intro", pst.SUB_NORMAL)
