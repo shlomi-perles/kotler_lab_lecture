@@ -19,17 +19,10 @@ Z_FACTOR = 0
 def draw_wall(pivot_mobject: Mobject, wall_len=2):
     color = WHITE
     wall = VGroup(
-        DashedLine(
-            start=wall_len * LEFT * 0.95,
-            end=(wall_len) * RIGHT * 0.95,
-            dashed_ratio=1.3,
-            dash_length=0.6,
-            color=GREY, stroke_width=8
-        ).shift(pivot_mobject.get_start()[1] * UP)
-    )
+        DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
+            color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
     [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
-    wall.add(
-        Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
+    wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
     return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
@@ -41,8 +34,7 @@ def get_electric_field_capac(capacitor, mass):
     x_additions = np.array([0.4, -1])
     field_x_range = np.array([capacitor.get_right()[0], mass.get_left()[0]])
     field_y_range = np.array([mass.get_bottom()[1], mass.get_top()[1]])
-    return ArrowVectorField(lambda pos: LEFT * size, color=color,
-                            x_range=(field_x_range + x_additions).tolist(),
+    return ArrowVectorField(lambda pos: LEFT * size, color=color, x_range=(field_x_range + x_additions).tolist(),
                             y_range=(field_y_range + y_additions).tolist())
 
 
@@ -52,13 +44,12 @@ def get_spring_system():
     spring.set_color(YELLOW)
     wall = draw_wall(spring.right_spring)
     # VGroup(wall, spring).to_edge(RIGHT)
-    mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE,
-                     fill_opacity=0.6).next_to(spring.get_start(), LEFT, buff=0)
+    mass = Rectangle(height=wall.height, width=1, fill_color=BLUE, stroke_color=BLUE, fill_opacity=0.6).next_to(
+        spring.get_start(), LEFT, buff=0)
     capacitor = Rectangle(height=mass.height, width=mass.width * 0.3, color=LIGHT_BROWN, fill_opacity=0.9,
                           stroke_opacity=1)
     capacitor.move_to(
-        np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (
-            np.abs(mass.get_x() - wall.get_left()[0])))
+        np.array([mass.get_x(), mass.get_y(), 0]) + LEFT * 1.4 * (np.abs(mass.get_x() - wall.get_left()[0])))
     electric_field = get_electric_field_capac(capacitor, mass)
     omega_mech_tex = MathTex(r"\Omega_{mech}").next_to(spring.get_top(), UP, buff=1.4).scale(1.5)
     omega_lc_tex = MathTex(r"\omega_{LC}").next_to(electric_field.get_top(), UP).scale(1.5).match_y(omega_mech_tex)
@@ -72,8 +63,7 @@ class IntroSummary(ThreeDScene):
         self.parts_num = 3
         self.current_part = 0
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -97,9 +87,7 @@ class IntroSummary(ThreeDScene):
         part_1_img = SVGMobject(str(RESOURCE_DIR / "coupling_drums.svg"))
         self.next_part(part_1_title, part_1_sub, image=part_1_img, first=True)
 
-        part_2_title = VGroup(
-            Tex("Our ", "Project", ":"),
-            Tex("Simulate MEMS Resonators")).arrange(DOWN)
+        part_2_title = VGroup(Tex("Our ", "Project", ":"), Tex("Simulate MEMS Resonators")).arrange(DOWN)
         part_2_sub = Tex("Project")
         part_2_image = self.get_drum()
         self.next_part(part_2_title, part_2_sub, drum=True, image=part_2_image, include_end=False)
@@ -112,15 +100,16 @@ class IntroSummary(ThreeDScene):
             self.play(part_2_image.vibrate(0.25))
         self.end_part(part_2_title, part_2_sub, part_2_image)
 
-        part_3_title = VGroup(
-            Tex("Outline", ":"),
-            Tex("What next?")).arrange(DOWN)
-        part_3_sub = Tex("Outline")
+        # part_3_title = VGroup(
+        #     Tex("Outline", ":"),
+        #     Tex("What next?")).arrange(DOWN)
+        part_3_title = Tex("What next?")
+        part_3_sub = part_3_title
         part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
         self.next_part(part_3_title, part_3_sub, image=part_3_img)
         self.my_next_section("End Intro", pst.SUB_NORMAL)
-        self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img),
-                  Unwrite(part_1_sub), Unwrite(part_2_sub), Unwrite(part_3_sub))
+        self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img), Unwrite(part_1_sub),
+                  Unwrite(part_2_sub), Unwrite(part_3_sub))
         self.wait(0.5)
 
     def next_part(self, title, sub_title: Tex, drum=False, image=None, include_end=True, first=False):
@@ -173,9 +162,8 @@ class IntroSummary(ThreeDScene):
         axes = ThreeDAxes()
         R_factor = axes.x_length * 0.2
         reso = [37, 37] if PRESENTATION_MODE else [3, 3]
-        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2,
-                    d_0=0, amplitude=R_factor * 0.7 * 0.8, z_index=Z_FACTOR + 4,
-                    stroke_width=1, stroke_color=BLUE_A, resolution=reso)
+        drum = Drum(bessel_order=1, mode=2, axes=axes, R=R_factor * 2, d_0=0, amplitude=R_factor * 0.7 * 0.8,
+                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A, resolution=reso)
         return drum
 
     def drum_scailing(self, drum, title):
@@ -194,8 +182,7 @@ class IntroSummary(ThreeDScene):
     def make_progress_bar(self, scale_bar=2):  # only setting up the mobjects
         dots = VGroup(*[Dot(z_index=3) for _ in range(self.parts_num)], z_index=0)
         dots.arrange(buff=(config["frame_width"] * 0.6) / (scale_bar * (self.parts_num - 1))).scale(
-            scale_bar).set_color(
-            BLUE)
+            scale_bar).set_color(BLUE)
         dots[0].set_color(ORANGE)
         dots[-1].set_color(ORANGE)
         moving_dot = Dot(color=ORANGE, z_index=4).scale(2.5)
@@ -222,8 +209,7 @@ class HistoryBrief(Scene):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -251,13 +237,10 @@ class HistoryBrief(Scene):
         start = -12
         end = -4
         self.num_to_idx = {num: idx for idx, num in enumerate(range(start, end + 1))}
-        self.scailing_line = NumberLine(scaling=LogBase(),
-                                        x_range=[start, end, 1],
-                                        length=config.frame_width * 0.75,
+        self.scailing_line = NumberLine(scaling=LogBase(), x_range=[start, end, 1], length=config.frame_width * 0.75,
                                         # include_tip=True,
                                         numbers_with_elongated_ticks=list(self.num_to_idx.keys()),
-                                        numbers_to_include=list(self.num_to_idx.keys())
-                                        ).to_edge(DOWN, buff=0.7)
+                                        numbers_to_include=list(self.num_to_idx.keys())).to_edge(DOWN, buff=0.7)
         self.mob_remove_at_end += self.scailing_line
         self.play(Create(self.scailing_line))
 
@@ -292,7 +275,7 @@ class HistoryBrief(Scene):
         tick, label = self.next_part(title, -10)
         self.create_bohr_orbits()
         self.mob_remove_at_end += self.bohr_model
-        self.my_next_section("Bohr's phase", pst.SUB_COMPLETE_LOOP)
+        self.my_next_section("Bohr's phase", pst.SUB_NORMAL)
         self.play_bohr_orbits()
         self.end_part(title, sub_title, tick, label, self.bohr_model)
 
@@ -311,17 +294,14 @@ class HistoryBrief(Scene):
             self.ion).next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP)
         self.images_remove_at_end.add(self.cleland)
 
-        cleland = Tex("2010:  ",
-                      "Andrew N. "
-                      "Cleland").set_color_by_tex("2010:  ", YELLOW).center()
+        cleland = Tex("2010:  ", "Andrew N. "
+                                 "Cleland").set_color_by_tex("2010:  ", YELLOW).center()
         sub_title2 = sub_title.copy()
         self.mob_remove_at_end += sub_title2
         self.play(Write(cleland))
         self.add(sub_title2)
         self.play(FadeIn(self.cleland),
-                  sub_title2.animate.next_to(self.scailing_line.get_tick_marks()[
-                                                 self.num_to_idx[-5]], UP,
-                                             buff=0))
+                  sub_title2.animate.next_to(self.scailing_line.get_tick_marks()[self.num_to_idx[-5]], UP, buff=0))
 
         self.my_next_section("End cleland", pst.SUB_NORMAL)
         self.play(Unwrite(cleland))
@@ -335,16 +315,14 @@ class HistoryBrief(Scene):
         self.create_kotler_image()
         self.play(FadeIn(self.drums_photo), run_time=0.5)
         self.play(Write(self.kotler_image[0]))
-        self.play(FadeIn(self.kotler_image[1]))
-        # self.play(FadeOut(self.cleland), Uncreate(self.s))
-        # self.end_part(title, sub_title, tick, label, self.kotler_image)
+        self.play(FadeIn(self.kotler_image[
+                             1]))  # self.play(FadeOut(self.cleland), Uncreate(self.s))  # self.end_part(title,
+        # sub_title, tick, label, self.kotler_image)
 
     def create_ion(self):
         ion = ImageMobject(str(RESOURCE_DIR / "ion.png"))
         image_size = self.cur_title.get_bottom()[1] - self.scailing_line.get_top()[1]
-        self.ion = ion.scale_to_fit_height(
-            image_size * 0.8).set_y(
-            self.cur_title.get_bottom()[1] - image_size / 2)
+        self.ion = ion.scale_to_fit_height(image_size * 0.8).set_y(self.cur_title.get_bottom()[1] - image_size / 2)
         self.play(FadeIn(self.ion))
 
     def create_bohr_orbits(self):
@@ -381,8 +359,7 @@ class HistoryBrief(Scene):
     def create_kotler_image(self):
         image_size = self.cur_title.get_bottom()[1] - self.ion.get_top()[1]
         self.drums_photo = ImageMobject(str(RESOURCE_DIR / "drums_photo.png")).scale_to_fit_height(
-            image_size * 0.8).set_y(
-            self.cur_title.get_bottom()[1] - image_size / 2)
+            image_size * 0.8).set_y(self.cur_title.get_bottom()[1] - image_size / 2)
         self.images_remove_at_end.add(self.drums_photo)
         winners_svg = SVGMobject(str(RESOURCE_DIR / "winners.svg"), width=4, stroke_color=WHITE)
         kotler_face = ImageMobject(str(RESOURCE_DIR / "kotler_face.png")).to_edge(winners_svg.get_top()).scale(1.5)
@@ -406,8 +383,7 @@ class SpringScene(Scene):
         self.arrows_dist = DOWN * 0.36
         self.arrows_buff = 0.1
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -513,11 +489,10 @@ class SpringScene(Scene):
         eq1 = MathTex("F_{E}", "=", "Q", "E").next_to(self.group_optomechanic_system.get_bottom(), DOWN,
                                                       buff=1).set_color_by_tex("F_{E}", BLUE)
         eq2 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d}").move_to(eq1).set_color_by_tex("F_{E}", BLUE)
-        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(
-            eq2).set_color_by_tex(
+        eq3 = MathTex("F_{E}", "=", "Q", r"\frac{V}{d_{0}+x}", substrings_to_isolate="x").move_to(eq2).set_color_by_tex(
             "F_{E}", BLUE)
-        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(
-            eq3).set_color_by_tex("F_{E}", BLUE)
+        eq4 = MathTex("F_{E}", "=", "Q", r"\frac{V}{x}", substrings_to_isolate="x").move_to(eq3).set_color_by_tex(
+            "F_{E}", BLUE)
         self.play(Write(eq1))
         self.wait(0.5)
         self.play(Create(self.force_e))
@@ -530,8 +505,8 @@ class SpringScene(Scene):
         self.play(TransformMatchingTex(eq3, eq4))
         self.my_next_section(type=pst.SUB_NORMAL)
 
-        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex(
-            "F_{mech}", GREEN)
+        eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex("F_{mech}",
+            GREEN)
         self.mech_force = self.get_mech_force()
         self.play(Write(eq_mech), Create(self.mech_force))
         self.group_optomechanic_system += self.mech_force
@@ -672,24 +647,16 @@ class SpringScene(Scene):
         x_additions = np.array([0.4, -1])
         field_x_range = np.array([self.capacitor.get_right()[0], self.mass.get_left()[0]])
         field_y_range = np.array([self.mass.get_bottom()[1], self.mass.get_top()[1]])
-        return ArrowVectorField(lambda pos: LEFT * size, color=color,
-                                x_range=(field_x_range + x_additions).tolist(),
+        return ArrowVectorField(lambda pos: LEFT * size, color=color, x_range=(field_x_range + x_additions).tolist(),
                                 y_range=(field_y_range + y_additions).tolist())
 
     def draw_wall(self, pivot_mobject: Mobject, wall_len=2):
         color = WHITE
         wall = VGroup(
-            DashedLine(
-                start=wall_len * LEFT * 0.95,
-                end=(wall_len) * RIGHT * 0.95,
-                dashed_ratio=1.3,
-                dash_length=0.6,
-                color=GREY, stroke_width=8
-            ).shift(pivot_mobject.get_start()[1] * UP)
-        )
+            DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
+                color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
         [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
-        wall.add(
-            Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
+        wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
         return wall.rotate(-PI / 2).next_to(pivot_mobject.get_right(), RIGHT, buff=0)
 
@@ -710,13 +677,9 @@ class TheoryToPracti(ThreeDScene):
             self.renderer = OpenGLRenderer()
 
         else:
-            self.renderer = CairoRenderer(
-                camera_class=self.camera_class,
-                skip_animations=self.skip_animations,
-            )
+            self.renderer = CairoRenderer(camera_class=self.camera_class, skip_animations=self.skip_animations, )
 
-        low_quality_config = {
-            "camera_config": {"should_apply_shading": False},
+        low_quality_config = {"camera_config": {"should_apply_shading": False},
             "three_d_axes_config": dict(num_axis_pieces=1, **self.three_d_axes_config)}
         super().__init__(three_d_axes_config=self.three_d_axes_config, low_quality_config=low_quality_config, **kwargs)
 
@@ -726,18 +689,14 @@ class TheoryToPracti(ThreeDScene):
         factor_range = factor * 1
         factor_range = factor * 2
         addition = 0.5 if BEAUTY_PLANE else 0
-        self.basic_coords_config = {
-            "x_range": (
-                -round(config["frame_y_radius"] * factor_range) - addition - epsilon,
-                round(config["frame_y_radius"] * factor_range) + addition + epsilon),
-            "y_range": (
-                -round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
-                round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
+        self.basic_coords_config = {"x_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,
+                                                round(config["frame_y_radius"] * factor_range) + addition + epsilon),
+            "y_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
+                        round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
             "x_length": round(config["frame_height"] * factor), "y_length": round(config["frame_height"] * factor)}
         self.three_d_axes_config = dict(stroke_opacity=0.4,
-                                        axis_config=dict(stroke_width=2, include_ticks=False,
-                                                         include_tip=False, line_to_number_buff=SMALL_BUFF,
-                                                         label_direction=DR,
+                                        axis_config=dict(stroke_width=2, include_ticks=False, include_tip=False,
+                                                         line_to_number_buff=SMALL_BUFF, label_direction=DR,
                                                          font_size=24), **self.basic_coords_config)
 
     def get_axes(self) -> ThreeDAxes:
@@ -771,9 +730,8 @@ class TheoryToPracti(ThreeDScene):
         R_factor = self.plane.p2c([self.drum_2d.height / 2, 0, 0])[0]
         drum = Drum(bessel_order=1, mode=2, axes=self.axes, R=R_factor,
                     d_0=self.axes.p2c(self.drum_2d.get_left() - self.drum_2d.depth / 2 * OUT)[2],
-                    amplitude=R_factor * 0.3 * 0.8,
-                    z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A, resolution=self.reso, sheen_factor=0.5,
-                    sheen_direction=self.axes.c2p(*(DOWN * 4)))
+                    amplitude=R_factor * 0.3 * 0.8, z_index=Z_FACTOR + 4, stroke_width=1, stroke_color=BLUE_A,
+                    resolution=self.reso, sheen_factor=0.5, sheen_direction=self.axes.c2p(*(DOWN * 4)))
         return drum
 
     def move_camera_comp(self, **kwargs):
@@ -788,12 +746,9 @@ class TheoryToPracti(ThreeDScene):
     def get_camera_position(self):
         if config.renderer == "opengl":
             return [75 * DEGREES, -30 * DEGREES, 0]
-        return dict(phi=self.camera.get_phi(),
-                    theta=self.camera.get_theta(),
-                    zoom=self.camera.get_zoom())
+        return dict(phi=self.camera.get_phi(), theta=self.camera.get_theta(), zoom=self.camera.get_zoom())
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -815,8 +770,7 @@ class TheoryToPracti(ThreeDScene):
 
         self.add(self.space)
         self.move_camera_comp(phi=90 * DEGREES, theta=210 * DEGREES, gamma=0,
-                              frame_center=self.plane.get_center() + OUT * 2.8,
-                              zoom=1)
+                              frame_center=self.plane.get_center() + OUT * 2.8, zoom=1)
         self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(self.field), self.spring_system_2d[0].oscillate(1, about_edge=OUT))
@@ -830,8 +784,7 @@ class TheoryToPracti(ThreeDScene):
         self.drum = drum
         self.move_camera_comp(phi=81 * DEGREES, theta=222 * DEGREES,
                               frame_center=self.drum.get_center() + self.axes.c2p(
-                                  *(self.drum.d_0 * OUT)) * 0.12 + LEFT * 0.34,
-                              zoom=4.1)
+                                  *(self.drum.d_0 * OUT)) * 0.12 + LEFT * 0.34, zoom=4.1)
         self.wait(0.4)
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(ReplacementTransform(self.drum_2d, self.drum),
@@ -858,8 +811,7 @@ class TheoryToPracti(ThreeDScene):
         capacitor_2d = self.spring_system_2d[3].set_opacity(1)
         self.field = self.spring_system_2d[4]
 
-        drum_3d = Circle(radius=drum_2d.height / 2, color=drum_2d.get_fill_color(), fill_opacity=1).rotate(PI / 2,
-                                                                                                           UP)
+        drum_3d = Circle(radius=drum_2d.height / 2, color=drum_2d.get_fill_color(), fill_opacity=1).rotate(PI / 2, UP)
         drum_2d.add_updater(lambda mob1: mob1.next_to(self.spring_system_2d[0].get_start(), IN, buff=0))
         drum_3d.add_updater(lambda mob2: mob2.next_to(self.spring_system_2d[0].get_start(), IN, buff=0))
         capacitor_3d = Circle(radius=capacitor_2d.height / 2, color=capacitor_2d.get_fill_color(),
@@ -877,8 +829,7 @@ class FirstSimuTry(ThreeDScene):
         self.parts_num = 3
         self.current_part = 0
 
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.wait(0.3)
             self.next_section(name, type, skip_animations)
@@ -889,13 +840,8 @@ class FirstSimuTry(ThreeDScene):
         len_line = end[0] - start[0]
         len_line += len_line / numbers
         dt_lines = VGroup(
-            DashedLine(
-                start=start,
-                end=start + RIGHT * len_line,
-                dashed_ratio=1,
-                dash_length=(len_line / numbers),
-                color=color, stroke_width=5
-            ))
+            DashedLine(start=start, end=start + RIGHT * len_line, dashed_ratio=1, dash_length=(len_line / numbers),
+                color=color, stroke_width=5))
         [i.rotate(PI / 2, about_point=i.get_start()) for i in dt_lines[0].submobjects]
         return dt_lines
 
@@ -945,15 +891,14 @@ class FirstSimuTry(ThreeDScene):
 
         top_graph = ax.plot(lambda x: 0.9)
         t = ValueTracker(0)
-        time_marker = ax.get_T_label(x_val=t.get_value(), graph=top_graph, line_func=DashedLine,
-                                     label_color=YELLOW,
+        time_marker = ax.get_T_label(x_val=t.get_value(), graph=top_graph, line_func=DashedLine, label_color=YELLOW,
                                      line_color=YELLOW)
 
         omega_lc_label = MathTex(r"\omega_{LC}").next_to(omega_mech_graph, UL)
         omega_lc_label = VGroup(omega_lc_label, Line(color=BLUE).scale(0.4)).arrange(RIGHT).to_edge(DR, buff=1.2)
         omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
-        omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(
-            omega_lc_label, UP)
+        omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(omega_lc_label,
+            UP)
         max_mech_point = ax.c2p(PI / (omega_mech * 2), omega_mech_func(omega_mech * 2))
 
         self.play(
@@ -1012,8 +957,7 @@ class FirstSimuTry(ThreeDScene):
 
 
 class ComsolEigenmodes(Scene):
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -1026,12 +970,10 @@ class ComsolEigenmodes(Scene):
         images_eigen = Group(*[ImageMobject(str(RESOURCE_DIR / f"simulation_mode_{x}.png")) for x in range(1, 3)])
         images_eigen_side = Group(
             *[ImageMobject(str(RESOURCE_DIR / f"simulation_mode_{x}_d.png")) for x in range(1, 4)])
-        images_eigen_arrange = Group(
-            *[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen]).arrange(RIGHT).next_to(
-            title, DOWN, buff=DEFAULT_MOBJECT_TO_MOBJECT_BUFFER * 0.5)
+        images_eigen_arrange = Group(*[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen]).arrange(
+            RIGHT).next_to(title, DOWN, buff=DEFAULT_MOBJECT_TO_MOBJECT_BUFFER * 0.5)
         images_eigen_side_arrange = Group(
-            *[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen_side]).arrange(
-            RIGHT).next_to(
+            *[im.copy().scale_to_fit_height(small_image_size) for im in images_eigen_side]).arrange(RIGHT).next_to(
             images_eigen_arrange, DOWN, buff=0)
         self.my_next_section("COMSOL Eigenmodes")
         title.center()
@@ -1059,8 +1001,7 @@ class ComsolEigenmodes(Scene):
 
 
 class DissipationDilution(Scene):
-    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL,
-                        skip_animations: bool = False):
+    def my_next_section(self, name: str = "unnamed", type: str = pst.NORMAL, skip_animations: bool = False):
         if PRESENTATION_MODE:
             self.next_section(name, type, skip_animations)
         else:
@@ -1092,8 +1033,7 @@ class DissipationDilution(Scene):
                                                   np.array([x_shift_brace.get_left()[0], y_for_l_0, 0]), "l_0")
         delt_x_brace, delta_x_label = self.get_and_brace(
             np.array([self.mass.reference_point[0], self.mass.get_top()[1], 0]),
-            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]),
-            r"\Delta x", brace_color=RED, direc=UP)
+            np.array([self.mass.get_center()[0], self.mass.get_top()[1], 0]), r"\Delta x", brace_color=RED, direc=UP)
         labels = VGroup(x_label, l_0_label, delta_x_label)
         braces = VGroup(x_shift_brace, l_0_brace, delt_x_brace)
         self.play(Write(labels), Write(braces))
@@ -1108,18 +1048,15 @@ class DissipationDilution(Scene):
         self.play(self.mass.oscillate(0.75))
         y_shift_brace, y_label = self.get_and_brace(
             np.array([self.left_side[1].get_bottom()[1], self.mass.get_bottom()[1], 0]),
-            np.array([self.mass.get_bottom()[1], self.mass.get_bottom()[1], 0]),
-            r"\Delta y")
-        y_shift_brace.rotate(PI / 2).set_x(self.mass.get_right()[0] + 0.3).set_y(
-            self.left_side[1].get_bottom()[1] + (
-                    self.mass.get_bottom()[1] - self.left_side[1].get_bottom()[1]) / 2 - 0.3)
+            np.array([self.mass.get_bottom()[1], self.mass.get_bottom()[1], 0]), r"\Delta y")
+        y_shift_brace.rotate(PI / 2).set_x(self.mass.get_right()[0] + 0.3).set_y(self.left_side[1].get_bottom()[1] + (
+                self.mass.get_bottom()[1] - self.left_side[1].get_bottom()[1]) / 2 - 0.3)
         y_for_l_0 = y_shift_brace.get_bottom()[1]
 
         l_0_brace, l_0_label = self.get_and_brace(np.array([self.left_side[1].get_right()[0], y_for_l_0, 0]),
                                                   np.array([self.mass.get_center()[0], y_for_l_0, 0]), "l_0")
         delt_x_brace, delta_x_label = self.get_and_brace(self.left_side[0].get_start(), self.left_side[0].get_center(),
-                                                         r"\Delta x", brace_color=RED,
-                                                         direc=UP)
+                                                         r"\Delta x", brace_color=RED, direc=UP)
         VGroup(delt_x_brace, delta_x_label).rotate(self.left_side[0].orig_angle + PI).shift(UP * 0.2, LEFT * 0.2)
         labels = VGroup(y_label, l_0_label, delta_x_label)
         braces = VGroup(y_shift_brace, l_0_brace, delt_x_brace)
@@ -1198,14 +1135,14 @@ class Comsol(Scene):
         mesh_image = ImageMobject(str(RESOURCE_DIR / "mesh.png"))
         title1 = Text("Complicated Physics...").scale_to_fit_width(config.frame_width * 0.5).to_edge(UP).scale(1.3)
         title2 = Text("Solution:").to_edge(UP).scale(1.3)
-        self.play(Write(title1), FadeIn(device_image.scale_to_fit_height((title1.get_bottom()[1] -
-                                                                          config.bottom[1]) * 0.8)))
+        self.play(Write(title1),
+                  FadeIn(device_image.scale_to_fit_height((title1.get_bottom()[1] - config.bottom[1]) * 0.8)))
         self.next_section(pst.SUB_NORMAL)
         self.play(Unwrite(title1, run_time=0.1), FadeOut(device_image))
         self.play(Write(title2), FadeIn(comsol_image))
         self.next_section(pst.SUB_NORMAL)
-        self.play(comsol_image.animate.shift(LEFT * 3), FadeIn(mesh_image.shift(RIGHT * 3).scale_to_fit_height(
-            device_image.height)))
+        self.play(comsol_image.animate.shift(LEFT * 3),
+                  FadeIn(mesh_image.shift(RIGHT * 3).scale_to_fit_height(device_image.height)))
 
 
 class Results(Scene):
@@ -1219,10 +1156,7 @@ class Results(Scene):
         #     row_labels=[Text("freq = ___"), Text("R2")],
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
-        t0 = MathTable(
-            [["1", "2", "3"],
-             ["4", "5", "6"]],
-            row_labels=[MathTex("freq = ___"), MathTex("R2")],
+        t0 = MathTable([["1", "2", "3"], ["4", "5", "6"]], row_labels=[MathTex("freq = ___"), MathTex("R2")],
             col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
             top_left_entry=Text("TOP")).scale(0.5)
         t0.add_highlighted_cell((2, 2), color=GREEN)
@@ -1232,18 +1166,33 @@ class Results(Scene):
         self.play(FadeIn(t0))
 
 
-scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
-              ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results]
-# scenes_lst = [IntroSummary3]
+class Conclusion(Scene):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def construct(self):
+        title = Text("Conclusion:")
+        # a = Text("Developing theory and analytics behind the study")
+        # b = Text("Simulation of realistic physics - not what we thought")
+        # c = Text("Results - The project was completed for a basic case")
+        blist = BulletedList("Developing theory and analytics behind the study",
+                             "Simulation of realistic physics - not what we thought",
+                             "Results - The project was completed for a basic case", height=13, width=13)
+        self.play(Write(title), title.animate.to_edge(UP))
+        self.wait(0.5)
+        self.play(Create(blist))
+
+
+# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
+#               ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results, Conclusion]
+scenes_lst = [Conclusion]
 
 for sc in scenes_lst:
-    try:
-        disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
-        quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-        # quality = "low_quality"
-        with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media",
-                         "save_sections": True, "disable_caching": disable_caching}):
-            scene = sc()
-            scene.render()
-    except:
-        continue
+    # try:
+    disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
+    quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
+    # quality = "low_quality"
+    with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media", "save_sections": True,
+                     "disable_caching": disable_caching}):
+        scene = sc()
+        scene.render()  # except:  #     continue
