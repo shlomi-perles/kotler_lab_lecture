@@ -20,7 +20,7 @@ def draw_wall(pivot_mobject: Mobject, wall_len=2):
     color = WHITE
     wall = VGroup(
         DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
-            color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
+                   color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
     [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
     wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
@@ -118,7 +118,7 @@ class IntroSummary(ThreeDScene):
 
         if not first:
             if self.start:
-                self.play(self.moving_dot.animate.move_to(self.dots[self.current_part]), run_time=2, rate_func=linear)
+                self.play(self.moving_dot.animate.move_to(self.dots[self.current_part]), run_time=1, rate_func=linear)
                 self.wait(0.1)
             else:
                 self.moving_dot.move_to(self.dots[self.current_part])
@@ -314,9 +314,9 @@ class HistoryBrief(Scene):
         tick, label = self.next_part(title, -5, False)
         self.create_kotler_image()
         self.play(FadeIn(self.drums_photo), run_time=0.5)
-        self.play(Write(self.kotler_image[0]))
-        self.play(FadeIn(self.kotler_image[
-                             1]))  # self.play(FadeOut(self.cleland), Uncreate(self.s))  # self.end_part(title,
+        self.play(
+            AnimationGroup(Write(self.kotler_image[0], run_time=0.9), FadeIn(self.kotler_image[1], run_time=0.5),
+                           lag_ratio=0.6))
         # sub_title, tick, label, self.kotler_image)
 
     def create_ion(self):
@@ -506,7 +506,7 @@ class SpringScene(Scene):
         self.my_next_section(type=pst.SUB_NORMAL)
 
         eq_mech = MathTex("F_{mech}", "=", "-kx").next_to(eq1.get_bottom(), DOWN, buff=0.8).set_color_by_tex("F_{mech}",
-            GREEN)
+                                                                                                             GREEN)
         self.mech_force = self.get_mech_force()
         self.play(Write(eq_mech), Create(self.mech_force))
         self.group_optomechanic_system += self.mech_force
@@ -537,7 +537,7 @@ class SpringScene(Scene):
             self.system.remove(mob_d_0)
         self.play(FadeOut(self.shift_d0_info))
         self.play(self.group_optomechanic_system.animate.to_edge(DOWN, buff=0.1))
-        self.my_next_section("g0 Scene", type=pst.SUB_SKIP)
+        self.my_next_section("g0 Scene", type=pst.SUB_NORMAL)
         title_go = Tex("What is $g_{0}$?").scale_to_fit_width(config.frame_width * 0.8).next_to(
             self.group_optomechanic_system, UP, buff=1.4)
         self.play(Write(title_go))
@@ -654,7 +654,7 @@ class SpringScene(Scene):
         color = WHITE
         wall = VGroup(
             DashedLine(start=wall_len * LEFT * 0.95, end=(wall_len) * RIGHT * 0.95, dashed_ratio=1.3, dash_length=0.6,
-                color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
+                       color=GREY, stroke_width=8).shift(pivot_mobject.get_start()[1] * UP))
         [i.rotate(PI / 4, about_point=i.get_start()) for i in wall[0].submobjects]
         wall.add(Line(wall_len * LEFT, wall_len * RIGHT, color=color, stroke_width=18).align_to(wall, DOWN))
 
@@ -680,7 +680,7 @@ class TheoryToPracti(ThreeDScene):
             self.renderer = CairoRenderer(camera_class=self.camera_class, skip_animations=self.skip_animations, )
 
         low_quality_config = {"camera_config": {"should_apply_shading": False},
-            "three_d_axes_config": dict(num_axis_pieces=1, **self.three_d_axes_config)}
+                              "three_d_axes_config": dict(num_axis_pieces=1, **self.three_d_axes_config)}
         super().__init__(three_d_axes_config=self.three_d_axes_config, low_quality_config=low_quality_config, **kwargs)
 
     def get_basic_coords_config(self):
@@ -691,9 +691,12 @@ class TheoryToPracti(ThreeDScene):
         addition = 0.5 if BEAUTY_PLANE else 0
         self.basic_coords_config = {"x_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,
                                                 round(config["frame_y_radius"] * factor_range) + addition + epsilon),
-            "y_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,  # "frame_y_radius"=4
-                        round(config["frame_y_radius"] * factor_range) + addition + epsilon),  # "frame_height"=8
-            "x_length": round(config["frame_height"] * factor), "y_length": round(config["frame_height"] * factor)}
+                                    "y_range": (-round(config["frame_y_radius"] * factor_range) - addition - epsilon,
+                                                # "frame_y_radius"=4
+                                                round(config["frame_y_radius"] * factor_range) + addition + epsilon),
+                                    # "frame_height"=8
+                                    "x_length": round(config["frame_height"] * factor),
+                                    "y_length": round(config["frame_height"] * factor)}
         self.three_d_axes_config = dict(stroke_opacity=0.4,
                                         axis_config=dict(stroke_width=2, include_ticks=False, include_tip=False,
                                                          line_to_number_buff=SMALL_BUFF, label_direction=DR,
@@ -755,12 +758,12 @@ class TheoryToPracti(ThreeDScene):
             self.wait()
 
     def construct(self):
-        self.my_next_section("3D Drums", type=pst.SKIP)
         self.zoom = 2
         self.set_camera_orientation(phi=90 * DEGREES, theta=180 * DEGREES, gamma=-90 * DEGREES, zoom=self.zoom)
 
         self.build_axes()
         self.draw_spring_system()
+        self.my_next_section("3D Drums")
         self.spring_system_2d.move_to(self.plane.c2p(0, 0, 0))
         self.space.move_to(self.capacitor_2d.get_left()).set_z(
             self.capacitor_2d.get_center()[2] - self.capacitor_2d.depth / 2)
@@ -789,8 +792,6 @@ class TheoryToPracti(ThreeDScene):
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(ReplacementTransform(self.drum_2d, self.drum),
                   ReplacementTransform(self.capacitor_2d, self.capacitor_3d))
-        self.wait(0.4)
-        self.my_next_section(type=pst.SUB_NORMAL)
         new_d_0 = drum.R * 0.17
         self.play(drum.animate.set_z(self.axes.c2p(*(new_d_0 * OUT))[2]))
         drum.d_0 = new_d_0
@@ -820,7 +821,7 @@ class TheoryToPracti(ThreeDScene):
         self.drum_2d = drum_2d
         self.capacitor_3d = capacitor_3d
         self.capacitor_2d = capacitor_2d
-        self.play(Create(self.spring_system_2d))
+        self.add(self.spring_system_2d)
 
 
 class FirstSimuTry(ThreeDScene):
@@ -841,7 +842,7 @@ class FirstSimuTry(ThreeDScene):
         len_line += len_line / numbers
         dt_lines = VGroup(
             DashedLine(start=start, end=start + RIGHT * len_line, dashed_ratio=1, dash_length=(len_line / numbers),
-                color=color, stroke_width=5))
+                       color=color, stroke_width=5))
         [i.rotate(PI / 2, about_point=i.get_start()) for i in dt_lines[0].submobjects]
         return dt_lines
 
@@ -898,7 +899,7 @@ class FirstSimuTry(ThreeDScene):
         omega_lc_label = VGroup(omega_lc_label, Line(color=BLUE).scale(0.4)).arrange(RIGHT).to_edge(DR, buff=1.2)
         omega_mech_label = MathTex(r"\Omega_{mech}").next_to(omega_mech_graph, UR)
         omega_mech_label = VGroup(omega_mech_label, Line(color=GREEN).scale(0.4)).arrange(RIGHT).next_to(omega_lc_label,
-            UP)
+                                                                                                         UP)
         max_mech_point = ax.c2p(PI / (omega_mech * 2), omega_mech_func(omega_mech * 2))
 
         self.play(
@@ -1022,7 +1023,7 @@ class DissipationDilution(Scene):
         self.my_next_section(type=pst.SUB_COMPLETE_LOOP)
         self.play(self.mass.oscillate(1, oscillate_direction=RIGHT))
         self.wait(0.001)
-        self.my_next_section(type=pst.SUB_SKIP)
+        self.my_next_section(type=pst.SUB_NORMAL)
         self.play(self.mass.oscillate(0.25, oscillate_direction=RIGHT, new_reference_point=False))
 
         x_shift_brace, x_label = self.get_and_brace(self.mass.reference_point, self.mass.get_center(), r"\Delta x",
@@ -1157,8 +1158,8 @@ class Results(Scene):
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
         t0 = MathTable([["1", "2", "3"], ["4", "5", "6"]], row_labels=[MathTex("freq = ___"), MathTex("R2")],
-            col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
-            top_left_entry=Text("TOP")).scale(0.5)
+                       col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
+                       top_left_entry=Text("TOP")).scale(0.5)
         t0.add_highlighted_cell((2, 2), color=GREEN)
         title = Text("Results")
         self.play(Write(title), title.animate.to_edge(UP))
