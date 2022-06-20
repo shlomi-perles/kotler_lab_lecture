@@ -86,14 +86,6 @@ class IntroSummary(ThreeDScene):
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Write(self.starting_mobjects))
 
-    # def end_strating_point(self):
-    #     self.start = True
-    #     self.my_next_section("Lecture Summary")
-    #     self.my_next_section(typ=pst.SUB_NORMAL)
-    #     self.play(FadeOut(progress_bar), FadeOut(part_1_img, part_2_image, part_3_img),
-    #               Unwrite(part_1_sub), Unwrite(part_2_sub), Unwrite(part_3_sub))
-    #     self.wait(0.5)
-
     def construct(self):
         self.start = False
         progress_bar = self.make_progress_bar().to_edge(DOWN, buff=config["frame_height"] * 0.2)
