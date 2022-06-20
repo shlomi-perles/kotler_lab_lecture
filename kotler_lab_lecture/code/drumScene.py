@@ -11,7 +11,7 @@ RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from spring import Spring, OscillateMobject
 
-PRESENTATION_MODE = False
+PRESENTATION_MODE = True
 BEAUTY_PLANE = True
 Z_FACTOR = 0
 
@@ -1132,8 +1132,11 @@ class Comsol(Scene):
     def construct(self):
         device_image = ImageMobject(str(RESOURCE_DIR / "device.png")).scale_to_fit_height(
             config.frame_height * 0.7).shift(DOWN * 0.5)
-        comsol_image = ImageMobject(str(RESOURCE_DIR / "comsol.png")).scale_to_fit_height(config.frame_height * 0.6)
-        mesh_image = ImageMobject(str(RESOURCE_DIR / "mesh.png"))
+        common_buff = 0.6
+        comsol_image = ImageMobject(str(RESOURCE_DIR / "comsol.png")).scale_to_fit_height(
+            config.frame_height * 0.7).to_edge(DOWN, buff=common_buff)
+        mesh_image = ImageMobject(str(RESOURCE_DIR / "mesh.png")).match_width(comsol_image).match_y(comsol_image)
+
         title1 = Text("Complicated Physics...").scale_to_fit_width(config.frame_width * 0.5).to_edge(UP).scale(1.3)
         title2 = Text("Solution:").to_edge(UP).scale(1.3)
         self.play(Write(title1),
@@ -1142,8 +1145,11 @@ class Comsol(Scene):
         self.play(Unwrite(title1, run_time=0.1), FadeOut(device_image))
         self.play(Write(title2), FadeIn(comsol_image))
         self.next_section(pst.SUB_NORMAL)
-        self.play(comsol_image.animate.shift(LEFT * 3),
-                  FadeIn(mesh_image.shift(RIGHT * 3).scale_to_fit_height(device_image.height)))
+        self.play(FadeTransform(comsol_image, mesh_image))
+        self.wait(0.2)
+        self.next_section(pst.SUB_NORMAL)
+        self.play(FadeOut(mesh_image), Unwrite(title2))
+        self.wait(0.2)
 
 
 class Results(Scene):
@@ -1158,19 +1164,22 @@ class Results(Scene):
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
         self.next_section("Results", pst.NORMAL)
-        t0 = MathTable([["Analytical\hspace{1em}g_{0}", "Numerical\hspace{1em}g_{0}",
-                         "Observed\hspace{1em}g_{0}", r"\%\frac{Numeric}{Observed}"], ["4", "5",
-                                                                                       "6", "7"]],
+        t0 = MathTable([["Analytical\ g_{0}", "Numerical\ g_{0}",
+                         "Observed\ g_{0}", r"Numeric\ Approximation\ Error"],
+                        ["232.12", "232.12", "235.72", "1.5\%"]],
                        include_outer_lines=True, element_to_mobject=MathTex
-                       ).scale(0.7)
+                       ).scale_to_fit_width(config.frame_width * 0.93)
         for i in range(4):
             t0.add_highlighted_cell((1, i), color=GREEN)
             t0.add_highlighted_cell((0, i), color=BLUE)
         title = Text("Results").scale_to_fit_width(config.frame_width * 0.3)
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(1)
-        self.play(FadeIn(t0))
+        self.play(Write(t0))
         self.wait(0.4)
+        self.next_section("Results end", pst.SUB_NORMAL)
+        self.play(Unwrite(t0), Unwrite(title))
+        self.wait(0.2)
 
 
 class Conclusion(Scene):
@@ -1189,16 +1198,16 @@ class Conclusion(Scene):
         self.wait(0.5)
 
 
-# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
-#               ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results, Conclusion]
+# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2,Comsol, FirstSimuTry,
+#               ComsolEigenmodes, DissipationDilution,Results, IntroSummary3 , Conclusion]
 
-scenes_lst = [IntroSummary, HistoryBrief, TheoryToPracti, Comsol, Results, Conclusion]
-scenes_lst = [Results]
+scenes_lst = [HistoryBrief, TheoryToPracti, Comsol, Results, Conclusion]
+# scenes_lst = [Results]
 for sc in scenes_lst:
     # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-    quality = "low_quality"
+    # quality = "low_quality"
     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media", "save_sections": True,
                      "disable_caching": disable_caching}):
         scene = sc()
