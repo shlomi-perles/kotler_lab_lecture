@@ -1156,10 +1156,14 @@ class Results(Scene):
         #     row_labels=[Text("freq = ___"), Text("R2")],
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
-        t0 = MathTable([["1", "2", "3"], ["4", "5", "6"]], row_labels=[MathTex("freq = ___"), MathTex("R2")],
-            col_labels=[MathTex("Analytical g_{0}"), MathTex("Numeric g_{0}"), MathTex("Observed g_{0}")],
-            top_left_entry=Text("TOP")).scale(0.5)
-        t0.add_highlighted_cell((2, 2), color=GREEN)
+        t0 = MathTable([["Analytical\hspace{1em}g_{0}", "Numerical\hspace{1em}g_{0}",
+                         "Observed\hspace{1em}g_{0}", r"\%\frac{Numeric}{Observed}"], ["4", "5",
+                                                                                                         "6", "7"]],
+                       include_outer_lines=True, element_to_mobject=MathTex
+                       ).scale(0.7)
+        for i in range(4):
+            t0.add_highlighted_cell((1,i), color=GREEN)
+            t0.add_highlighted_cell((0,i), color=BLUE)
         title = Text("Results")
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(1)
@@ -1172,9 +1176,6 @@ class Conclusion(Scene):
 
     def construct(self):
         title = Text("Conclusion:")
-        # a = Text("Developing theory and analytics behind the study")
-        # b = Text("Simulation of realistic physics - not what we thought")
-        # c = Text("Results - The project was completed for a basic case")
         blist = BulletedList("Developing theory and analytics behind the study",
                              "Simulation of realistic physics - not what we thought",
                              "Results - The project was completed for a basic case", height=13, width=13)
@@ -1185,7 +1186,7 @@ class Conclusion(Scene):
 
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution, IntroSummary3, Comsol, Results, Conclusion]
-scenes_lst = [Conclusion]
+scenes_lst = [Results]
 
 for sc in scenes_lst:
     # try:
