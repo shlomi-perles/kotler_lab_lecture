@@ -11,7 +11,7 @@ RESOURCE_DIR = MAIN_PATH / "resources"
 sys.path.append(str(MAIN_PATH))
 from spring import Spring, OscillateMobject
 
-PRESENTATION_MODE = True
+PRESENTATION_MODE = False
 BEAUTY_PLANE = True
 Z_FACTOR = 0
 
@@ -114,7 +114,7 @@ class IntroSummary(ThreeDScene):
 
         part_3_title = VGroup(
             Tex("Outline", ":"),
-            Tex("Whats next?")).arrange(DOWN)
+            Tex("What next?")).arrange(DOWN)
         part_3_sub = Tex("Outline")
         part_3_img = ImageMobject(str(RESOURCE_DIR / "drums_photo.png"))
         self.next_part(part_3_title, part_3_sub, image=part_3_img)
@@ -274,7 +274,8 @@ class HistoryBrief(Scene):
 
     def end_part(self, title, sub_title: Tex, tick, label, image):
         self.next_section(pst.SUB_NORMAL)
-        sub_title.next_to(tick, UP, buff=0).scale(0.5).shift(DOWN * 0.25)
+        scale_tick = tick.copy().scale(1 / self.tick_scale)
+        sub_title.scale(0.5).next_to(scale_tick, UP, buff=0.2)
 
         if image:
             self.play(TransformMatchingTex(title, sub_title),
@@ -299,7 +300,7 @@ class HistoryBrief(Scene):
         title = Tex("1978:  ", "David J. Wineland - Superposition in trapped ions").set_color_by_tex("1978:  ", YELLOW)
         sub_title = Tex("Superposition")
         self.mob_remove_at_end += sub_title
-        tick, label = self.next_part(title, -8, enlarge_tip=False)
+        tick, label = self.next_part(title, -8)
         self.create_ion()
         self.images_remove_at_end.add(self.ion)
         self.my_next_section("End ion", pst.SUB_NORMAL)
