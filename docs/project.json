@@ -1,6 +1,6 @@
 [
     {
-        "sections_len": 2,
+        "sections_len": 8,
         "sections": [
             {
                 "id": 0,
@@ -33,17 +33,12 @@
                 "in_project_thumbnail": "thumb_0001.jpg",
                 "in_project_id": 1,
                 "parent_id": 0
-            }
-        ]
-    },
-    {
-        "sections_len": 3,
-        "sections": [
+            },
             {
                 "id": 2,
-                "name": "presentation.sub.normal",
+                "name": "asd",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0002.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -53,7 +48,7 @@
                 "in_project_video": "video_0002.mp4",
                 "in_project_thumbnail": "thumb_0002.jpg",
                 "in_project_id": 2,
-                "parent_id": 2
+                "parent_id": 0
             },
             {
                 "id": 3,
@@ -69,7 +64,7 @@
                 "in_project_video": "video_0003.mp4",
                 "in_project_thumbnail": "thumb_0003.jpg",
                 "in_project_id": 3,
-                "parent_id": 2
+                "parent_id": 0
             },
             {
                 "id": 4,
@@ -85,18 +80,13 @@
                 "in_project_video": "video_0004.mp4",
                 "in_project_thumbnail": "thumb_0004.jpg",
                 "in_project_id": 4,
-                "parent_id": 2
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
-        "sections": [
+                "parent_id": 0
+            },
             {
                 "id": 5,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0005.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -106,18 +96,13 @@
                 "in_project_video": "video_0005.mp4",
                 "in_project_thumbnail": "thumb_0005.jpg",
                 "in_project_id": 5,
-                "parent_id": 5
-            }
-        ]
-    },
-    {
-        "sections_len": 2,
-        "sections": [
+                "parent_id": 0
+            },
             {
                 "id": 6,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0006.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -127,7 +112,7 @@
                 "in_project_video": "video_0006.mp4",
                 "in_project_thumbnail": "thumb_0006.jpg",
                 "in_project_id": 6,
-                "parent_id": 6
+                "parent_id": 0
             },
             {
                 "id": 7,
@@ -141,18 +126,18 @@
                 "duration": 1.5,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0007.mp4",
-                "in_project_thumbnail": "thumb_0007.jpg",
+                "in_project_thumbnail": "thumb_0001.jpg",
                 "in_project_id": 7,
-                "parent_id": 6
+                "parent_id": 0
             }
         ]
     },
     {
-        "sections_len": 1,
+        "sections_len": 7,
         "sections": [
             {
                 "id": 0,
-                "name": "autocreated",
+                "name": "Quantum's Orders",
                 "type": "normal",
                 "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0000.mp4",
@@ -165,17 +150,12 @@
                 "in_project_thumbnail": "thumb_0008.jpg",
                 "in_project_id": 8,
                 "parent_id": 8
-            }
-        ]
-    },
-    {
-        "sections_len": 2,
-        "sections": [
+            },
             {
                 "id": 1,
                 "name": "Quantum's Orders",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0001.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -185,7 +165,7 @@
                 "in_project_video": "video_0009.mp4",
                 "in_project_thumbnail": "thumb_0009.jpg",
                 "in_project_id": 9,
-                "parent_id": 9
+                "parent_id": 8
             },
             {
                 "id": 2,
@@ -201,18 +181,13 @@
                 "in_project_video": "video_0010.mp4",
                 "in_project_thumbnail": "thumb_0010.jpg",
                 "in_project_id": 10,
-                "parent_id": 9
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
-        "sections": [
+                "parent_id": 8
+            },
             {
                 "id": 3,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0003.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -222,18 +197,13 @@
                 "in_project_video": "video_0011.mp4",
                 "in_project_thumbnail": "thumb_0011.jpg",
                 "in_project_id": 11,
-                "parent_id": 11
-            }
-        ]
-    },
-    {
-        "sections_len": 3,
-        "sections": [
+                "parent_id": 8
+            },
             {
                 "id": 4,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0004.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -243,7 +213,7 @@
                 "in_project_video": "video_0012.mp4",
                 "in_project_thumbnail": "thumb_0012.jpg",
                 "in_project_id": 12,
-                "parent_id": 12
+                "parent_id": 8
             },
             {
                 "id": 5,
@@ -259,7 +229,7 @@
                 "in_project_video": "video_0013.mp4",
                 "in_project_thumbnail": "thumb_0013.jpg",
                 "in_project_id": 13,
-                "parent_id": 12
+                "parent_id": 8
             },
             {
                 "id": 6,
@@ -273,9 +243,9 @@
                 "duration": 2.1,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0014.mp4",
-                "in_project_thumbnail": "thumb_0014.jpg",
+                "in_project_thumbnail": "thumb_0013.jpg",
                 "in_project_id": 14,
-                "parent_id": 12
+                "parent_id": 8
             }
         ]
     },
@@ -669,7 +639,7 @@
         ]
     },
     {
-        "sections_len": 10,
+        "sections_len": 7,
         "sections": [
             {
                 "id": 0,
@@ -779,13 +749,18 @@
                 "duration": 4.85,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0045.mp4",
-                "in_project_thumbnail": "thumb_0045.jpg",
+                "in_project_thumbnail": "thumb_0040.jpg",
                 "in_project_id": 45,
                 "parent_id": 39
-            },
+            }
+        ]
+    },
+    {
+        "sections_len": 3,
+        "sections": [
             {
                 "id": 0,
-                "name": "unnamed",
+                "name": "Project Intro",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary2_0000.mp4",
@@ -813,7 +788,7 @@
                 "in_project_video": "video_0047.mp4",
                 "in_project_thumbnail": "thumb_0047.jpg",
                 "in_project_id": 47,
-                "parent_id": 39
+                "parent_id": 46
             },
             {
                 "id": 2,
@@ -829,74 +804,16 @@
                 "in_project_video": "video_0048.mp4",
                 "in_project_thumbnail": "thumb_0048.jpg",
                 "in_project_id": 48,
-                "parent_id": 39
+                "parent_id": 46
             }
         ]
     },
     {
-        "sections_len": 1,
-        "sections": [
-            {
-                "id": 3,
-                "name": "presentation.sub.normal",
-                "type": "normal",
-                "is_sub_section": false,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary2_0003.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 6.1,
-                "project_name": "HighQualityTry2",
-                "in_project_video": "video_0049.mp4",
-                "in_project_thumbnail": "thumb_0049.jpg",
-                "in_project_id": 49,
-                "parent_id": 49
-            }
-        ]
-    },
-    {
-        "sections_len": 2,
-        "sections": [
-            {
-                "id": 4,
-                "name": "presentation.sub.normal",
-                "type": "normal",
-                "is_sub_section": false,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary2_0004.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 1.0,
-                "project_name": "HighQualityTry2",
-                "in_project_video": "video_0050.mp4",
-                "in_project_thumbnail": "thumb_0050.jpg",
-                "in_project_id": 50,
-                "parent_id": 50
-            },
-            {
-                "id": 5,
-                "name": "End Intro",
-                "type": "normal",
-                "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary2_0005.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 1.5,
-                "project_name": "HighQualityTry2",
-                "in_project_video": "video_0051.mp4",
-                "in_project_thumbnail": "thumb_0051.jpg",
-                "in_project_id": 51,
-                "parent_id": 50
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
+        "sections_len": 4,
         "sections": [
             {
                 "id": 0,
-                "name": "autocreated",
+                "name": "COMSOL",
                 "type": "normal",
                 "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Comsol_0000.mp4",
@@ -907,19 +824,14 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0052.mp4",
                 "in_project_thumbnail": "thumb_0052.jpg",
-                "in_project_id": 52,
+                "in_project_id": 49,
                 "parent_id": 52
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
-        "sections": [
+            },
             {
                 "id": 1,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Comsol_0001.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -928,19 +840,14 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0053.mp4",
                 "in_project_thumbnail": "thumb_0053.jpg",
-                "in_project_id": 53,
+                "in_project_id": 50,
                 "parent_id": 53
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
-        "sections": [
+            },
             {
                 "id": 2,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Comsol_0002.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -949,19 +856,14 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0054.mp4",
                 "in_project_thumbnail": "thumb_0054.jpg",
-                "in_project_id": 54,
+                "in_project_id": 51,
                 "parent_id": 54
-            }
-        ]
-    },
-    {
-        "sections_len": 1,
-        "sections": [
+            },
             {
                 "id": 3,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Comsol_0003.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -969,18 +871,18 @@
                 "duration": 1.2,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0055.mp4",
-                "in_project_thumbnail": "thumb_0055.jpg",
-                "in_project_id": 55,
+                "in_project_thumbnail": "thumb_0053.jpg",
+                "in_project_id": 52,
                 "parent_id": 55
             }
         ]
     },
     {
-        "sections_len": 1,
+        "sections_len": 10,
         "sections": [
             {
                 "id": 0,
-                "name": "autocreated",
+                "name": "Numeric methodology",
                 "type": "normal",
                 "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\FirstSimuTry_0000.mp4",
@@ -991,19 +893,14 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0056.mp4",
                 "in_project_thumbnail": "thumb_0056.jpg",
-                "in_project_id": 56,
+                "in_project_id": 53,
                 "parent_id": 56
-            }
-        ]
-    },
-    {
-        "sections_len": 9,
-        "sections": [
+            },
             {
                 "id": 1,
                 "name": "Numeric run time",
                 "type": "normal",
-                "is_sub_section": false,
+                "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\FirstSimuTry_0001.mp4",
                 "width": 3840,
                 "height": 2160,
@@ -1012,7 +909,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0057.mp4",
                 "in_project_thumbnail": "thumb_0057.jpg",
-                "in_project_id": 57,
+                "in_project_id": 54,
                 "parent_id": 57
             },
             {
@@ -1028,7 +925,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0058.mp4",
                 "in_project_thumbnail": "thumb_0058.jpg",
-                "in_project_id": 58,
+                "in_project_id": 55,
                 "parent_id": 57
             },
             {
@@ -1044,7 +941,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0059.mp4",
                 "in_project_thumbnail": "thumb_0059.jpg",
-                "in_project_id": 59,
+                "in_project_id": 56,
                 "parent_id": 57
             },
             {
@@ -1060,7 +957,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0060.mp4",
                 "in_project_thumbnail": "thumb_0060.jpg",
-                "in_project_id": 60,
+                "in_project_id": 57,
                 "parent_id": 57
             },
             {
@@ -1076,7 +973,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0061.mp4",
                 "in_project_thumbnail": "thumb_0061.jpg",
-                "in_project_id": 61,
+                "in_project_id": 58,
                 "parent_id": 57
             },
             {
@@ -1092,7 +989,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0062.mp4",
                 "in_project_thumbnail": "thumb_0062.jpg",
-                "in_project_id": 62,
+                "in_project_id": 59,
                 "parent_id": 57
             },
             {
@@ -1108,7 +1005,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0063.mp4",
                 "in_project_thumbnail": "thumb_0063.jpg",
-                "in_project_id": 63,
+                "in_project_id": 60,
                 "parent_id": 57
             },
             {
@@ -1124,7 +1021,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0064.mp4",
                 "in_project_thumbnail": "thumb_0064.jpg",
-                "in_project_id": 64,
+                "in_project_id": 61,
                 "parent_id": 57
             },
             {
@@ -1139,8 +1036,8 @@
                 "duration": 2.5,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0065.mp4",
-                "in_project_thumbnail": "thumb_0065.jpg",
-                "in_project_id": 65,
+                "in_project_thumbnail": "thumb_0064.jpg",
+                "in_project_id": 62,
                 "parent_id": 57
             }
         ]
@@ -1161,7 +1058,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0066.mp4",
                 "in_project_thumbnail": "thumb_0066.jpg",
-                "in_project_id": 66,
+                "in_project_id": 63,
                 "parent_id": 66
             },
             {
@@ -1177,7 +1074,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0067.mp4",
                 "in_project_thumbnail": "thumb_0067.jpg",
-                "in_project_id": 67,
+                "in_project_id": 64,
                 "parent_id": 66
             },
             {
@@ -1193,7 +1090,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0068.mp4",
                 "in_project_thumbnail": "thumb_0068.jpg",
-                "in_project_id": 68,
+                "in_project_id": 65,
                 "parent_id": 66
             },
             {
@@ -1209,7 +1106,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0069.mp4",
                 "in_project_thumbnail": "thumb_0069.jpg",
-                "in_project_id": 69,
+                "in_project_id": 66,
                 "parent_id": 66
             },
             {
@@ -1225,7 +1122,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0070.mp4",
                 "in_project_thumbnail": "thumb_0070.jpg",
-                "in_project_id": 70,
+                "in_project_id": 67,
                 "parent_id": 66
             },
             {
@@ -1241,7 +1138,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0071.mp4",
                 "in_project_thumbnail": "thumb_0071.jpg",
-                "in_project_id": 71,
+                "in_project_id": 68,
                 "parent_id": 66
             },
             {
@@ -1257,7 +1154,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0072.mp4",
                 "in_project_thumbnail": "thumb_0072.jpg",
-                "in_project_id": 72,
+                "in_project_id": 69,
                 "parent_id": 66
             }
         ]
@@ -1278,7 +1175,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0073.mp4",
                 "in_project_thumbnail": "thumb_0073.jpg",
-                "in_project_id": 73,
+                "in_project_id": 70,
                 "parent_id": 73
             },
             {
@@ -1294,7 +1191,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0074.mp4",
                 "in_project_thumbnail": "thumb_0074.jpg",
-                "in_project_id": 74,
+                "in_project_id": 71,
                 "parent_id": 73
             },
             {
@@ -1310,7 +1207,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0075.mp4",
                 "in_project_thumbnail": "thumb_0075.jpg",
-                "in_project_id": 75,
+                "in_project_id": 72,
                 "parent_id": 73
             },
             {
@@ -1326,7 +1223,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0076.mp4",
                 "in_project_thumbnail": "thumb_0076.jpg",
-                "in_project_id": 76,
+                "in_project_id": 73,
                 "parent_id": 73
             },
             {
@@ -1342,7 +1239,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0077.mp4",
                 "in_project_thumbnail": "thumb_0077.jpg",
-                "in_project_id": 77,
+                "in_project_id": 74,
                 "parent_id": 73
             },
             {
@@ -1357,8 +1254,8 @@
                 "duration": 4.1,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0078.mp4",
-                "in_project_thumbnail": "thumb_0078.jpg",
-                "in_project_id": 78,
+                "in_project_thumbnail": "thumb_0077.jpg",
+                "in_project_id": 75,
                 "parent_id": 73
             }
         ]
@@ -1379,7 +1276,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0079.mp4",
                 "in_project_thumbnail": "thumb_0079.jpg",
-                "in_project_id": 79,
+                "in_project_id": 76,
                 "parent_id": 79
             },
             {
@@ -1394,83 +1291,62 @@
                 "duration": 2.2,
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0080.mp4",
-                "in_project_thumbnail": "thumb_0080.jpg",
-                "in_project_id": 80,
+                "in_project_thumbnail": "thumb_0079.jpg",
+                "in_project_id": 77,
                 "parent_id": 79
             }
         ]
     },
     {
-        "sections_len": 2,
+        "sections_len": 3,
         "sections": [
             {
                 "id": 0,
-                "name": "autocreated",
-                "type": "normal",
-                "is_sub_section": false,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary3_0000.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "21504/257",
-                "duration": 0.083659,
-                "project_name": "HighQualityTry2",
-                "in_project_video": "video_0081.mp4",
-                "in_project_thumbnail": "thumb_0081.jpg",
-                "in_project_id": 81,
-                "parent_id": 81
-            },
-            {
-                "id": 1,
-                "name": "unnamed",
+                "name": "Summary Intro",
                 "type": "normal",
                 "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary3_0001.mp4",
+                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0005.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 7.1,
+                "duration": 4.1,
                 "project_name": "HighQualityTry2",
-                "in_project_video": "video_0082.mp4",
-                "in_project_thumbnail": "thumb_0082.jpg",
-                "in_project_id": 82,
-                "parent_id": 81
-            }
-        ]
-    },
-    {
-        "sections_len": 2,
-        "sections": [
+                "in_project_video": "video_0005.mp4",
+                "in_project_thumbnail": "thumb_0005.jpg",
+                "in_project_id": 78,
+                "parent_id": 0
+            },
             {
-                "id": 2,
+                "id": 1,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": false,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary3_0002.mp4",
+                "is_sub_section": true,
+                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0006.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
                 "project_name": "HighQualityTry2",
-                "in_project_video": "video_0083.mp4",
-                "in_project_thumbnail": "thumb_0083.jpg",
-                "in_project_id": 83,
-                "parent_id": 83
+                "in_project_video": "video_0006.mp4",
+                "in_project_thumbnail": "thumb_0006.jpg",
+                "in_project_id": 79,
+                "parent_id": 0
             },
             {
-                "id": 3,
+                "id": 2,
                 "name": "End Intro",
                 "type": "normal",
                 "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary3_0003.mp4",
+                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0007.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.5,
                 "project_name": "HighQualityTry2",
-                "in_project_video": "video_0084.mp4",
-                "in_project_thumbnail": "thumb_0084.jpg",
-                "in_project_id": 84,
-                "parent_id": 83
+                "in_project_video": "video_0007.mp4",
+                "in_project_thumbnail": "thumb_0005.jpg",
+                "in_project_id": 80,
+                "parent_id": 0
             }
         ]
     },
@@ -1490,7 +1366,7 @@
                 "project_name": "HighQualityTry2",
                 "in_project_video": "video_0085.mp4",
                 "in_project_thumbnail": "thumb_0085.jpg",
-                "in_project_id": 85,
+                "in_project_id": 81,
                 "parent_id": 85
             }
         ]
