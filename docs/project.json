@@ -527,7 +527,7 @@
             {
                 "id": 17,
                 "name": "g0 Scene",
-                "type": "skip",
+                "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0017.mp4",
                 "width": 3840,
