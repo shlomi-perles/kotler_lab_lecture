@@ -82,6 +82,7 @@ class IntroSummary(ThreeDScene):
     def play_strating_point(self):
         self.start = True
         self.my_next_section("Lecture Summary")
+        self.wait()
         self.my_next_section(type=pst.SUB_NORMAL)
         self.play(Write(self.starting_mobjects))
 
