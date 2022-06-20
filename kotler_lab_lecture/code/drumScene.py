@@ -267,8 +267,7 @@ class HistoryBrief(Scene):
             self.play(TransformMatchingTex(title, sub_title))
 
     def play_bohr_phase(self):
-        title = Tex("1900 - 1913:  ", "Ultraviolet catastrophe and Bohr's Model").set_color_by_tex("1900 - 1913:  ",
-                                                                                                   YELLOW)
+        title = Tex("1913:  ", "Bohr's Model").set_color_by_tex("1900 - 1913:  ", YELLOW)
         sub_title = Tex("Quantization")
         self.mob_remove_at_end += sub_title
         tick, label = self.next_part(title, -10)
@@ -1205,7 +1204,7 @@ class Conclusion(Scene):
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, Comsol,IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution,Results, IntroSummary3 , Conclusion]
 
-scenes_lst = [ComsolEigenmodes]
+scenes_lst = [Conclusion]
 for sc in scenes_lst:
     # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
