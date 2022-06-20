@@ -1,4 +1,3 @@
-from copy import deepcopy
 from manim.renderer.opengl_renderer import OpenGLRenderer
 from manim.opengl import *
 from manim import *
@@ -147,7 +146,7 @@ class IntroSummary(ThreeDScene):
             self.end_part(title, sub_title, image)
 
     def end_part(self, title, sub_title: Tex, image=None):
-        if self.start: self.next_section(pst.SUB_NORMAL)
+        if self.start: self.my_next_section(type=pst.SUB_NORMAL)
         if image:
             if self.start:
                 self.play(TransformMatchingTex(title, sub_title),
@@ -256,7 +255,7 @@ class HistoryBrief(Scene):
         return tick, label
 
     def end_part(self, title, sub_title: Tex, tick, label, image):
-        self.next_section(pst.SUB_NORMAL)
+        self.my_next_section(type=pst.SUB_NORMAL)
         scale_tick = tick.copy().scale(1 / self.tick_scale)
         sub_title.scale(0.5).next_to(scale_tick, UP, buff=0.2)
 
@@ -999,6 +998,8 @@ class ComsolEigenmodes(Scene):
             0.9 * (config.frame_height - title.height)).set_y(
             title.get_bottom()[1] - (config.frame_height - title.height) / 2))
         self.my_next_section(type=pst.SUB_NORMAL)
+        self.play(FadeOut(images_eigen_side_arrange, images_eigen_arrange), Unwrite(title))
+        self.wait(0.2)
 
 
 class DissipationDilution(Scene):
@@ -1141,13 +1142,13 @@ class Comsol(Scene):
         title2 = Text("Solution:").to_edge(UP).scale(1.3)
         self.play(Write(title1),
                   FadeIn(device_image.scale_to_fit_height((title1.get_bottom()[1] - config.bottom[1]) * 0.8)))
-        self.next_section(pst.SUB_NORMAL)
+        self.next_section(type=pst.SUB_NORMAL)
         self.play(Unwrite(title1, run_time=0.1), FadeOut(device_image))
         self.play(Write(title2), FadeIn(comsol_image))
-        self.next_section(pst.SUB_NORMAL)
+        self.next_section(type=pst.SUB_NORMAL)
         self.play(FadeTransform(comsol_image, mesh_image))
         self.wait(0.2)
-        self.next_section(pst.SUB_NORMAL)
+        self.next_section(type=pst.SUB_NORMAL)
         self.play(FadeOut(mesh_image), Unwrite(title2))
         self.wait(0.2)
 
@@ -1187,22 +1188,24 @@ class Conclusion(Scene):
         super().__init__(**kwargs)
 
     def construct(self):
-        self.next_section("Conclusion")
-        title = Text("Conclusion:").scale_to_fit_width(config.frame_width * 0.5)
+        self.next_section("Summary")
+        title = Text("Summary").scale_to_fit_width(config.frame_width * 0.5)
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(0.5)
         blist = BulletedList(" Developing theory and analytics equations.",
                              r" Simulation $\neq$ Magic Box.",
-                             " Results.", height=13, width=13, buff=0.6).next_to(title, DOWN, buff=1.5)
+                             " Further development.", height=13, width=13, buff=0.6).next_to(title, DOWN, buff=1.5)
         self.play(Create(blist))
         self.wait(0.5)
+        self.next_section("Summary end", pst.SUB_NORMAL)
+        self.play(Unwrite(title), Unwrite(blist))
+        self.wait()
 
 
-# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, IntroSummary2,Comsol, FirstSimuTry,
+# scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, Comsol,IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution,Results, IntroSummary3 , Conclusion]
 
-scenes_lst = [HistoryBrief, TheoryToPracti, Comsol, Results, Conclusion]
-# scenes_lst = [Results]
+scenes_lst = [ComsolEigenmodes]
 for sc in scenes_lst:
     # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)

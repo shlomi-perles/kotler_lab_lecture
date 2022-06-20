@@ -4,7 +4,7 @@ MAIN_PATH = Path(__file__).resolve().parent.parent.parent.parent
 from collections import OrderedDict
 import json
 
-PROJECT_NAME = "docs"
+PROJECT_NAME = "kotler_lab_lecture/Kotler Lab Lecture"
 JSON_FILE = (MAIN_PATH / PROJECT_NAME / "project.json")
 
 
