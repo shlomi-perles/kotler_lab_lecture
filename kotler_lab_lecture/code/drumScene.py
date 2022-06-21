@@ -267,7 +267,7 @@ class HistoryBrief(Scene):
             self.play(TransformMatchingTex(title, sub_title))
 
     def play_bohr_phase(self):
-        title = Tex("1913:  ", "Bohr's Model").set_color_by_tex("1913:  ", YELLOW)
+        title = Tex("1913:  ", "Bohr's Model - observed quantization").set_color_by_tex("1913:  ", YELLOW)
         sub_title = Tex("Quantization")
         self.mob_remove_at_end += sub_title
         tick, label = self.next_part(title, -10)
