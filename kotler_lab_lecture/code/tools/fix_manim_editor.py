@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 MAIN_PATH = Path(__file__).resolve().parent.parent.parent.parent
 from collections import OrderedDict
@@ -24,7 +25,19 @@ def sort_sections(dict):
             sub_section["in_project_id"] = counter
             sub_section["id"] = idx
             counter += 1
-        last_section = section
+        split_thumbnail = sub_section["in_project_thumbnail"].split(".")
+        tumb_name = split_thumbnail[0]
+        new_thumb = ""
+        if re.findall(r'\d+', sub_section["in_project_video"])[0] != \
+                re.findall(r'\d+', sub_section["in_project_thumbnail"])[0]:
+            continue
+        for partial_str in re.split(r"(_)(\d+)(\.)(\w+)$", sub_section["in_project_thumbnail"]):
+            if partial_str.isdigit():
+                prev_thumb = str(int(partial_str) - 1)
+                add_zeroes = "0" * (len(partial_str) - len(prev_thumb))
+                partial_str = add_zeroes + prev_thumb
+            new_thumb += partial_str
+        sub_section["in_project_thumbnail"] = new_thumb
         parent_counter = counter
 
 

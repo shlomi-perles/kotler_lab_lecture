@@ -1214,15 +1214,13 @@ class Conclusion(Scene):
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, Comsol,IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution,Results, IntroSummary3 , Conclusion]
 
-# scenes_lst = [Results,historybrief,springscene]
-scenes_lst = [Results]
+scenes_lst = []
 
 for sc in scenes_lst:
-    # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
     quality = "fourk_quality" if PRESENTATION_MODE else "low_quality"
-    # quality = "low_quality"
+
     with tempconfig({"quality": quality, "preview": True, "media_dir": MAIN_PATH / "media", "save_sections": True,
                      "disable_caching": disable_caching}):
         scene = sc()
-        scene.render()  # except:  #     continue
+        scene.render()
