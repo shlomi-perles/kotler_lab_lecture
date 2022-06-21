@@ -1,6 +1,6 @@
 [
     {
-        "sections_len": 8,
+        "sections_len": 5,
         "sections": [
             {
                 "id": 0,
@@ -12,7 +12,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0000.mp4",
                 "in_project_thumbnail": "thumb_0000.jpg",
                 "in_project_id": 0,
@@ -28,7 +28,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 5.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0001.mp4",
                 "in_project_thumbnail": "thumb_0001.jpg",
                 "in_project_id": 1,
@@ -44,7 +44,7 @@
                 "height": 2160,
                 "fps": "1909760/31831",
                 "duration": 6.216992,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0002.mp4",
                 "in_project_thumbnail": "thumb_0002.jpg",
                 "in_project_id": 2,
@@ -60,7 +60,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0003.mp4",
                 "in_project_thumbnail": "thumb_0003.jpg",
                 "in_project_id": 3,
@@ -76,30 +76,35 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 0.75,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0004.mp4",
                 "in_project_thumbnail": "thumb_0004.jpg",
                 "in_project_id": 4,
                 "parent_id": 0
-            },
+            }
+        ]
+    },
+    {
+        "sections_len": 3,
+        "sections": [
             {
-                "id": 5,
+                "id": 0,
                 "name": "presentation.sub.normal",
                 "type": "normal",
-                "is_sub_section": true,
+                "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0005.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.1,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0005.mp4",
                 "in_project_thumbnail": "thumb_0005.jpg",
                 "in_project_id": 5,
                 "parent_id": 5
             },
             {
-                "id": 6,
+                "id": 1,
                 "name": "presentation.sub.normal",
                 "type": "normal",
                 "is_sub_section": true,
@@ -108,14 +113,14 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0006.mp4",
                 "in_project_thumbnail": "thumb_0006.jpg",
                 "in_project_id": 6,
                 "parent_id": 5
             },
             {
-                "id": 7,
+                "id": 2,
                 "name": "End Intro",
                 "type": "normal",
                 "is_sub_section": true,
@@ -124,20 +129,20 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.5,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0007.mp4",
-                "in_project_thumbnail": "thumb_0001.jpg",
+                "in_project_thumbnail": "thumb_0007.jpg",
                 "in_project_id": 7,
                 "parent_id": 5
             }
         ]
     },
     {
-        "sections_len": 7,
+        "sections_len": 1,
         "sections": [
             {
                 "id": 0,
-                "name": "Quantum's Orders",
+                "name": "autocreated",
                 "type": "normal",
                 "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0000.mp4",
@@ -145,30 +150,35 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0008.mp4",
                 "in_project_thumbnail": "thumb_0008.jpg",
                 "in_project_id": 8,
                 "parent_id": 8
-            },
+            }
+        ]
+    },
+    {
+        "sections_len": 6,
+        "sections": [
             {
-                "id": 1,
+                "id": 0,
                 "name": "Quantum's Orders",
                 "type": "normal",
-                "is_sub_section": true,
+                "is_sub_section": false,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0001.mp4",
                 "width": 3840,
                 "height": 2160,
-                "fps": "1310720/21847",
-                "duration": 8.533984,
-                "project_name": "Kotler Lab Lecture",
+                "fps": "60",
+                "duration": 9.5,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0009.mp4",
                 "in_project_thumbnail": "thumb_0009.jpg",
                 "in_project_id": 9,
-                "parent_id": 8
+                "parent_id": 9
             },
             {
-                "id": 2,
+                "id": 1,
                 "name": "Bohr's phase",
                 "type": "normal",
                 "is_sub_section": true,
@@ -176,16 +186,16 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 11.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 5.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0010.mp4",
                 "in_project_thumbnail": "thumb_0010.jpg",
                 "in_project_id": 10,
-                "parent_id": 8
+                "parent_id": 9
             },
             {
-                "id": 3,
-                "name": "presentation.sub.normal",
+                "id": 2,
+                "name": "unnamed",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0003.mp4",
@@ -193,15 +203,15 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 6.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0011.mp4",
                 "in_project_thumbnail": "thumb_0011.jpg",
                 "in_project_id": 11,
-                "parent_id": 8
+                "parent_id": 9
             },
             {
-                "id": 4,
-                "name": "presentation.sub.normal",
+                "id": 3,
+                "name": "unnamed",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\HistoryBrief_0004.mp4",
@@ -209,14 +219,14 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0012.mp4",
                 "in_project_thumbnail": "thumb_0012.jpg",
                 "in_project_id": 12,
-                "parent_id": 8
+                "parent_id": 9
             },
             {
-                "id": 5,
+                "id": 4,
                 "name": "End cleland",
                 "type": "normal",
                 "is_sub_section": true,
@@ -225,14 +235,14 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 7.55,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0013.mp4",
                 "in_project_thumbnail": "thumb_0013.jpg",
                 "in_project_id": 13,
-                "parent_id": 8
+                "parent_id": 9
             },
             {
-                "id": 6,
+                "id": 5,
                 "name": "End Quantum's Orders",
                 "type": "normal",
                 "is_sub_section": true,
@@ -241,16 +251,16 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.1,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0014.mp4",
-                "in_project_thumbnail": "thumb_0011.jpg",
+                "in_project_thumbnail": "thumb_0014.jpg",
                 "in_project_id": 14,
-                "parent_id": 8
+                "parent_id": 9
             }
         ]
     },
     {
-        "sections_len": 24,
+        "sections_len": 22,
         "sections": [
             {
                 "id": 0,
@@ -262,7 +272,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0015.mp4",
                 "in_project_thumbnail": "thumb_0015.jpg",
                 "in_project_id": 15,
@@ -276,9 +286,9 @@
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0001.mp4",
                 "width": 3840,
                 "height": 2160,
-                "fps": "60",
-                "duration": 6.1,
-                "project_name": "Kotler Lab Lecture",
+                "fps": "3568640/59479",
+                "duration": 11.616992,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0016.mp4",
                 "in_project_thumbnail": "thumb_0016.jpg",
                 "in_project_id": 16,
@@ -286,15 +296,15 @@
             },
             {
                 "id": 2,
-                "name": "oscillate middle",
-                "type": "complete_loop",
+                "name": "Shift End",
+                "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0002.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 4.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 3.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0017.mp4",
                 "in_project_thumbnail": "thumb_0017.jpg",
                 "in_project_id": 17,
@@ -302,15 +312,15 @@
             },
             {
                 "id": 3,
-                "name": "Shift right",
-                "type": "skip",
+                "name": "unnamed",
+                "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0003.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 6.2,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 4.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0018.mp4",
                 "in_project_thumbnail": "thumb_0018.jpg",
                 "in_project_id": 18,
@@ -318,15 +328,15 @@
             },
             {
                 "id": 4,
-                "name": "Shift End",
+                "name": "unnamed",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0004.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.5,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0019.mp4",
                 "in_project_thumbnail": "thumb_0019.jpg",
                 "in_project_id": 19,
@@ -341,8 +351,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 5.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 2.5,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0020.mp4",
                 "in_project_thumbnail": "thumb_0020.jpg",
                 "in_project_id": 20,
@@ -357,8 +367,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.5,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0021.mp4",
                 "in_project_thumbnail": "thumb_0021.jpg",
                 "in_project_id": 21,
@@ -373,8 +383,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 2.5,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0022.mp4",
                 "in_project_thumbnail": "thumb_0022.jpg",
                 "in_project_id": 22,
@@ -390,7 +400,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0023.mp4",
                 "in_project_thumbnail": "thumb_0023.jpg",
                 "in_project_id": 23,
@@ -406,7 +416,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0024.mp4",
                 "in_project_thumbnail": "thumb_0024.jpg",
                 "in_project_id": 24,
@@ -421,8 +431,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.766667,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0025.mp4",
                 "in_project_thumbnail": "thumb_0025.jpg",
                 "in_project_id": 25,
@@ -438,7 +448,7 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0026.mp4",
                 "in_project_thumbnail": "thumb_0026.jpg",
                 "in_project_id": 26,
@@ -453,8 +463,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.766667,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0027.mp4",
                 "in_project_thumbnail": "thumb_0027.jpg",
                 "in_project_id": 27,
@@ -469,8 +479,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 7.05,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0028.mp4",
                 "in_project_thumbnail": "thumb_0028.jpg",
                 "in_project_id": 28,
@@ -485,8 +495,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 3.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0029.mp4",
                 "in_project_thumbnail": "thumb_0029.jpg",
                 "in_project_id": 29,
@@ -494,15 +504,15 @@
             },
             {
                 "id": 15,
-                "name": "unnamed",
+                "name": "g0 Scene",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0015.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 7.05,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.4,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0030.mp4",
                 "in_project_thumbnail": "thumb_0030.jpg",
                 "in_project_id": 30,
@@ -517,8 +527,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 3.4,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0031.mp4",
                 "in_project_thumbnail": "thumb_0031.jpg",
                 "in_project_id": 31,
@@ -526,15 +536,15 @@
             },
             {
                 "id": 17,
-                "name": "g0 Scene",
+                "name": "unnamed",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0017.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.4,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0032.mp4",
                 "in_project_thumbnail": "thumb_0032.jpg",
                 "in_project_id": 32,
@@ -549,8 +559,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 3.4,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 1.0,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0033.mp4",
                 "in_project_thumbnail": "thumb_0033.jpg",
                 "in_project_id": 33,
@@ -565,8 +575,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 12.4,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0034.mp4",
                 "in_project_thumbnail": "thumb_0034.jpg",
                 "in_project_id": 34,
@@ -581,8 +591,8 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 6.4,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0035.mp4",
                 "in_project_thumbnail": "thumb_0035.jpg",
                 "in_project_id": 35,
@@ -597,43 +607,11 @@
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 12.4,
-                "project_name": "Kotler Lab Lecture",
+                "duration": 5.1,
+                "project_name": "Kotler Lab Lecture 2",
                 "in_project_video": "video_0036.mp4",
                 "in_project_thumbnail": "thumb_0036.jpg",
                 "in_project_id": 36,
-                "parent_id": 15
-            },
-            {
-                "id": 22,
-                "name": "unnamed",
-                "type": "normal",
-                "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0022.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 6.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0037.mp4",
-                "in_project_thumbnail": "thumb_0037.jpg",
-                "in_project_id": 37,
-                "parent_id": 15
-            },
-            {
-                "id": 23,
-                "name": "unnamed",
-                "type": "normal",
-                "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\SpringScene_0023.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 5.1,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0038.mp4",
-                "in_project_thumbnail": "thumb_0033.jpg",
-                "in_project_id": 38,
                 "parent_id": 15
             }
         ]
@@ -651,11 +629,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 0.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0039.mp4",
-                "in_project_thumbnail": "thumb_0039.jpg",
-                "in_project_id": 39,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0037.mp4",
+                "in_project_thumbnail": "thumb_0037.jpg",
+                "in_project_id": 37,
+                "parent_id": 37
             },
             {
                 "id": 1,
@@ -667,11 +645,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0040.mp4",
-                "in_project_thumbnail": "thumb_0040.jpg",
-                "in_project_id": 40,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0038.mp4",
+                "in_project_thumbnail": "thumb_0038.jpg",
+                "in_project_id": 38,
+                "parent_id": 37
             },
             {
                 "id": 2,
@@ -683,11 +661,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 5.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0041.mp4",
-                "in_project_thumbnail": "thumb_0041.jpg",
-                "in_project_id": 41,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0039.mp4",
+                "in_project_thumbnail": "thumb_0039.jpg",
+                "in_project_id": 39,
+                "parent_id": 37
             },
             {
                 "id": 3,
@@ -699,11 +677,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0042.mp4",
-                "in_project_thumbnail": "thumb_0042.jpg",
-                "in_project_id": 42,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0040.mp4",
+                "in_project_thumbnail": "thumb_0040.jpg",
+                "in_project_id": 40,
+                "parent_id": 37
             },
             {
                 "id": 4,
@@ -715,11 +693,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0043.mp4",
-                "in_project_thumbnail": "thumb_0043.jpg",
-                "in_project_id": 43,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0041.mp4",
+                "in_project_thumbnail": "thumb_0041.jpg",
+                "in_project_id": 41,
+                "parent_id": 37
             },
             {
                 "id": 5,
@@ -731,11 +709,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0044.mp4",
-                "in_project_thumbnail": "thumb_0044.jpg",
-                "in_project_id": 44,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0042.mp4",
+                "in_project_thumbnail": "thumb_0042.jpg",
+                "in_project_id": 42,
+                "parent_id": 37
             },
             {
                 "id": 6,
@@ -747,11 +725,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.85,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0045.mp4",
-                "in_project_thumbnail": "thumb_0040.jpg",
-                "in_project_id": 45,
-                "parent_id": 39
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0043.mp4",
+                "in_project_thumbnail": "thumb_0043.jpg",
+                "in_project_id": 43,
+                "parent_id": 37
             }
         ]
     },
@@ -768,11 +746,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0046.mp4",
-                "in_project_thumbnail": "thumb_0046.jpg",
-                "in_project_id": 46,
-                "parent_id": 46
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0044.mp4",
+                "in_project_thumbnail": "thumb_0044.jpg",
+                "in_project_id": 44,
+                "parent_id": 44
             },
             {
                 "id": 1,
@@ -784,11 +762,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0047.mp4",
-                "in_project_thumbnail": "thumb_0047.jpg",
-                "in_project_id": 47,
-                "parent_id": 46
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0045.mp4",
+                "in_project_thumbnail": "thumb_0045.jpg",
+                "in_project_id": 45,
+                "parent_id": 44
             },
             {
                 "id": 2,
@@ -800,11 +778,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0048.mp4",
-                "in_project_thumbnail": "thumb_0048.jpg",
-                "in_project_id": 48,
-                "parent_id": 46
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0046.mp4",
+                "in_project_thumbnail": "thumb_0046.jpg",
+                "in_project_id": 46,
+                "parent_id": 44
             },
             {
                 "id": 3,
@@ -816,11 +794,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0049.mp4",
-                "in_project_thumbnail": "thumb_0048.jpg",
-                "in_project_id": 49,
-                "parent_id": 46
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0047.mp4",
+                "in_project_thumbnail": "thumb_0047.jpg",
+                "in_project_id": 47,
+                "parent_id": 44
             }
         ]
     },
@@ -837,11 +815,11 @@
                 "height": 2160,
                 "fps": "2524160/42071",
                 "duration": 8.216992,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0050.mp4",
-                "in_project_thumbnail": "thumb_0050.jpg",
-                "in_project_id": 50,
-                "parent_id": 50
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0048.mp4",
+                "in_project_thumbnail": "thumb_0048.jpg",
+                "in_project_id": 48,
+                "parent_id": 48
             },
             {
                 "id": 1,
@@ -853,11 +831,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0051.mp4",
-                "in_project_thumbnail": "thumb_0051.jpg",
-                "in_project_id": 51,
-                "parent_id": 50
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0049.mp4",
+                "in_project_thumbnail": "thumb_0049.jpg",
+                "in_project_id": 49,
+                "parent_id": 48
             },
             {
                 "id": 2,
@@ -869,11 +847,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 0.75,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0052.mp4",
-                "in_project_thumbnail": "thumb_0052.jpg",
-                "in_project_id": 52,
-                "parent_id": 50
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0050.mp4",
+                "in_project_thumbnail": "thumb_0050.jpg",
+                "in_project_id": 50,
+                "parent_id": 48
             }
         ]
     },
@@ -890,11 +868,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 0.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0056.mp4",
-                "in_project_thumbnail": "thumb_0056.jpg",
-                "in_project_id": 53,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0054.mp4",
+                "in_project_thumbnail": "thumb_0054.jpg",
+                "in_project_id": 51,
+                "parent_id": 54
             },
             {
                 "id": 1,
@@ -906,11 +884,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0057.mp4",
-                "in_project_thumbnail": "thumb_0057.jpg",
-                "in_project_id": 54,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0055.mp4",
+                "in_project_thumbnail": "thumb_0055.jpg",
+                "in_project_id": 52,
+                "parent_id": 54
             },
             {
                 "id": 2,
@@ -922,11 +900,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 6.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0058.mp4",
-                "in_project_thumbnail": "thumb_0058.jpg",
-                "in_project_id": 55,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0056.mp4",
+                "in_project_thumbnail": "thumb_0056.jpg",
+                "in_project_id": 53,
+                "parent_id": 54
             },
             {
                 "id": 3,
@@ -938,11 +916,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0059.mp4",
-                "in_project_thumbnail": "thumb_0059.jpg",
-                "in_project_id": 56,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0057.mp4",
+                "in_project_thumbnail": "thumb_0057.jpg",
+                "in_project_id": 54,
+                "parent_id": 54
             },
             {
                 "id": 4,
@@ -954,11 +932,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 8.5,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0060.mp4",
-                "in_project_thumbnail": "thumb_0060.jpg",
-                "in_project_id": 57,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0058.mp4",
+                "in_project_thumbnail": "thumb_0058.jpg",
+                "in_project_id": 55,
+                "parent_id": 54
             },
             {
                 "id": 5,
@@ -970,11 +948,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0061.mp4",
-                "in_project_thumbnail": "thumb_0061.jpg",
-                "in_project_id": 58,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0059.mp4",
+                "in_project_thumbnail": "thumb_0059.jpg",
+                "in_project_id": 56,
+                "parent_id": 54
             },
             {
                 "id": 6,
@@ -986,11 +964,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0062.mp4",
-                "in_project_thumbnail": "thumb_0062.jpg",
-                "in_project_id": 59,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0060.mp4",
+                "in_project_thumbnail": "thumb_0060.jpg",
+                "in_project_id": 57,
+                "parent_id": 54
             },
             {
                 "id": 7,
@@ -1002,11 +980,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 1.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0063.mp4",
-                "in_project_thumbnail": "thumb_0063.jpg",
-                "in_project_id": 60,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0061.mp4",
+                "in_project_thumbnail": "thumb_0061.jpg",
+                "in_project_id": 58,
+                "parent_id": 54
             },
             {
                 "id": 8,
@@ -1018,11 +996,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.3,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0064.mp4",
-                "in_project_thumbnail": "thumb_0064.jpg",
-                "in_project_id": 61,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0062.mp4",
+                "in_project_thumbnail": "thumb_0062.jpg",
+                "in_project_id": 59,
+                "parent_id": 54
             },
             {
                 "id": 9,
@@ -1034,11 +1012,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.5,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0065.mp4",
-                "in_project_thumbnail": "thumb_0064.jpg",
-                "in_project_id": 62,
-                "parent_id": 56
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0063.mp4",
+                "in_project_thumbnail": "thumb_0063.jpg",
+                "in_project_id": 60,
+                "parent_id": 54
             }
         ]
     },
@@ -1055,11 +1033,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0066.mp4",
-                "in_project_thumbnail": "thumb_0066.jpg",
-                "in_project_id": 63,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0064.mp4",
+                "in_project_thumbnail": "thumb_0064.jpg",
+                "in_project_id": 61,
+                "parent_id": 64
             },
             {
                 "id": 1,
@@ -1071,11 +1049,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0067.mp4",
-                "in_project_thumbnail": "thumb_0067.jpg",
-                "in_project_id": 64,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0065.mp4",
+                "in_project_thumbnail": "thumb_0065.jpg",
+                "in_project_id": 62,
+                "parent_id": 64
             },
             {
                 "id": 2,
@@ -1087,11 +1065,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0068.mp4",
-                "in_project_thumbnail": "thumb_0068.jpg",
-                "in_project_id": 65,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0066.mp4",
+                "in_project_thumbnail": "thumb_0066.jpg",
+                "in_project_id": 63,
+                "parent_id": 64
             },
             {
                 "id": 3,
@@ -1103,11 +1081,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0069.mp4",
-                "in_project_thumbnail": "thumb_0069.jpg",
-                "in_project_id": 66,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0067.mp4",
+                "in_project_thumbnail": "thumb_0067.jpg",
+                "in_project_id": 64,
+                "parent_id": 64
             },
             {
                 "id": 4,
@@ -1119,11 +1097,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0070.mp4",
-                "in_project_thumbnail": "thumb_0070.jpg",
-                "in_project_id": 67,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0068.mp4",
+                "in_project_thumbnail": "thumb_0068.jpg",
+                "in_project_id": 65,
+                "parent_id": 64
             },
             {
                 "id": 5,
@@ -1135,11 +1113,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0071.mp4",
-                "in_project_thumbnail": "thumb_0071.jpg",
-                "in_project_id": 68,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0069.mp4",
+                "in_project_thumbnail": "thumb_0069.jpg",
+                "in_project_id": 66,
+                "parent_id": 64
             },
             {
                 "id": 6,
@@ -1151,11 +1129,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0072.mp4",
-                "in_project_thumbnail": "thumb_0072.jpg",
-                "in_project_id": 69,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0070.mp4",
+                "in_project_thumbnail": "thumb_0070.jpg",
+                "in_project_id": 67,
+                "parent_id": 64
             },
             {
                 "id": 7,
@@ -1167,11 +1145,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0073.mp4",
-                "in_project_thumbnail": "thumb_0072.jpg",
-                "in_project_id": 70,
-                "parent_id": 66
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0071.mp4",
+                "in_project_thumbnail": "thumb_0071.jpg",
+                "in_project_id": 68,
+                "parent_id": 64
             }
         ]
     },
@@ -1188,11 +1166,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.1,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0074.mp4",
-                "in_project_thumbnail": "thumb_0074.jpg",
-                "in_project_id": 71,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0072.mp4",
+                "in_project_thumbnail": "thumb_0072.jpg",
+                "in_project_id": 69,
+                "parent_id": 72
             },
             {
                 "id": 1,
@@ -1204,11 +1182,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0075.mp4",
-                "in_project_thumbnail": "thumb_0075.jpg",
-                "in_project_id": 72,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0073.mp4",
+                "in_project_thumbnail": "thumb_0073.jpg",
+                "in_project_id": 70,
+                "parent_id": 72
             },
             {
                 "id": 2,
@@ -1220,11 +1198,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0076.mp4",
-                "in_project_thumbnail": "thumb_0076.jpg",
-                "in_project_id": 73,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0074.mp4",
+                "in_project_thumbnail": "thumb_0074.jpg",
+                "in_project_id": 71,
+                "parent_id": 72
             },
             {
                 "id": 3,
@@ -1236,11 +1214,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 2.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0077.mp4",
-                "in_project_thumbnail": "thumb_0077.jpg",
-                "in_project_id": 74,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0075.mp4",
+                "in_project_thumbnail": "thumb_0075.jpg",
+                "in_project_id": 72,
+                "parent_id": 72
             },
             {
                 "id": 4,
@@ -1252,11 +1230,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 5.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0078.mp4",
-                "in_project_thumbnail": "thumb_0078.jpg",
-                "in_project_id": 75,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0076.mp4",
+                "in_project_thumbnail": "thumb_0076.jpg",
+                "in_project_id": 73,
+                "parent_id": 72
             },
             {
                 "id": 5,
@@ -1268,16 +1246,16 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 4.1,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0079.mp4",
-                "in_project_thumbnail": "thumb_0078.jpg",
-                "in_project_id": 76,
-                "parent_id": 74
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0077.mp4",
+                "in_project_thumbnail": "thumb_0077.jpg",
+                "in_project_id": 74,
+                "parent_id": 72
             }
         ]
     },
     {
-        "sections_len": 2,
+        "sections_len": 3,
         "sections": [
             {
                 "id": 0,
@@ -1287,82 +1265,45 @@
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Results_0000.mp4",
                 "width": 3840,
                 "height": 2160,
-                "fps": "60",
-                "duration": 4.4,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0080.mp4",
-                "in_project_thumbnail": "thumb_0080.jpg",
-                "in_project_id": 77,
-                "parent_id": 80
+                "fps": "256000/4267",
+                "duration": 4.166992,
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0078.mp4",
+                "in_project_thumbnail": "thumb_0078.jpg",
+                "in_project_id": 75,
+                "parent_id": 78
             },
             {
                 "id": 1,
-                "name": "Results end",
+                "name": "results graph",
                 "type": "normal",
                 "is_sub_section": true,
                 "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Results_0001.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 2.2,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0081.mp4",
-                "in_project_thumbnail": "thumb_0080.jpg",
-                "in_project_id": 78,
-                "parent_id": 80
-            }
-        ]
-    },
-    {
-        "sections_len": 3,
-        "sections": [
-            {
-                "id": 0,
-                "name": "Intro What Next",
-                "type": "normal",
-                "is_sub_section": false,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0005.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 4.1,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0005.mp4",
-                "in_project_thumbnail": "thumb_0005.jpg",
-                "in_project_id": 79,
-                "parent_id": 5
-            },
-            {
-                "id": 1,
-                "name": "presentation.sub.normal",
-                "type": "normal",
-                "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0006.mp4",
-                "width": 3840,
-                "height": 2160,
-                "fps": "60",
-                "duration": 1.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0006.mp4",
-                "in_project_thumbnail": "thumb_0006.jpg",
-                "in_project_id": 80,
-                "parent_id": 5
+                "duration": 2.8,
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0079.mp4",
+                "in_project_thumbnail": "thumb_0079.jpg",
+                "in_project_id": 76,
+                "parent_id": 78
             },
             {
                 "id": 2,
-                "name": "End Intro",
+                "name": "Results end",
                 "type": "normal",
                 "is_sub_section": true,
-                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\IntroSummary_0007.mp4",
+                "original_video": "D:\\projects\\Manim\\kotler_lab_lecture\\media\\videos\\2160p60\\sections\\Results_0002.mp4",
                 "width": 3840,
                 "height": 2160,
                 "fps": "60",
-                "duration": 1.5,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0007.mp4",
-                "in_project_thumbnail": "thumb_0006.jpg",
-                "in_project_id": 81,
-                "parent_id": 5
+                "duration": 2.2,
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0080.mp4",
+                "in_project_thumbnail": "thumb_0080.jpg",
+                "in_project_id": 77,
+                "parent_id": 78
             }
         ]
     },
@@ -1379,11 +1320,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0086.mp4",
-                "in_project_thumbnail": "thumb_0086.jpg",
-                "in_project_id": 82,
-                "parent_id": 86
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0085.mp4",
+                "in_project_thumbnail": "thumb_0085.jpg",
+                "in_project_id": 78,
+                "parent_id": 85
             },
             {
                 "id": 1,
@@ -1395,11 +1336,11 @@
                 "height": 2160,
                 "fps": "60",
                 "duration": 3.0,
-                "project_name": "Kotler Lab Lecture",
-                "in_project_video": "video_0087.mp4",
+                "project_name": "Kotler Lab Lecture 2",
+                "in_project_video": "video_0086.mp4",
                 "in_project_thumbnail": "thumb_0086.jpg",
-                "in_project_id": 83,
-                "parent_id": 86
+                "in_project_id": 79,
+                "parent_id": 85
             }
         ]
     }

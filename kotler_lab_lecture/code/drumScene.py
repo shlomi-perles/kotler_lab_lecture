@@ -226,7 +226,7 @@ class HistoryBrief(Scene):
         self.wait(0.1)
 
     def build_scene(self):
-        self.main_title = Text("Quantum's Phenomenons & Orders of Magnitude: Main History Phases").scale_to_fit_width(
+        self.main_title = Text("Quantum Phenomena & Orders of Magnitude: Main History Phases").scale_to_fit_width(
             config.frame_width * 0.9)
         self.mob_remove_at_end += self.main_title
         self.play(Write(self.main_title))
@@ -347,7 +347,9 @@ class HistoryBrief(Scene):
 
     def play_bohr_orbits(self):
         orbit_particle = self.orbit_particle
-        for _ in range(len(self.orbits)):
+        orbits_num = 2
+        # for _ in range(len(self.orbits)):
+        for _ in range(orbits_num):
             n_orbit = next(self.orbits_order)
             if n_orbit != 1:
                 orbit_particle.move_to(self.orbits[n_orbit].get_right())
@@ -423,22 +425,21 @@ class SpringScene(Scene):
         self.system += d0_tex
         self.system += move_arrow
         self.my_next_section('oscillate start', pst.SUB_NORMAL)
-        self.play(AnimationGroup(self.spring.oscillate(1.5), Write(omega), lag_ratio=0.2))
-        self.wait(0.1)
-        self.my_next_section('oscillate middle', pst.SUB_COMPLETE_LOOP)
-        self.play(self.spring.oscillate(1))
-        self.wait(0.001)
-        self.my_next_section('Shift right', pst.SUB_SKIP)
+        self.play(AnimationGroup(self.spring.oscillate(0.5), Write(omega), lag_ratio=0.2))
         self.play(Create(d0_line))
         self.play(Write(d0_tex))
         self.spring.omega = self.spring.omega * 2.2
+        prev_omega = self.spring.omega
+        self.spring.omega = self.spring.omega * 3
         self.play(self.spring.oscillate(0.25))
+        self.spring.omega = prev_omega
         self.play(
-            move_arrow.animate().scale_to_fit_width(self.spring.amplitude * 1, about_edge=LEFT).set_stroke(width=7))
+            move_arrow.animate().scale_to_fit_width(self.spring.amplitude * 1, about_edge=LEFT).set_stroke(width=7),
+            run_time=0.5)
         x_tex = MathTex("x").next_to(move_arrow, UP, buff=0.2)
         self.shift_d0_info += x_tex
         self.system += x_tex
-        self.play(FadeIn(x_tex, shift=UP))
+        self.play(FadeIn(x_tex, shift=UP), run_time=0.5)
         self.my_next_section('Shift End', pst.SUB_NORMAL)
 
     def play_capacitor_addition(self):
@@ -467,9 +468,9 @@ class SpringScene(Scene):
             [(self.capacitor.get_x() + self.mass.get_x()) / 2, self.mass.get_bottom()[1] - lc_circuit.height / 2, 0]))
         self.electric_field = self.get_electric_field()
 
-        self.play(DrawBorderThenFill(lc_circuit), self.omega_mech_tex.animate.next_to(self.spring, UP, buff=0.7))
-        self.play(Create(self.electric_field))
         self.group_optomechanic_system += self.electric_field
+        self.play(DrawBorderThenFill(lc_circuit), self.omega_mech_tex.animate.next_to(self.spring, UP, buff=0.7),
+                  Create(self.electric_field))
         self.omega_lc_tex = MathTex("\omega_{LC}").next_to(self.electric_field, UP, buff=0.7).match_y(
             self.omega_mech_tex)
         self.play(Write(self.omega_lc_tex))
@@ -1164,9 +1165,10 @@ class Results(Scene):
         #     col_labels=[Text("Analytical g_{0}"), Text("Numeric g_{0}"), Text("Observed g_{0}")],
         #     top_left_entry=Text("TOP")).scale(0.5)
         self.next_section("Results", pst.NORMAL)
+
         t0 = MathTable([["Analytical\ g_{0}", "Numerical\ g_{0}",
                          "Observed\ g_{0}", r"Numeric\ Approximation\ Error"],
-                        ["232.12", "232.12", "235.72", "1.5\%"]],
+                        ["232.12\ [Hz]", "232.12\ [Hz]", "235.72\ [Hz]", "1.5\%"]],
                        include_outer_lines=True, element_to_mobject=MathTex
                        ).scale_to_fit_width(config.frame_width * 0.93)
         for i in range(4):
@@ -1175,6 +1177,14 @@ class Results(Scene):
         title = Text("Results").scale_to_fit_width(config.frame_width * 0.3)
         self.play(Write(title), title.animate.to_edge(UP))
         self.wait(1)
+        graph_g0_image = ImageMobject(str(RESOURCE_DIR / "results_table.png")).scale_to_fit_width(
+            config.frame_width * 0.5).next_to(title, DOWN, buff=0.2)
+        graph_g0 = SVGMobject(str(RESOURCE_DIR / "graph_g0.svg")).scale_to_fit_width(config.frame_width * 0.5).next_to(
+            graph_g0_image, DOWN, buff=0.2)
+        self.play(Write(graph_g0), FadeIn(graph_g0_image))
+        self.wait(0.4)
+        self.next_section("results graph", pst.SUB_NORMAL)
+        self.play(Unwrite(graph_g0), FadeOut(graph_g0_image), run_time=0.4)
         self.play(Write(t0))
         self.wait(0.4)
         self.next_section("Results end", pst.SUB_NORMAL)
@@ -1204,7 +1214,9 @@ class Conclusion(Scene):
 # scenes_lst = [IntroSummary, HistoryBrief, SpringScene, TheoryToPracti, Comsol,IntroSummary2, FirstSimuTry,
 #               ComsolEigenmodes, DissipationDilution,Results, IntroSummary3 , Conclusion]
 
-scenes_lst = [Conclusion]
+# scenes_lst = [Results,historybrief,springscene]
+scenes_lst = [Results]
+
 for sc in scenes_lst:
     # try:
     disable_caching = sc in {DissipationDilution} or isinstance(sc, IntroSummary)
